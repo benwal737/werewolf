@@ -14,7 +14,7 @@ const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
     const server = createServer(handler);
-    const io = new Server(server);
+    const io = new Server(server)
 
     io.on("connection", (socket) => {
         console.log("a user connected with socket id", socket.id);
