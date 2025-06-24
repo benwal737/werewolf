@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
+import { socket } from "../../socket";
 
 type RoleCounts = {
   werewolves: number;
@@ -24,6 +26,7 @@ type RoleCounts = {
 };
 
 const MIN_PLAYERS = 4;
+const MAX_PLAYERS = 20;
 
 const roleSchema = z.object({
   werewolves: z.number().min(1, "Need at least 1 werewolf"),
@@ -38,11 +41,11 @@ const lobbySchema = z
   })
   .refine(
     (data) => {
-      const totalPlayers = calculateTotalPlayers(data.roles);
-      return totalPlayers >= MIN_PLAYERS;
+      const total = calculateTotalPlayers(data.roles);
+      return total >= MIN_PLAYERS && total <= MAX_PLAYERS;
     },
     {
-      message: `Minimum ${MIN_PLAYERS} players required`,
+      message: `Players must be between ${MIN_PLAYERS} and ${MAX_PLAYERS}`,
       path: ["roles"],
     }
   );
@@ -67,7 +70,9 @@ const PlayerCountDisplay = ({
         <span className="font-semibold">Total Players:</span>
         <span
           className={`text-lg ${
-            totalPlayers < MIN_PLAYERS ? "text-destructive" : "text"
+            totalPlayers < MIN_PLAYERS || totalPlayers > MAX_PLAYERS
+              ? "text-destructive"
+              : "text"
           }`}
         >
           {totalPlayers}
@@ -79,14 +84,24 @@ const PlayerCountDisplay = ({
 
 function makeid(length: number) {
   var result = "";
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }
+
+export const getPlayer = () => {
+  let playerId = localStorage.getItem("playerId");
+  let playerName = localStorage.getItem("playerName");
+  if (!playerId) {
+    playerId = uuidv4();
+    localStorage.setItem("playerId", playerId);
+  }
+
+  return { playerId, playerName };
+};
 
 const CreateLobby = () => {
   const router = useRouter();
@@ -101,9 +116,12 @@ const CreateLobby = () => {
       },
     },
   });
+
   const handleSubmit = (data: z.infer<typeof lobbySchema>) => {
-    const room = makeid(5);
-    router.push(`/lobby/${room}`);
+    const lobbyId = makeid(5);
+    const { playerName, playerId } = getPlayer();
+    socket.emit("createLobby", lobbyId, playerId, playerName);
+    router.push(`/lobby/${lobbyId}`);
   };
 
   return (
@@ -113,7 +131,7 @@ const CreateLobby = () => {
         onSubmit={form.handleSubmit(handleSubmit)}
       >
         <PlayerCountDisplay form={form} />
- 
+
         {roleKeys.map((role) => (
           <FormField
             key={role}

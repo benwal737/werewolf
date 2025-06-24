@@ -1,7 +1,6 @@
 import { Server } from "socket.io";
 import { createServer } from "http";
 import next from "next";
-import { pl } from "zod/v4/locales";
 
 console.log("Starting server...");
 
@@ -21,25 +20,43 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log("a user connected with socket id", socket.id);
 
-    socket.on("joinLobby", (lobbyId, playerId, playerName) => {
-      console.log(
-        `Received joinLobby from ${socket.id} for lobby ${lobbyId} with playerId ${playerId} and playerName ${playerName}`
-      );
-      if (!gameStates[lobbyId]) {
-        gameStates[lobbyId] = {
-          players: {},
-        };
+    socket.on("checkLobby", (lobbyId, callback) => {
+      const exists = !!gameStates[lobbyId];
+      callback(exists);
+    });
+
+    socket.on("createLobby", (lobbyId, playerId, playerName) => {
+      if (gameStates[lobbyId]) {
+        socket.emit("error", "Lobby ID already exists");
+        return;
       }
+
+      gameStates[lobbyId] = {
+        players: {},
+      };
+
       gameStates[lobbyId].players[playerId] = {
         name: playerName,
         id: playerId,
       };
-      console.log("players:", gameStates[lobbyId].players);
+
       socket.join(lobbyId);
       io.to(lobbyId).emit("playerJoined", gameStates[lobbyId].players);
     });
-    socket.on("error", (error) => {
-      console.error("Socket error:", error);
+
+    socket.on("joinLobby", (lobbyId, playerId, playerName) => {
+      if (!gameStates[lobbyId]) {
+        socket.emit("joinError", "Lobby does not exist");
+        return;
+      }
+
+      gameStates[lobbyId].players[playerId] = {
+        name: playerName,
+        id: playerId,
+      };
+
+      socket.join(lobbyId);
+      io.to(lobbyId).emit("playerJoined", gameStates[lobbyId].players);
     });
 
     socket.on("disconnect", (reason) => {

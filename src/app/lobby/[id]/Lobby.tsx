@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { socket } from "../../../socket";
 import { v4 as uuidv4 } from "uuid";
 
@@ -27,10 +27,19 @@ export default function Lobby() {
   const lobbyId = useParams().id;
   const [players, setPlayers] = useState<Player[]>([]);
   const { playerName, playerId } = getPlayer();
+  const router = useRouter();
 
   useEffect(() => {
     console.log("emitting joinLobby event with", lobbyId, playerId, playerName);
     socket.emit("joinLobby", lobbyId, playerId, playerName);
+
+    const handleJoinError = (msg: string) => {
+      alert(msg);
+      router.push("/");
+    };
+    socket.on("joinError", (msg) => {
+      handleJoinError(msg);
+    });
 
     const handlePlayerJoined = (playerList: Record<string, Player>) => {
       console.log("player list update:", playerList);
@@ -41,6 +50,7 @@ export default function Lobby() {
 
     return () => {
       socket.off("playerJoined", handlePlayerJoined);
+      socket.off("joinError", handleJoinError);
     };
   }, [lobbyId, playerId, playerName]);
 
