@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
-import { socket } from "../../socket";
+import { socket } from "@/lib/socketClient";
 
 type RoleCounts = {
   werewolves: number;

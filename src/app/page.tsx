@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { socket } from "../socket";
+import { socket } from "@/lib/socketClient";
 import { useRouter } from "next/navigation";
 
 import * as z from "zod";
@@ -66,13 +66,14 @@ export default function Home() {
   };
 
   const handleJoinLobby = (data: z.infer<typeof joinLobbySchema>) => {
+    console.log("checking stuff")
     const name = form1.getValues("name");
     socket.emit("checkLobby", data.lobbyId, (exists: boolean) => {
       if (!exists) {
-        alert("Lobby does not exist");
+        console.log("shit doesnt exist")
+        alert("Lobby does not exist or game in session");
         return;
       }
-
       localStorage.setItem("playerName", name);
       router.push(`/lobby/${data.lobbyId}`);
     });

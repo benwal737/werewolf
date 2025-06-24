@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": false,
+    "allowImportingTsExtensions": true
+  },
+  "include": ["server.mts", "src/game/**/*"]
+}
