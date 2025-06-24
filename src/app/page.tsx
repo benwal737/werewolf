@@ -27,7 +27,6 @@ const formSchema = z.object({
 
 export default function Home() {
   const router = useRouter();
-  const [name, setName] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,7 +35,8 @@ export default function Home() {
   });
 
   const createLobby = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    console.log("name:", data.name)
+    localStorage.setItem("playerName", data.name)
     router.push("/create");
   };
 
@@ -50,11 +50,6 @@ export default function Home() {
     socket.on("connect", onConnect);
 
     socket.connect();
-
-    return () => {
-      socket.off("connect", onConnect); // Remove listener
-      socket.disconnect(); // Disconnect socket
-    };
   })
 
   return (

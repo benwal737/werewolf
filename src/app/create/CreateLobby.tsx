@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 type RoleCounts = {
   werewolves: number;
@@ -76,7 +77,19 @@ const PlayerCountDisplay = ({
   );
 };
 
+function makeid(length: number) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 const CreateLobby = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof lobbySchema>>({
     resolver: zodResolver(lobbySchema),
     defaultValues: {
@@ -88,12 +101,9 @@ const CreateLobby = () => {
       },
     },
   });
-
   const handleSubmit = (data: z.infer<typeof lobbySchema>) => {
-    console.log({
-      ...data,
-      totalPlayers: calculateTotalPlayers(data.roles),
-    });
+    const room = makeid(5);
+    router.push(`/lobby/${room}`);
   };
 
   return (
@@ -103,7 +113,7 @@ const CreateLobby = () => {
         onSubmit={form.handleSubmit(handleSubmit)}
       >
         <PlayerCountDisplay form={form} />
-
+ 
         {roleKeys.map((role) => (
           <FormField
             key={role}
