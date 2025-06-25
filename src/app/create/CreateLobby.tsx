@@ -15,9 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
 import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
+import { getPlayer } from "@/utils/getPlayer";
 
 const MIN_PLAYERS = 2;
 const MAX_PLAYERS = 20;
@@ -85,17 +85,6 @@ function makeid(length: number) {
   }
   return result;
 }
-
-export const getPlayer = () => {
-  let playerId = localStorage.getItem("playerId");
-  let playerName = localStorage.getItem("playerName");
-  if (!playerId) {
-    playerId = uuidv4();
-    localStorage.setItem("playerId", playerId);
-  }
-
-  return { playerId, playerName };
-};
 
 const CreateLobby = () => {
   const router = useRouter();

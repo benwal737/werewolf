@@ -22,7 +22,7 @@ const BottomBar = ({ role }: BottomBarProps) => {
     <div className="p-3">
       <Dialog>
         <DialogTrigger asChild>
-          <Button type="button" className="text-2xl p-7">{role}</Button>
+          {role && <Button type="button" className="text-2xl p-7">{role[0].toUpperCase() + role.slice(1)}</Button>}
         </DialogTrigger>
         <DialogContent className="p-0 max-w-xs bg-transparent border-none shadow-none">
           <RoleCard role={role} />

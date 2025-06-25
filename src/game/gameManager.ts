@@ -1,4 +1,11 @@
-import { Game, Player, GamePhase, RoleCounts, Role } from "./types";
+import {
+  Game,
+  Player,
+  GamePhase,
+  RoleCounts,
+  Role,
+  NightSubstep,
+} from "./types";
 
 const gameStates = new Map<string, Game>();
 
@@ -12,6 +19,7 @@ export const createGame = (
     host: hostId,
     players: {},
     phase: "lobby",
+    nightStep: null,
     roleCounts,
     totalPlayers,
   };
@@ -58,9 +66,16 @@ export const deleteGame = (lobbyId: string) => {
   gameStates.delete(lobbyId);
 };
 
-export const setPhase = (lobbyId: string, phase: GamePhase) => {
+export const setPhase = (
+  lobbyId: string,
+  phase: GamePhase,
+  nightStep: NightSubstep
+) => {
   const game = getGame(lobbyId);
-  if (game) game.phase = phase;
+  if (game) {
+    game.phase = phase;
+    game.nightStep = nightStep;
+  }
 };
 
 export const getPhase = (lobbyId: string) => {
