@@ -14,7 +14,7 @@ export function TypographyH1({
   );
 }
 
-export function TypographyH2({
+export function TypographyH4({
   children,
   className,
 }: {
@@ -22,14 +22,14 @@ export function TypographyH2({
   className?: string;
 }) {
   return (
-    <h2
+    <h4
       className={cn(
-        "scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance",
+        "scroll-m-20 text-center text-xl font-extrabold tracking-tight text-balance",
         className
       )}
     >
       {children}
-    </h2>
+    </h4>
   );
 }
 

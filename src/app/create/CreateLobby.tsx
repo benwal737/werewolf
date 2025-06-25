@@ -17,22 +17,16 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { socket } from "@/lib/socketClient";
+import { RoleCounts } from "@/game/types";
 
-type RoleCounts = {
-  werewolves: number;
-  villagers: number;
-  witches: number;
-  foretellers: number;
-};
-
-const MIN_PLAYERS = 4;
+const MIN_PLAYERS = 2;
 const MAX_PLAYERS = 20;
 
 const roleSchema = z.object({
-  werewolves: z.number().min(1, "Need at least 1 werewolf"),
-  villagers: z.number().min(1, "Need at least 1 villager"),
-  witches: z.number().min(0),
-  foretellers: z.number().min(0),
+  werewolf: z.number().min(1, "Need at least 1 werewolf"),
+  villager: z.number().min(1, "Need at least 1 villager"),
+  witch: z.number().min(0),
+  foreteller: z.number().min(0),
 });
 
 const lobbySchema = z
@@ -51,10 +45,10 @@ const lobbySchema = z
   );
 
 const calculateTotalPlayers = (roles: RoleCounts): number => {
-  return roles.werewolves + roles.villagers + roles.witches + roles.foretellers;
+  return roles.werewolf + roles.villager + roles.witch + roles.foreteller;
 };
 
-const roleKeys = ["werewolves", "villagers", "witches", "foretellers"] as const;
+const roleKeys = ["werewolf", "villager", "witch", "foreteller"] as const;
 
 const PlayerCountDisplay = ({
   form,
@@ -109,18 +103,26 @@ const CreateLobby = () => {
     resolver: zodResolver(lobbySchema),
     defaultValues: {
       roles: {
-        werewolves: 3,
-        villagers: 3,
-        witches: 1,
-        foretellers: 1,
+        werewolf: 3,
+        villager: 3,
+        witch: 1,
+        foreteller: 1,
       },
     },
   });
 
   const handleSubmit = (data: z.infer<typeof lobbySchema>) => {
+    const totalPlayers = calculateTotalPlayers(data.roles);
     const lobbyId = makeid(5);
     const { playerName, playerId } = getPlayer();
-    socket.emit("createLobby", lobbyId, playerId, playerName);
+    socket.emit(
+      "createLobby",
+      lobbyId,
+      playerId,
+      playerName,
+      data.roles,
+      totalPlayers
+    );
     router.push(`/lobby/${lobbyId}`);
   };
 
@@ -140,12 +142,21 @@ const CreateLobby = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                  {role === "werewolf"
+                    ? "Werewolves"
+                    : role === "foreteller"
+                    ? "Foretellers"
+                    : role === "villager"
+                    ? "Villagers"
+                    : role === "witch"
+                    ? "Witches"
+                    : role}{" "}
+                  :
                 </FormLabel>
                 <FormControl>
                   <Input
                     type="number"
-                    min={role === "werewolves" || role === "villagers" ? 1 : 0}
+                    min={role === "werewolf" || role === "villager" ? 1 : 0}
                     className="w-full max-w-xs min-h-[30px] h-[50px]"
                     value={field.value}
                     onChange={(e) => field.onChange(e.target.valueAsNumber)}

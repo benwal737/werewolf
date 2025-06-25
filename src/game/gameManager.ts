@@ -1,12 +1,19 @@
-import { Game, Player, GamePhase } from "./types";
+import { Game, Player, GamePhase, RoleCounts, Role } from "./types";
 
 const gameStates = new Map<string, Game>();
 
-export const createGame = (lobbyId: string, hostId: string) => {
+export const createGame = (
+  lobbyId: string,
+  hostId: string,
+  roleCounts: RoleCounts,
+  totalPlayers: number
+) => {
   const newGame: Game = {
     host: hostId,
     players: {},
     phase: "lobby",
+    roleCounts,
+    totalPlayers,
   };
   gameStates.set(lobbyId, newGame);
   return newGame;
@@ -58,4 +65,35 @@ export const setPhase = (lobbyId: string, phase: GamePhase) => {
 
 export const getPhase = (lobbyId: string) => {
   return getGame(lobbyId)?.phase;
+};
+
+export const assignRoles = (lobbyId: string) => {
+  const game = getGame(lobbyId);
+  if (!game) return;
+
+  const rolesToAssign: Role[] = [];
+  for (const role in game.roleCounts) {
+    const count = game.roleCounts[role as Role];
+    for (let i = 0; i < count; i++) {
+      rolesToAssign.push(role as Role);
+    }
+  }
+
+  // shuffle
+  for (let i = rolesToAssign.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [rolesToAssign[i], rolesToAssign[j]] = [rolesToAssign[j], rolesToAssign[i]];
+  }
+
+  const playerIds = Object.keys(game.players);
+  playerIds.forEach((playerId, index) => {
+    const role = rolesToAssign[index];
+    game.players[playerId].role = role;
+  });
+};
+
+export const getRole = (lobbyId: string, playerId: string) => {
+  const game = getGame(lobbyId);
+  if (!game) return;
+  return game.players[playerId]?.role;
 };

@@ -2,6 +2,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import next from "next";
 import registerLobbyHandlers from "./src/game/lobbyHandlers.ts";
+import registerGameHandlers from "./src/game/gameHandlers.ts";
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -14,6 +15,7 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log("✅ User connected:", socket.id);
     registerLobbyHandlers(io, socket);
+    registerGameHandlers(io, socket);
   });
 
   server.listen(3000, () => {

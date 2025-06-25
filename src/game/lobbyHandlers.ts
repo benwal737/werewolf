@@ -1,6 +1,6 @@
 import { Socket, Server } from "socket.io";
 import { createGame, addPlayer, removePlayer, getGame } from "./gameManager.ts";
-import { Player } from "./types";
+import { Player, RoleCounts } from "./types";
 
 console.log("📦 lobbyHandlers.js loaded");
 
@@ -8,9 +8,15 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
   console.log("📡 Lobby handlers registered");
   socket.on(
     "createLobby",
-    (lobbyId: string, playerId: string, playerName: string) => {
-      console.log("creating lobby")
-      const game = createGame(lobbyId, playerId);
+    (
+      lobbyId: string,
+      playerId: string,
+      playerName: string,
+      roleCounts: RoleCounts,
+      totalPlayers: number
+    ) => {
+      console.log("creating lobby");
+      const game = createGame(lobbyId, playerId, roleCounts, totalPlayers);
       const player: Player = {
         id: playerId,
         name: playerName,
@@ -46,8 +52,9 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       socket.join(lobbyId);
       socket.join(playerId);
       io.to(lobbyId).emit("playerJoined", {
-        players: getGame(lobbyId)?.players,
+        players: game.players,
         host: game.host,
+        totalPlayers: game.totalPlayers,
       });
     }
   );
@@ -71,9 +78,23 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("checkLobby", (lobbyId, callback) => {
-    console.log("checking lobby")
+    console.log("checking lobby");
     const game = getGame(lobbyId);
     callback(!!game && game.phase === "lobby");
+  });
+
+  socket.on("startGameCountdown", (lobbyId: string) => {
+    let timeLeft = 5;
+
+    const interval = setInterval(() => {
+      io.to(lobbyId).emit("countdownTick", timeLeft);
+      timeLeft--;
+
+      if (timeLeft < 0) {
+        clearInterval(interval);
+        io.to(lobbyId).emit("countdownComplete");
+      }
+    }, 1000);
   });
 
   socket.on("disconnect", () => {
