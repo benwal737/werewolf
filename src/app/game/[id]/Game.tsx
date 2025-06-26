@@ -25,6 +25,7 @@ const Game = () => {
   const isWitch = player?.role === "witch";
   const witchTurn = gameState?.nightStep === "witch";
   const gameStateRef = useRef<GameState | null>(null);
+  const [foretellerRevealed, setForetellerRevealed] = useState(false);
 
   const narration = foretellerTurn
     ? isForeteller
@@ -33,11 +34,19 @@ const Game = () => {
     : "Not foreteller";
 
   const foretellerAction = (target: Player) => {
+    if (foretellerRevealed) return;
     socket.emit("foretellerSelected", lobbyId, target.id);
+    setForetellerRevealed(true);
   };
 
-  const getClickAction = (target: Player) =>
-    foretellerTurn && isForeteller ? () => foretellerAction(target) : undefined;
+  const getClickAction = (target: Player) => {
+    if (foretellerTurn && isForeteller) {
+      if (playerId === target.id) return undefined;
+      return () => foretellerAction(target);
+    } else {
+      return undefined;
+    }
+  };
 
   useEffect(() => {
     gameStateRef.current = gameState;
@@ -71,7 +80,7 @@ const Game = () => {
         toast(`You saw ${target.name} - they are a ${target.role}.`, {
           description: "Foreteller Vision",
           duration: 10000,
-          position: "top-left"
+          position: "top-left",
         });
       } else {
         console.log(
@@ -111,6 +120,7 @@ const Game = () => {
                   foretellerTurn={foretellerTurn}
                   isForeteller={isForeteller}
                   playerId={playerId}
+                  foretellerSelected={foretellerRevealed}
                   onClick={getClickAction(player)}
                 />
               ))}

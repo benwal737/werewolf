@@ -4,31 +4,34 @@ import { Player } from "@/game/types";
 
 interface PlayerCardProps {
   player: Player;
-  isSelected?: boolean;
   foretellerTurn: boolean;
   isForeteller: boolean;
   playerId: string;
+  foretellerSelected: boolean;
   onClick?: () => void;
 }
 
 export default function PlayerCard({
   player,
-  isSelected,
   foretellerTurn,
   isForeteller,
   playerId,
+  foretellerSelected,
   onClick,
 }: PlayerCardProps) {
+  const foretellerDisable =
+    player.role === "foreteller" && foretellerTurn && isForeteller;
+  const foretellerChoosing =
+    !foretellerSelected && isForeteller && player.id !== playerId;
   return (
     <Card
       onClick={onClick}
       className={cn(
-        "px-6 py-4 flex flex-col items-center text-center transition-all cursor-pointer border-2 w-40",
-        (player.role === "foreteller" && foretellerTurn && isForeteller) ||
-          !player.alive
+        "px-6 py-4 flex flex-col items-center text-center transition-all border-2 w-40",
+        foretellerDisable || !player.alive
           ? "opacity-40 grayscale"
           : "opacity-100",
-        isSelected ? "border-blue-500 ring ring-blue-300" : "border-muted"
+        foretellerChoosing && "hover:bg-stone-300 cursor-pointer"
       )}
     >
       <div className="text-lg font-semibold truncate w-full">
