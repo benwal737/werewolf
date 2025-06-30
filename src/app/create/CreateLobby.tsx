@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
-import { RoleCounts } from "@/game/types";
+import { Role, RoleCounts } from "@/game/types";
 import { getPlayer } from "@/utils/getPlayer";
 
 const MIN_PLAYERS = 2;
@@ -44,11 +44,14 @@ const lobbySchema = z
     }
   );
 
-const calculateTotalPlayers = (roles: RoleCounts): number => {
-  return roles.werewolf + roles.villager + roles.witch + roles.foreteller;
-};
-
 const roleKeys = ["werewolf", "villager", "witch", "foreteller"] as const;
+
+const calculateTotalPlayers = (roles: Partial<RoleCounts>): number => {
+  return roleKeys.reduce((total, role) => {
+    const count = roles[role];
+    return total + (Number.isNaN(count) ? 0 : count ?? 0);
+  }, 0);
+};
 
 const PlayerCountDisplay = ({
   form,
@@ -147,8 +150,17 @@ const CreateLobby = () => {
                     type="number"
                     min={role === "werewolf" || role === "villager" ? 1 : 0}
                     className="w-full max-w-xs min-h-[30px] h-[50px]"
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    value={Number.isNaN(field.value) ? "" : field.value}
+                    onChange={(e) => {
+                      const value = e.target.valueAsNumber;
+                      field.onChange(value);
+                    }}
+                    onBlur={(e) => {
+                      const value = e.target.valueAsNumber;
+                      if (Number.isNaN(value)) {
+                        field.onChange(0);
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
