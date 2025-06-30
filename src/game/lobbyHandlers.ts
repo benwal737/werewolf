@@ -2,10 +2,7 @@ import { Socket, Server } from "socket.io";
 import { createGame, addPlayer, removePlayer, getGame } from "./gameManager.ts";
 import { Player, RoleCounts } from "./types";
 
-console.log("📦 lobbyHandlers.js loaded");
-
 export default function registerLobbyHandlers(io: Server, socket: Socket) {
-  console.log("📡 Lobby handlers registered");
   socket.on(
     "createLobby",
     (
@@ -13,7 +10,8 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       playerId: string,
       playerName: string,
       roleCounts: RoleCounts,
-      totalPlayers: number
+      totalPlayers: number,
+      callback: () => void,
     ) => {
       console.log("creating lobby");
       const game = createGame(lobbyId, playerId, roleCounts, totalPlayers);
@@ -26,6 +24,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       addPlayer(lobbyId, player);
       socket.join(lobbyId);
       socket.join(playerId);
+      callback();
       io.to(lobbyId).emit("playerJoined", {
         players: getGame(lobbyId)?.players,
         host: game.host,

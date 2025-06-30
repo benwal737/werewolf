@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
-import { Role, RoleCounts } from "@/game/types";
+import { RoleCounts } from "@/game/types";
 import { getPlayer } from "@/utils/getPlayer";
 
 const MIN_PLAYERS = 2;
@@ -90,6 +90,7 @@ function makeid(length: number) {
 }
 
 const CreateLobby = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof lobbySchema>>({
     resolver: zodResolver(lobbySchema),
@@ -104,6 +105,7 @@ const CreateLobby = () => {
   });
 
   const handleSubmit = (data: z.infer<typeof lobbySchema>) => {
+    setIsLoading(true);
     const totalPlayers = calculateTotalPlayers(data.roles);
     const lobbyId = makeid(5);
     const { playerName, playerId } = getPlayer();
@@ -113,9 +115,11 @@ const CreateLobby = () => {
       playerId,
       playerName,
       data.roles,
-      totalPlayers
+      totalPlayers,
+      () => {
+        router.push(`/lobby/${lobbyId}`);
+      }
     );
-    router.push(`/lobby/${lobbyId}`);
   };
 
   return (
@@ -169,11 +173,8 @@ const CreateLobby = () => {
           />
         ))}
 
-        <Button
-          type="submit"
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting ? "Creating..." : "Create Lobby"}
+        <Button type="submit" disabled={!form.formState.isValid || isLoading}>
+          {isLoading ? "Creating..." : "Create Lobby"}
         </Button>
       </form>
     </Form>

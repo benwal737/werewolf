@@ -26,11 +26,13 @@ const Game = () => {
   const witchTurn = gameState?.nightStep === "witch";
   const gameStateRef = useRef<GameState | null>(null);
   const [foretellerRevealed, setForetellerRevealed] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [hasStartedCountdown, setHasStartedCountdown] = useState(false);
 
   const narration = foretellerTurn
     ? isForeteller
       ? "Select a player to reveal their role"
-      : "Foreteller is revealing a role..."
+      : "Foreteller is revealing a role"
     : "Not foreteller";
 
   const foretellerAction = (target: Player) => {
@@ -51,6 +53,17 @@ const Game = () => {
   useEffect(() => {
     gameStateRef.current = gameState;
   }, [gameState]);
+
+  useEffect(() => {
+    if (
+      playerId === gameState?.host &&
+      gameState?.nightStep === "foreteller" &&
+      !hasStartedCountdown
+    ) {
+      socket.emit("startPhaseCountdown", lobbyId, "foreteller");
+      setHasStartedCountdown(true);
+    }
+  }, [gameState, playerId, lobbyId, hasStartedCountdown]);
 
   useEffect(() => {
     socket.emit("joinGame", lobbyId, (game: GameState) => {
@@ -89,6 +102,13 @@ const Game = () => {
       }
     };
 
+    const handleCountdownTick = (timeLeft: number) => {
+      console.log("countdown ticked:", timeLeft);
+      setCountdown(timeLeft);
+    };
+
+    socket.on("countdownTick", handleCountdownTick);
+
     socket.on("foretellerReveal", handleForetellerReveal);
 
     socket.on("joinError", handleJoinError);
@@ -108,7 +128,10 @@ const Game = () => {
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto mt-5">
         {/* Narration */}
-        <TypographyH4>{narration}</TypographyH4>
+        <div className="flex justify-center gap-2">
+          <TypographyH4>{narration}:</TypographyH4>
+          <TypographyH4>{countdown}</TypographyH4>
+        </div>
         {/* Player List */}
         {gameState && (
           <div className="flex justify-center">

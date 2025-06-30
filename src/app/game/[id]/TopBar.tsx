@@ -1,6 +1,6 @@
 import React from "react";
 import { GamePhase } from "@/game/types";
-import {TypographyH1} from "@/components/ui/typography"
+import { TypographyH1 } from "@/components/ui/typography";
 
 interface TopBarProps {
   phase: GamePhase | undefined;
