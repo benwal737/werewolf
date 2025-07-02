@@ -22,7 +22,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
 
   socket.on("startGame", (lobbyId: string) => {
     assignRoles(lobbyId);
-    setPhase(lobbyId, "night", null);
+    setPhase(lobbyId, "start", null);
   });
 
   socket.on("foretellerSelected", (lobbyId: string, target: string) => {
@@ -35,14 +35,33 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
 
   socket.on("startPhaseCountdown", (lobbyId: string, phase: GamePhase) => {
     console.log("starting countdown for phase:", phase);
+    const game = getGame(lobbyId);
+    if (!game) return;
+    if (game.interval) {
+      console.log("countdown already running");
+      return;
+    }
     let timeLeft = 30;
+    game.countdown = timeLeft;
     const interval = setInterval(() => {
+      game.countdown = timeLeft;
       io.to(lobbyId).emit("countdownTick", timeLeft);
-      timeLeft--;
       if (timeLeft < 0) {
         clearInterval(interval);
+        game.interval = undefined;
+        game.countdown = undefined;
         io.to(lobbyId).emit("nextPhase");
       }
+      timeLeft--;
     }, 1000);
+    game.interval = interval;
   });
+
+  socket.on(
+    "requestCountdown",
+    (lobbyId: string, cb: (timeLeft: number | null) => void) => {
+      const game = getGame(lobbyId);
+      cb(game?.countdown ?? null);
+    }
+  );
 }

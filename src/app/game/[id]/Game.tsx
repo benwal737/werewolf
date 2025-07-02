@@ -15,15 +15,11 @@ import { useRef } from "react";
 const Game = () => {
   const lobbyId = useParams().id;
   const router = useRouter();
-  const { playerName, playerId } = getPlayer();
+  const { playerId } = getPlayer();
   const [gameState, setGameState] = useState<GameState | null>(null);
   const player = gameState?.players[playerId];
   const isForeteller = player?.role === "foreteller";
   const foretellerTurn = gameState?.nightStep === "foreteller";
-  const isWerewolf = player?.role === "werewolf";
-  const werewolfTurn = gameState?.nightStep === "werewolves";
-  const isWitch = player?.role === "witch";
-  const witchTurn = gameState?.nightStep === "witch";
   const gameStateRef = useRef<GameState | null>(null);
   const [foretellerRevealed, setForetellerRevealed] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -33,7 +29,7 @@ const Game = () => {
     ? isForeteller
       ? "Select a player to reveal their role"
       : "Foreteller is revealing a role"
-    : "Not foreteller";
+    : "Some other phase";
 
   const foretellerAction = (target: Player) => {
     if (foretellerRevealed) return;
@@ -51,34 +47,44 @@ const Game = () => {
   };
 
   useEffect(() => {
-    gameStateRef.current = gameState;
-  }, [gameState]);
-
-  useEffect(() => {
-    if (
-      playerId === gameState?.host &&
-      gameState?.nightStep === "foreteller" &&
-      !hasStartedCountdown
-    ) {
-      socket.emit("startPhaseCountdown", lobbyId, "foreteller");
-      setHasStartedCountdown(true);
-    }
-  }, [gameState, playerId, lobbyId, hasStartedCountdown]);
-
-  useEffect(() => {
     socket.emit("joinGame", lobbyId, (game: GameState) => {
       setGameState(game);
-    });
+      console.log("game state upon joining:", game);
+      if (game.phase === "start" && playerId === game.host) {
+        console.log("starting game");
+        socket.emit(
+          "changePhase",
+          lobbyId,
+          "night",
+          "foreteller",
+          (updatedGame: GameState) => {
+            setGameState(updatedGame);
 
-    socket.emit(
-      "changePhase",
-      lobbyId,
-      "night",
-      "foreteller",
-      (game: GameState) => {
-        setGameState(game);
+            if (
+              updatedGame.nightStep === "foreteller" &&
+              playerId === updatedGame.host
+            ) {
+              console.log("we got here");
+              socket.emit("startPhaseCountdown", lobbyId, "foreteller");
+            }
+          }
+        );
+      } else if (game.nightStep === "foreteller" && playerId === game.host) {
+        socket.emit("startPhaseCountdown", lobbyId, "foreteller");
       }
-    );
+    });
+  }, [lobbyId, playerId]);
+
+  useEffect(() => {
+    gameStateRef.current = gameState;
+
+    socket.emit("requestCountdown", lobbyId, (timeLeft: number | null) => {
+      console.log("requesting countdown");
+      console.log("time left:", timeLeft);
+      if (typeof timeLeft === "number") {
+        setCountdown(timeLeft);
+      }
+    });
 
     const handleJoinError = (msg: string) => {
       alert(msg);
@@ -116,6 +122,7 @@ const Game = () => {
     return () => {
       socket.off("joinError", handleJoinError);
       socket.off("foretellerReveal", handleForetellerReveal);
+      socket.off("countdownTick", handleCountdownTick);
     };
   }, [lobbyId]);
 

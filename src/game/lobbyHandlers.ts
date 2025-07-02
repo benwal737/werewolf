@@ -11,7 +11,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       playerName: string,
       roleCounts: RoleCounts,
       totalPlayers: number,
-      callback: () => void,
+      callback: () => void
     ) => {
       console.log("creating lobby");
       const game = createGame(lobbyId, playerId, roleCounts, totalPlayers);
@@ -82,18 +82,24 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
     callback(!!game && game.phase === "lobby");
   });
 
-  socket.on("startGameCountdown", (lobbyId: string) => {
-    let timeLeft = 5;
+  const countdowns = new Map<string, NodeJS.Timeout>();
 
+  socket.on("startGameCountdown", (lobbyId: string) => {
+    if (countdowns.has(lobbyId)) {
+      console.log("countdown already started in lobby");
+      return;
+    }
+    let timeLeft = 5;
     const interval = setInterval(() => {
       io.to(lobbyId).emit("countdownTick", timeLeft);
       timeLeft--;
-
       if (timeLeft < 0) {
         clearInterval(interval);
+        countdowns.delete(lobbyId);
         io.to(lobbyId).emit("countdownComplete");
       }
     }, 1000);
+    countdowns.set(lobbyId, interval);
   });
 
   socket.on("disconnect", () => {
