@@ -8,7 +8,7 @@ import { GiBootKick } from "react-icons/gi";
 interface PlayerListProps {
   players: Player[];
   host: string | null;
-  playerId: string;
+  playerId: string | null;
   lobbyId: string;
 }
 

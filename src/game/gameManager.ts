@@ -31,6 +31,16 @@ export const getGame = (lobbyId: string) => {
   return gameStates.get(lobbyId);
 };
 
+export const getSafeGameState = (lobbyId: string): Game => {
+  const game = getGame(lobbyId);
+  if (!game) throw new Error("Game not found");
+
+  return {
+    ...game,
+    interval: undefined,
+  };
+};
+
 export const addPlayer = (lobbyId: string, player: Player) => {
   const game = getGame(lobbyId);
   if (game) game.players[player.id] = player;

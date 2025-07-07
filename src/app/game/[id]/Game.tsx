@@ -13,22 +13,33 @@ import { toast } from "sonner";
 import { useRef } from "react";
 
 const Game = () => {
-  const lobbyId = useParams().id;
   const router = useRouter();
-  const { playerId } = getPlayer();
+  const lobbyId = useParams().id;
+
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const player = gameState?.players[playerId];
+  const gameStateRef = useRef<GameState | null>(null);
+  const hasJoinedRef = useRef(false);
+
+  const { playerId } = getPlayer();
+  const player = playerId ? gameState?.players[playerId] : null;
+  if (!playerId) return null;
+
   const isForeteller = player?.role === "foreteller";
   const foretellerTurn = gameState?.nightStep === "foreteller";
-  const gameStateRef = useRef<GameState | null>(null);
+  const isWerewolf = player?.role === "werewolf";
+  const werewolfTurn = gameState?.nightStep === "werewolves";
+
   const [foretellerRevealed, setForetellerRevealed] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
-  const [hasStartedCountdown, setHasStartedCountdown] = useState(false);
 
   const narration = foretellerTurn
     ? isForeteller
       ? "Select a player to reveal their role"
       : "Foreteller is revealing a role"
+    : werewolfTurn
+    ? isWerewolf
+      ? "Select a player to kill"
+      : "Werewolves selecting a player to kill"
     : "Some other phase";
 
   const foretellerAction = (target: Player) => {
@@ -46,38 +57,49 @@ const Game = () => {
     }
   };
 
+  const handleJoinError = (msg: string) => {
+    alert(msg);
+    router.push("/");
+  };
+
+  const handleForetellerReveal = (target: Player) => {
+    const isCurrentForeteller = () =>
+      gameStateRef.current?.players[playerId]?.role === "foreteller";
+    if (isCurrentForeteller()) {
+      console.log("you’re the foreteller and you just revealed");
+      toast(`You saw ${target.name} - they are a ${target.role}.`, {
+        description: "Foreteller Vision",
+        duration: 10000,
+        position: "top-left",
+      });
+    } else {
+      console.log(
+        "you are not the foreteller, but the foreteller just revealed"
+      );
+    }
+  };
+
+  const handleCountdownTick = (timeLeft: number) => {
+    console.log("countdown ticked:", timeLeft);
+    setCountdown(timeLeft);
+  };
+
   useEffect(() => {
-    socket.emit("joinGame", lobbyId, (game: GameState) => {
+    if (hasJoinedRef.current) return;
+    hasJoinedRef.current = true;
+
+    socket.emit("joinGame", lobbyId, playerId, (game: GameState) => {
+      console.log("updating game");
       setGameState(game);
       console.log("game state upon joining:", game);
-      if (game.phase === "start" && playerId === game.host) {
-        console.log("starting game");
-        socket.emit(
-          "changePhase",
-          lobbyId,
-          "night",
-          "foreteller",
-          (updatedGame: GameState) => {
-            setGameState(updatedGame);
-
-            if (
-              updatedGame.nightStep === "foreteller" &&
-              playerId === updatedGame.host
-            ) {
-              console.log("we got here");
-              socket.emit("startPhaseCountdown", lobbyId, "foreteller");
-            }
-          }
-        );
-      } else if (game.nightStep === "foreteller" && playerId === game.host) {
-        socket.emit("startPhaseCountdown", lobbyId, "foreteller");
-      }
     });
-  }, [lobbyId, playerId]);
+  }, []);
 
   useEffect(() => {
     gameStateRef.current = gameState;
+  }, [gameState]);
 
+  useEffect(() => {
     socket.emit("requestCountdown", lobbyId, (timeLeft: number | null) => {
       console.log("requesting countdown");
       console.log("time left:", timeLeft);
@@ -86,45 +108,24 @@ const Game = () => {
       }
     });
 
-    const handleJoinError = (msg: string) => {
-      alert(msg);
-      router.push("/");
-    };
-
-    const handleForetellerReveal = (target: Player) => {
-      const isCurrentForeteller = () =>
-        gameStateRef.current?.players[playerId]?.role === "foreteller";
-      if (isCurrentForeteller()) {
-        console.log("you’re the foreteller and you just revealed");
-        toast(`You saw ${target.name} - they are a ${target.role}.`, {
-          description: "Foreteller Vision",
-          duration: 10000,
-          position: "top-left",
-        });
-      } else {
-        console.log(
-          "you are not the foreteller, but the foreteller just revealed"
-        );
-      }
-    };
-
-    const handleCountdownTick = (timeLeft: number) => {
-      console.log("countdown ticked:", timeLeft);
-      setCountdown(timeLeft);
-    };
-
     socket.on("countdownTick", handleCountdownTick);
-
     socket.on("foretellerReveal", handleForetellerReveal);
-
     socket.on("joinError", handleJoinError);
+    socket.on("gameUpdated", (updated: GameState) => {
+      setGameState(updated);
+    });
+
+    socket.onAny((event, ...args) => {
+      console.log("[Client socket event]:", event, args);
+    });
 
     return () => {
       socket.off("joinError", handleJoinError);
       socket.off("foretellerReveal", handleForetellerReveal);
       socket.off("countdownTick", handleCountdownTick);
+      socket.off("gameUpdated");
     };
-  }, [lobbyId]);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen w-full">
