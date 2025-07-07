@@ -80,7 +80,6 @@ const Game = () => {
   };
 
   const handleCountdownTick = (timeLeft: number) => {
-    console.log("countdown ticked:", timeLeft);
     setCountdown(timeLeft);
   };
 
@@ -115,9 +114,9 @@ const Game = () => {
       setGameState(updated);
     });
 
-    socket.onAny((event, ...args) => {
-      console.log("[Client socket event]:", event, args);
-    });
+    // socket.onAny((event, ...args) => {
+    //   console.log("[Client socket event]:", event, args);
+    // });
 
     return () => {
       socket.off("joinError", handleJoinError);

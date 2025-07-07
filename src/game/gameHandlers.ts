@@ -49,9 +49,11 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     socket.join(lobbyId);
 
     if (game.host === playerId && game.phase === "start") {
-      console.log("setting phase to foreteller");
-      setPhase(lobbyId, "night", "foreteller");
-      console.log("starting countdown");
+      if (game.roleCounts.foreteller > 0) {
+        setPhase(lobbyId, "night", "foreteller");
+      } else {
+        setPhase(lobbyId, "night", "werewolves");
+      }
       startCountdown(lobbyId, 30, "foreteller");
     }
     const updated = getSafeGameState(lobbyId);
