@@ -148,7 +148,8 @@ const Game = () => {
                   key={player.id}
                   player={player}
                   foretellerTurn={foretellerTurn}
-                  isForeteller={isForeteller}
+                  werewolfTurn={werewolfTurn}
+                  role={gameState.players[playerId].role as Role}
                   playerId={playerId}
                   foretellerSelected={foretellerRevealed}
                   onClick={getClickAction(player)}

@@ -1,11 +1,12 @@
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Player } from "@/game/types";
+import { Player, Role } from "@/game/types";
 
 interface PlayerCardProps {
   player: Player;
   foretellerTurn: boolean;
-  isForeteller: boolean;
+  werewolfTurn: boolean;
+  role: Role;
   playerId: string;
   foretellerSelected: boolean;
   onClick?: () => void;
@@ -14,24 +15,26 @@ interface PlayerCardProps {
 export default function PlayerCard({
   player,
   foretellerTurn,
-  isForeteller,
+  werewolfTurn,
+  role,
   playerId,
   foretellerSelected,
   onClick,
 }: PlayerCardProps) {
-  const foretellerDisable =
-    player.role === "foreteller" && foretellerTurn && isForeteller;
-  const foretellerChoosing =
-    !foretellerSelected && isForeteller && player.id !== playerId;
+  const disable =
+    (player.role === "foreteller" && foretellerTurn && role === "foreteller") ||
+    (player.role === "werewolf" && werewolfTurn && role === "werewolf") ||
+    !player.alive;
+  const choosing =
+    (!foretellerSelected && role === "foreteller" && player.id !== playerId && player.alive) ||
+    (werewolfTurn && role === "werewolf" && player.role !== "werewolf" && player.alive);
   return (
     <Card
       onClick={onClick}
       className={cn(
         "px-6 py-4 flex flex-col items-center text-center transition-all border-2 w-40",
-        foretellerDisable || !player.alive
-          ? "opacity-40 grayscale"
-          : "opacity-100",
-        foretellerChoosing && "hover:bg-stone-300 cursor-pointer"
+        disable ? "opacity-40 grayscale" : "opacity-100",
+        choosing && "hover:bg-stone-300 cursor-pointer"
       )}
     >
       <div className="text-lg font-semibold truncate w-full">
