@@ -92,6 +92,24 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     }
   );
 
+  socket.on(
+    "playerVoted",
+    (lobbyId: string, playerId: string, targetId: string) => {
+      const game = getGame(lobbyId);
+      if (!game) return;
+      const prev = game.players[playerId].vote;
+      if (prev) {
+        if (!game.players[prev].numVotes) return;
+        game.players[prev].numVotes--;
+      }
+      game.players[playerId].vote = targetId;
+      const targetVotes = game.players[targetId].numVotes;
+      game.players[targetId].numVotes = targetVotes ? targetVotes + 1 : 1;
+      const updated = getSafeGameState(lobbyId);
+      io.to(lobbyId).emit("gameUpdated", updated);
+    }
+  );
+
   socket.onAny((event, ...args) => {
     console.log("[Server socket event]:", event, args);
   });

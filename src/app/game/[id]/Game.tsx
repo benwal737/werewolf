@@ -48,10 +48,17 @@ const Game = () => {
     setForetellerRevealed(true);
   };
 
+  const werewolfAction = (target: Player) => {
+    socket.emit("playerVoted", lobbyId, playerId, target.id);
+  };
+
   const getClickAction = (target: Player) => {
+    if (playerId === target.id) return undefined;
+    if (!gameState?.players[target.id].alive) return undefined;
     if (foretellerTurn && isForeteller) {
-      if (playerId === target.id) return undefined;
       return () => foretellerAction(target);
+    } else if (werewolfTurn && isWerewolf) {
+      return () => werewolfAction(target);
     } else {
       return undefined;
     }
@@ -149,8 +156,7 @@ const Game = () => {
                   player={player}
                   foretellerTurn={foretellerTurn}
                   werewolfTurn={werewolfTurn}
-                  role={gameState.players[playerId].role as Role}
-                  playerId={playerId}
+                  user={gameState.players[playerId]}
                   foretellerSelected={foretellerRevealed}
                   onClick={getClickAction(player)}
                 />

@@ -1,6 +1,12 @@
 export type Role = "werewolf" | "villager" | "witch" | "foreteller";
 
-export type GamePhase = "lobby" | "start" | "night" | "voting" | "results" | "end";
+export type GamePhase =
+  | "lobby"
+  | "start"
+  | "night"
+  | "voting"
+  | "results"
+  | "end";
 
 export type NightSubstep = "foreteller" | "werewolves" | "witch" | null;
 
@@ -9,6 +15,8 @@ export type Player = {
   name: string;
   role: string;
   alive: boolean;
+  vote?: string;
+  numVotes?: number;
 };
 
 export type Game = {
