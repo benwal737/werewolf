@@ -1,7 +1,7 @@
 import { Socket, Server } from "socket.io";
 import { setPhase } from "./gameManager.ts";
 import { getGame, getSafeGameState, assignRoles } from "./gameManager.ts";
-import { GamePhase, NightSubstep } from "./types/index.ts";
+import { Game, GamePhase, NightSubstep, Player } from "./types/index.ts";
 
 export default function registerGameHandlers(io: Server, socket: Socket) {
   const nextPhase = (lobbyId: string, nightStep: NightSubstep) => {
@@ -11,6 +11,48 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
       setPhase(lobbyId, nextPhase, nextStep);
       const game = getSafeGameState(lobbyId);
       io.to(lobbyId).emit("gameUpdated", game);
+      startCountdown(lobbyId, 30, nextStep);
+    }
+    if (nightStep === "werewolves") {
+      const game = getGame(lobbyId);
+      if (!game) return;
+
+      let maxVotes = 0;
+      let candidates: Player[] = [];
+
+      for (const player of Object.values(game.players)) {
+        if (!player.alive) continue;
+        if (!player.numVotes) continue;
+
+        if (player.numVotes > maxVotes) {
+          maxVotes = player.numVotes;
+          candidates = [player];
+        } else if (player.numVotes === maxVotes && maxVotes > 0) {
+          candidates.push(player);
+        }
+      }
+
+      // tied vote means no kill
+      if (candidates.length === 1) {
+        game.werewolfKill = candidates[0].id;
+      } else {
+        game.werewolfKill = undefined;
+      }
+
+      // reset
+      for (const player of Object.values(game.players)) {
+        player.vote = undefined;
+        player.numVotes = 0;
+      }
+      let nextPhase: GamePhase = "voting";
+      let nextStep: NightSubstep = null;
+      if (game.roleCounts.witch > 0) {
+        nextPhase = "night";
+        nextStep = "witch";
+      }
+      setPhase(lobbyId, nextPhase, nextStep);
+      const updated = getSafeGameState(lobbyId);
+      io.to(lobbyId).emit("gameUpdated", updated);
       startCountdown(lobbyId, 30, nextStep);
     }
   };

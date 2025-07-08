@@ -28,6 +28,7 @@ export type Game = {
   totalPlayers: number;
   countdown?: number;
   interval?: NodeJS.Timeout;
+  werewolfKill?: string;
 };
 
 export type RoleCounts = Record<Role, number>;

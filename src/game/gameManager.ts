@@ -104,7 +104,7 @@ export const assignRoles = (lobbyId: string) => {
     }
   }
 
-  // shuffle
+  // shuffffle
   for (let i = rolesToAssign.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [rolesToAssign[i], rolesToAssign[j]] = [rolesToAssign[j], rolesToAssign[i]];
