@@ -21,11 +21,42 @@ export default function PlayerCard({
   foretellerSelected,
   onClick,
 }: PlayerCardProps) {
+  const renderRoleIcon = () => {
+    if (user.role === "werewolf" && player.role === "werewolf") {
+      return <GiWerewolf size={40} />;
+    }
+    if (user.id === player.id) {
+      switch (user.role) {
+        case "foreteller":
+          return <GiThirdEye size={35} />;
+        case "witch":
+          return <GiCauldron size={35} />;
+        case "villager":
+          return <GiFarmer size={40} />;
+      }
+    }
+    if (user.id !== player.id && player.alive) {
+      return <FaQuestion size={35} />;
+    }
+    if (!player.alive) {
+      switch (player.role) {
+        case "werewolf":
+          return <GiWerewolf size={40} />;
+        case "foreteller":
+          return <GiThirdEye size={35} />;
+        case "witch":
+          return <GiCauldron size={35} />;
+        case "villager":
+          return <GiFarmer size={40} />;
+      }
+    }
+    return null;
+  };
   const disable =
-    ((foretellerTurn && user.role === "foreteller") ||
+    (((foretellerTurn && user.role === "foreteller") ||
       (werewolfTurn && user.role === "werewolf")) &&
-    player.id === user.id;
-  !player.alive;
+      player.id === user.id) ||
+    !player.alive;
   const choosing =
     (!foretellerSelected &&
       foretellerTurn &&
@@ -51,30 +82,7 @@ export default function PlayerCard({
         {player.name}
         {user.id === player.id ? " (you)" : ""}
       </div>
-      {user.role === "werewolf" && player.role === "werewolf" ? (
-        <div>
-          <GiWerewolf size={40} />
-        </div>
-      ) : user.role === "foreteller" && player.id === user.id ? (
-        <div>
-          <GiThirdEye size={35} />
-        </div>
-      ) : user.role === "witch" && player.id === user.id ? (
-        <div>
-          <GiCauldron size={35} />
-        </div>
-      ) : user.role === "villager" && player.id === user.id ? (
-        <div>
-          <GiFarmer size={40} />
-        </div>
-      ) : (
-        user.id !== player.id &&
-        player.alive && (
-          <div>
-            <FaQuestion size={35} />
-          </div>
-        )
-      )}
+      <div>{renderRoleIcon()}</div>
       {werewolfTurn && user.role === "werewolf" && (
         <div className="text-lg font-semibold min-h-[1.5rem]">
           votes: {player.numVotes}
