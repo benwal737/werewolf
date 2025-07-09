@@ -48,7 +48,7 @@ export const createGame = (
     host: hostId,
     players: {},
     phase: "lobby",
-    nightStep: null,
+    nightStep: "none",
     roleCounts,
     totalPlayers,
   };

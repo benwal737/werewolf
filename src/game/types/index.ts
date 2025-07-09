@@ -8,7 +8,7 @@ export type GamePhase =
   | "results"
   | "end";
 
-export type NightSubstep = "foreteller" | "werewolves" | "witch" | null;
+export type NightSubstep = "foreteller" | "werewolves" | "witch" | "none";
 
 export type Player = {
   id: string;
