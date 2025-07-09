@@ -39,14 +39,16 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
         game.werewolfKill = undefined;
       }
 
-      // reset
+      // reset and see if witch alive
+      let witchAlive = false;
       for (const player of Object.values(game.players)) {
+        if (player.alive && player.role === "witch") witchAlive = true;
         player.vote = undefined;
         player.numVotes = 0;
       }
       let nextPhase: GamePhase = "voting";
       let nextStep: NightSubstep = null;
-      if (game.roleCounts.witch > 0) {
+      if (game.roleCounts.witch > 0 && witchAlive) {
         nextPhase = "night";
         nextStep = "witch";
       }
