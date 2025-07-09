@@ -7,7 +7,36 @@ import {
   NightSubstep,
 } from "./types";
 
+import { Server } from "socket.io";
+
 const gameStates = new Map<string, Game>();
+
+export const startCountdown = (
+  io: Server,
+  lobbyId: string,
+  seconds: number,
+  onComplete: () => void
+) => {
+  const game = getGame(lobbyId);
+  if (!game || game.interval) return;
+
+  let timeLeft = seconds;
+  game.countdown = timeLeft;
+
+  const interval = setInterval(() => {
+    game.countdown = timeLeft;
+    io.to(lobbyId).emit("countdownTick", timeLeft);
+    if (timeLeft < 1) {
+      clearInterval(interval);
+      game.interval = undefined;
+      game.countdown = undefined;
+      onComplete();
+    }
+    timeLeft--;
+  }, 1000);
+
+  game.interval = interval;
+};
 
 export const createGame = (
   lobbyId: string,

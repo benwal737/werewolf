@@ -1,17 +1,25 @@
 import { Socket, Server } from "socket.io";
-import { setPhase } from "./gameManager.ts";
-import { getGame, getSafeGameState, assignRoles } from "./gameManager.ts";
-import { Game, GamePhase, NightSubstep, Player } from "./types/index.ts";
+import {
+  getGame,
+  getSafeGameState,
+  assignRoles,
+  setPhase,
+  getPlayers,
+  startCountdown,
+} from "./gameManager.ts";
+import { GamePhase, NightSubstep, Player } from "./types/index.ts";
 
 export default function registerGameHandlers(io: Server, socket: Socket) {
   const nextPhase = (lobbyId: string, nightStep: NightSubstep) => {
     if (nightStep === "foreteller") {
-      const nextPhase = "night";
-      const nextStep = "werewolves";
-      setPhase(lobbyId, nextPhase, nextStep);
+      const phase = "night";
+      const step = "werewolves";
+      setPhase(lobbyId, phase, step);
       const game = getSafeGameState(lobbyId);
       io.to(lobbyId).emit("gameUpdated", game);
-      startCountdown(lobbyId, 30, nextStep);
+      startCountdown(io, lobbyId, 30, () => {
+        nextPhase(lobbyId, step);
+      });
     }
     if (nightStep === "werewolves") {
       const game = getGame(lobbyId);
@@ -20,7 +28,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
       let maxVotes = 0;
       let candidates: Player[] = [];
 
-      for (const player of Object.values(game.players)) {
+      for (const player of getPlayers(lobbyId)) {
         if (!player.alive) continue;
         if (!player.numVotes) continue;
 
@@ -41,48 +49,24 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
 
       // reset and see if witch alive
       let witchAlive = false;
-      for (const player of Object.values(game.players)) {
+      for (const player of getPlayers(lobbyId)) {
         if (player.alive && player.role === "witch") witchAlive = true;
         player.vote = undefined;
         player.numVotes = 0;
       }
-      let nextPhase: GamePhase = "voting";
-      let nextStep: NightSubstep = null;
+      let phase: GamePhase = "voting";
+      let step: NightSubstep = null;
       if (game.roleCounts.witch > 0 && witchAlive) {
-        nextPhase = "night";
-        nextStep = "witch";
+        phase = "night";
+        step = "witch";
       }
-      setPhase(lobbyId, nextPhase, nextStep);
+      setPhase(lobbyId, phase, step);
       const updated = getSafeGameState(lobbyId);
       io.to(lobbyId).emit("gameUpdated", updated);
-      startCountdown(lobbyId, 30, nextStep);
+      startCountdown(io, lobbyId, 30, () => {
+        nextPhase(lobbyId, step);
+      });
     }
-  };
-
-  const startCountdown = (
-    lobbyId: string,
-    seconds: number,
-    nightStep: NightSubstep
-  ) => {
-    const game = getGame(lobbyId);
-    if (!game || game.interval) return;
-
-    let timeLeft = seconds;
-    game.countdown = timeLeft;
-
-    const interval = setInterval(() => {
-      game.countdown = timeLeft;
-      io.to(lobbyId).emit("countdownTick", timeLeft);
-      if (timeLeft < 1) {
-        clearInterval(interval);
-        game.interval = undefined;
-        game.countdown = undefined;
-        nextPhase(lobbyId, nightStep);
-      }
-      timeLeft--;
-    }, 1000);
-
-    game.interval = interval;
   };
 
   socket.on("joinGame", (lobbyId: string, playerId: string, cb) => {
@@ -95,25 +79,20 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     if (game.host === playerId && game.phase === "start") {
       if (game.roleCounts.foreteller > 0) {
         setPhase(lobbyId, "night", "foreteller");
+        startCountdown(io, lobbyId, 30, () => {
+          nextPhase(lobbyId, "foreteller");
+        });
       } else {
         setPhase(lobbyId, "night", "werewolves");
+        startCountdown(io, lobbyId, 30, () => {
+          nextPhase(lobbyId, "werewolves");
+        });
       }
-      startCountdown(lobbyId, 30, "foreteller");
     }
     const updated = getSafeGameState(lobbyId);
     console.log("sending back updated game");
     cb(updated);
   });
-
-  // socket.on("changePhase", (lobbyId, phase, step, cb) => {
-  //   setPhase(lobbyId, phase, step);
-  //   const game = getGame(lobbyId);
-  //   cb(game);
-
-  //   if (phase === "night" && step === "foreteller") {
-  //     startCountdown(io, lobbyId, phase);
-  //   }
-  // });
 
   socket.on("startGame", (lobbyId: string) => {
     assignRoles(lobbyId);
