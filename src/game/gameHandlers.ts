@@ -136,6 +136,23 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     }
   );
 
+  socket.on("witchSave", (lobbyId: string, playerId: string) => {
+    const game = getGame(lobbyId);
+    if (!game) return;
+    const player = game.players[playerId];
+    game.witchSave = player;
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
+  });
+
+  socket.on("witchKilling", (lobbyId: string) => {
+    const game = getGame(lobbyId);
+    if (!game) return;
+    game.witchKilling = true;
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
+  });
+
   socket.onAny((event, ...args) => {
     console.log("[Server socket event]:", event, args);
   });

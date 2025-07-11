@@ -2,7 +2,7 @@ import React from "react";
 import { TypographyH4 } from "@/components/ui/typography";
 
 interface NarrationProps {
-  narration: string;
+  narration: React.ReactNode;
   countdown: number | null;
 }
 

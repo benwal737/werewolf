@@ -33,21 +33,40 @@ const Game = () => {
   const isWitch = player?.role === "witch";
   const witchTurn = gameState?.nightStep === "witch";
 
-  const narration = foretellerTurn
-    ? isForeteller
-      ? "Select a player to reveal their role"
-      : "Foreteller is revealing a role"
-    : werewolfTurn
-    ? isWerewolf
-      ? "Select a player to kill"
-      : "Werewolves selecting a player to kill"
-    : witchTurn
-    ? isWitch
-      ? gameState.werewolfKill
-        ? `This player will die tonight: ${gameState.werewolfKill.name}. Choose an action`
-        : "No one will die tonight. Choose an action."
-      : "The witch has awoken"
-    : "Some other phase";
+  const narration = foretellerTurn ? (
+    isForeteller ? (
+      <p>Select a player to reveal their role</p>
+    ) : (
+      <p>Foreteller is revealing a role</p>
+    )
+  ) : werewolfTurn ? (
+    isWerewolf ? (
+      <p>Select a player to kill</p>
+    ) : (
+      <p>Werewolves selecting a player to kill</p>
+    )
+  ) : witchTurn ? (
+    isWitch ? (
+      gameState.werewolfKill ? (
+        <>
+          <p>
+            <b className="text-red-500">{gameState.werewolfKill.name}</b> will
+            die tonight.
+          </p>
+          <span>Choose an avaliable action, or do nothing</span>
+        </>
+      ) : (
+        <>
+          <p>No one will die tonight.</p>
+          <span>Choose an avaliable action, or do nothing</span>
+        </>
+      )
+    ) : (
+      <p>The witch has awoken</p>
+    )
+  ) : (
+    <p>Some other phase</p>
+  );
 
   const foretellerAction = (target: Player) => {
     if (foretellerRevealed) return;
@@ -71,32 +90,41 @@ const Game = () => {
     }
   };
 
-  const handleJoinError = useCallback((msg: string) => {
-    alert(msg);
-    router.push("/");
-  }, [router]);
+  const handleJoinError = useCallback(
+    (msg: string) => {
+      alert(msg);
+      router.push("/");
+    },
+    [router]
+  );
 
-  const handleForetellerReveal = useCallback((target: Player) => {
-    if (!playerId) return;
-    const isCurrentForeteller = () =>
-      gameStateRef.current?.players[playerId]?.role === "foreteller";
-    if (isCurrentForeteller()) {
-      console.log("you’re the foreteller and you just revealed");
-      toast(`You saw ${target.name} - they are a ${target.role}.`, {
-        description: "Foreteller Vision",
-        duration: 10000,
-        position: "top-left",
-      });
-    } else {
-      console.log(
-        "you are not the foreteller, but the foreteller just revealed"
-      );
-    }
-  }, [playerId, gameStateRef]);
+  const handleForetellerReveal = useCallback(
+    (target: Player) => {
+      if (!playerId) return;
+      const isCurrentForeteller = () =>
+        gameStateRef.current?.players[playerId]?.role === "foreteller";
+      if (isCurrentForeteller()) {
+        console.log("you’re the foreteller and you just revealed");
+        toast(`You saw ${target.name} - they are a ${target.role}.`, {
+          description: "Foreteller Vision",
+          duration: 10000,
+          position: "top-left",
+        });
+      } else {
+        console.log(
+          "you are not the foreteller, but the foreteller just revealed"
+        );
+      }
+    },
+    [playerId, gameStateRef]
+  );
 
-  const handleCountdownTick = useCallback((timeLeft: number) => {
-    setCountdown(timeLeft);
-  }, [setCountdown]);
+  const handleCountdownTick = useCallback(
+    (timeLeft: number) => {
+      setCountdown(timeLeft);
+    },
+    [setCountdown]
+  );
 
   useEffect(() => {
     if (hasJoinedRef.current) return;
@@ -135,7 +163,13 @@ const Game = () => {
       socket.off("countdownTick", handleCountdownTick);
       socket.off("gameUpdated");
     };
-  }, [lobbyId, playerId, handleForetellerReveal, handleJoinError, handleCountdownTick]);
+  }, [
+    lobbyId,
+    playerId,
+    handleForetellerReveal,
+    handleJoinError,
+    handleCountdownTick,
+  ]);
 
   return (
     playerId && (
