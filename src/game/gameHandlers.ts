@@ -37,7 +37,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
       }
     }
 
-    game.werewolfKill = candidates.length === 1 ? candidates[0].id : undefined;
+    game.werewolfKill = candidates.length === 1 ? candidates[0] : undefined;
 
     // reset votes and check if witch alive
     let witchAlive = false;

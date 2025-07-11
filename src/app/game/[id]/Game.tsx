@@ -6,11 +6,13 @@ import { socket } from "@/lib/socketClient";
 import { Game as GameState, Role, GamePhase, Player } from "@/game/types";
 import BottomBar from "./BottomBar";
 import TopBar from "./TopBar";
+import ActionPanel from "./ActionPanel";
 import { getPlayer } from "@/utils/getPlayer";
 import PlayerCard from "./PlayerCard";
 import { TypographyH4 } from "@/components/ui/typography";
 import { toast } from "sonner";
 import { useRef } from "react";
+import Narration from "./Narration";
 
 const Game = () => {
   const router = useRouter();
@@ -28,6 +30,8 @@ const Game = () => {
   const foretellerTurn = gameState?.nightStep === "foreteller";
   const isWerewolf = player?.role === "werewolf";
   const werewolfTurn = gameState?.nightStep === "werewolves";
+  const isWitch = player?.role === "witch";
+  const witchTurn = gameState?.nightStep === "witch";
 
   const [foretellerRevealed, setForetellerRevealed] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -40,6 +44,12 @@ const Game = () => {
     ? isWerewolf
       ? "Select a player to kill"
       : "Werewolves selecting a player to kill"
+    : witchTurn
+    ? isWitch
+      ? gameState.werewolfKill
+        ? `This player will die tonight: ${gameState.werewolfKill.name}. Choose an action`
+        : "No one will die tonight. Choose an action."
+      : "The witch has awoken"
     : "Some other phase";
 
   const foretellerAction = (target: Player) => {
@@ -141,11 +151,7 @@ const Game = () => {
       </div>
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto mt-5">
-        {/* Narration */}
-        <div className="flex justify-center gap-2">
-          <TypographyH4>{narration}:</TypographyH4>
-          <TypographyH4>{countdown}</TypographyH4>
-        </div>
+        <Narration narration={narration} countdown={countdown} />
         {/* Player List */}
         {gameState && (
           <div className="flex justify-center">
@@ -162,6 +168,11 @@ const Game = () => {
                 />
               ))}
             </div>
+          </div>
+        )}
+        {gameState && witchTurn && isWitch && (
+          <div className="flex justify-center mt-5 w-full">
+            <ActionPanel gameState={gameState} />
           </div>
         )}
       </div>
