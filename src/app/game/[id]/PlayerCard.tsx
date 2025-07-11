@@ -8,8 +8,12 @@ interface PlayerCardProps {
   player: Player;
   foretellerTurn: boolean;
   werewolfTurn: boolean;
+  witchTurn: boolean;
+  witchKilling: boolean | undefined;
+  witchKill: Player | undefined;
   user: Player;
   foretellerSelected: boolean;
+  witchSelected: boolean;
   onClick?: () => void;
 }
 
@@ -17,8 +21,12 @@ export default function PlayerCard({
   player,
   foretellerTurn,
   werewolfTurn,
+  witchTurn,
+  witchKilling,
+  witchKill,
   user,
   foretellerSelected,
+  witchSelected,
   onClick,
 }: PlayerCardProps) {
   const renderRoleIcon = () => {
@@ -54,20 +62,23 @@ export default function PlayerCard({
   };
   const disable =
     (((foretellerTurn && user.role === "foreteller") ||
-      (werewolfTurn && user.role === "werewolf")) &&
+      (werewolfTurn && user.role === "werewolf") ||
+      (witchTurn && user.role === "witch" && witchKilling)) &&
       player.id === user.id) ||
     !player.alive;
   const choosing =
     (!foretellerSelected &&
       foretellerTurn &&
       user.role === "foreteller" &&
+      player.id !== user.id) ||
+    (werewolfTurn && user.role === "werewolf" && player.role !== "werewolf") ||
+    (!witchSelected &&
+      witchTurn &&
+      user.role === "witch" &&
+      witchKilling &&
       player.id !== user.id &&
-      player.alive) ||
-    (werewolfTurn &&
-      user.role === "werewolf" &&
-      player.role !== "werewolf" &&
       player.alive);
-  const selected = user.vote === player.id;
+  const selected = user.vote === player.id || (witchKilling && witchKill?.id === player.id);
   return (
     <Card
       onClick={onClick}

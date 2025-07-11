@@ -153,6 +153,15 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     io.to(lobbyId).emit("gameUpdated", updated);
   });
 
+  socket.on("witchKilled", (lobbyId: string, targetId: string) => {
+    const game = getGame(lobbyId);
+    if (!game) return;
+    const player = game.players[targetId];
+    game.witchKill = player;
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
+  });
+
   socket.onAny((event, ...args) => {
     console.log("[Server socket event]:", event, args);
   });

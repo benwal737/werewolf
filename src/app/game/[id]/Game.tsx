@@ -21,6 +21,7 @@ const Game = () => {
   const hasJoinedRef = useRef(false);
 
   const [foretellerRevealed, setForetellerRevealed] = useState(false);
+  const [witchSelected, setWitchSelected] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
 
   const { playerId } = getPlayer();
@@ -35,37 +36,43 @@ const Game = () => {
 
   const narration = foretellerTurn ? (
     isForeteller ? (
-      <p>Select a player to reveal their role</p>
+      <span>Select a player to reveal their role</span>
     ) : (
-      <p>Foreteller is revealing a role</p>
+      <span>Foreteller is revealing a role</span>
     )
   ) : werewolfTurn ? (
     isWerewolf ? (
-      <p>Select a player to kill</p>
+      <span>Select a player to kill</span>
     ) : (
-      <p>Werewolves selecting a player to kill</p>
+      <span>Werewolves selecting a player to kill</span>
     )
   ) : witchTurn ? (
     isWitch ? (
-      gameState.werewolfKill ? (
+      gameState.witchKilling ? (
         <>
-          <p>
+          <span>Choose a player to kill</span>
+        </>
+      ) : gameState.werewolfKill ? (
+        <>
+          <span>
             <b className="text-red-500">{gameState.werewolfKill.name}</b> will
             die tonight.
-          </p>
+          </span>
+          <br />
           <span>Choose an avaliable action, or do nothing</span>
         </>
       ) : (
         <>
-          <p>No one will die tonight.</p>
+          <span>No one will die tonight.</span>
+          <br />
           <span>Choose an avaliable action, or do nothing</span>
         </>
       )
     ) : (
-      <p>The witch has awoken</p>
+      <span>The witch has awoken</span>
     )
   ) : (
-    <p>Some other phase</p>
+    <span>Some other phase</span>
   );
 
   const foretellerAction = (target: Player) => {
@@ -78,6 +85,12 @@ const Game = () => {
     socket.emit("playerVoted", lobbyId, playerId, target.id);
   };
 
+  const witchAction = (target: Player) => {
+    if (witchSelected) return;
+    socket.emit("witchKilled", lobbyId, target.id);
+    setWitchSelected(true);
+  };
+
   const getClickAction = (target: Player) => {
     if (playerId === target.id) return undefined;
     if (!gameState?.players[target.id].alive) return undefined;
@@ -85,6 +98,8 @@ const Game = () => {
       return () => foretellerAction(target);
     } else if (werewolfTurn && isWerewolf) {
       return () => werewolfAction(target);
+    } else if (witchTurn && isWitch) {
+      return () => witchAction(target);
     } else {
       return undefined;
     }
@@ -193,13 +208,17 @@ const Game = () => {
                     werewolfTurn={werewolfTurn}
                     user={gameState.players[playerId]}
                     foretellerSelected={foretellerRevealed}
+                    witchSelected={witchSelected}   
+                    witchTurn={witchTurn}
+                    witchKilling={gameState.witchKilling}
+                    witchKill={gameState.witchKill}
                     onClick={getClickAction(player)}
                   />
                 ))}
               </div>
             </div>
           )}
-          {gameState && witchTurn && isWitch && (
+          {gameState && witchTurn && isWitch && !gameState.witchKilling && (
             <div className="flex justify-center mt-5 w-full">
               <ActionPanel gameState={gameState} />
             </div>
