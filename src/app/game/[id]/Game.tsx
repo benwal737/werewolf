@@ -204,14 +204,10 @@ const Game = () => {
                   <PlayerCard
                     key={player.id}
                     player={player}
-                    foretellerTurn={foretellerTurn}
-                    werewolfTurn={werewolfTurn}
+                    gameState={gameState}
                     user={gameState.players[playerId]}
                     foretellerSelected={foretellerRevealed}
-                    witchSelected={witchSelected}   
-                    witchTurn={witchTurn}
-                    witchKilling={gameState.witchKilling}
-                    witchKill={gameState.witchKill}
+                    witchSelected={witchSelected}
                     onClick={getClickAction(player)}
                   />
                 ))}

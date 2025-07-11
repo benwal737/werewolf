@@ -4,13 +4,11 @@ import { Player } from "@/game/types";
 import { GiCauldron, GiFarmer, GiWerewolf, GiThirdEye } from "react-icons/gi";
 import { FaQuestion } from "react-icons/fa";
 
+import { Game } from "@/game/types";
+
 interface PlayerCardProps {
   player: Player;
-  foretellerTurn: boolean;
-  werewolfTurn: boolean;
-  witchTurn: boolean;
-  witchKilling: boolean | undefined;
-  witchKill: Player | undefined;
+  gameState: Game;
   user: Player;
   foretellerSelected: boolean;
   witchSelected: boolean;
@@ -19,16 +17,17 @@ interface PlayerCardProps {
 
 export default function PlayerCard({
   player,
-  foretellerTurn,
-  werewolfTurn,
-  witchTurn,
-  witchKilling,
-  witchKill,
+  gameState,
   user,
   foretellerSelected,
   witchSelected,
   onClick,
 }: PlayerCardProps) {
+  const foretellerTurn = gameState.nightStep === "foreteller";
+  const werewolfTurn = gameState.nightStep === "werewolves";
+  const witchTurn = gameState.nightStep === "witch";
+  const witchKilling = gameState.witchKilling;
+  const witchKill = gameState.witchKill;
   const renderRoleIcon = () => {
     if (user.role === "werewolf" && player.role === "werewolf") {
       return <GiWerewolf size={40} />;
