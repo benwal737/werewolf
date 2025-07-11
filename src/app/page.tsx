@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { socket } from "@/lib/socketClient";
 import { useRouter } from "next/navigation";
 
@@ -24,7 +24,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
+  // DialogDescription,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
@@ -66,11 +66,11 @@ export default function Home() {
   };
 
   const handleJoinLobby = (data: z.infer<typeof joinLobbySchema>) => {
-    console.log("checking stuff")
+    console.log("checking stuff");
     const name = form1.getValues("name");
     socket.emit("checkLobby", data.lobbyId, (exists: boolean) => {
       if (!exists) {
-        console.log("shit doesnt exist")
+        console.log("shit doesnt exist");
         alert("Lobby does not exist or game in session");
         return;
       }

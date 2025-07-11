@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { Game as GameState, Role, GamePhase, Player } from "@/game/types";
@@ -9,9 +9,7 @@ import TopBar from "./TopBar";
 import ActionPanel from "./ActionPanel";
 import { getPlayer } from "@/utils/getPlayer";
 import PlayerCard from "./PlayerCard";
-import { TypographyH4 } from "@/components/ui/typography";
 import { toast } from "sonner";
-import { useRef } from "react";
 import Narration from "./Narration";
 
 const Game = () => {
@@ -22,9 +20,11 @@ const Game = () => {
   const gameStateRef = useRef<GameState | null>(null);
   const hasJoinedRef = useRef(false);
 
+  const [foretellerRevealed, setForetellerRevealed] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+
   const { playerId } = getPlayer();
   const player = playerId ? gameState?.players[playerId] : null;
-  if (!playerId) return null;
 
   const isForeteller = player?.role === "foreteller";
   const foretellerTurn = gameState?.nightStep === "foreteller";
@@ -32,9 +32,6 @@ const Game = () => {
   const werewolfTurn = gameState?.nightStep === "werewolves";
   const isWitch = player?.role === "witch";
   const witchTurn = gameState?.nightStep === "witch";
-
-  const [foretellerRevealed, setForetellerRevealed] = useState(false);
-  const [countdown, setCountdown] = useState<number | null>(null);
 
   const narration = foretellerTurn
     ? isForeteller
@@ -74,12 +71,13 @@ const Game = () => {
     }
   };
 
-  const handleJoinError = (msg: string) => {
+  const handleJoinError = useCallback((msg: string) => {
     alert(msg);
     router.push("/");
-  };
+  }, [router]);
 
-  const handleForetellerReveal = (target: Player) => {
+  const handleForetellerReveal = useCallback((target: Player) => {
+    if (!playerId) return;
     const isCurrentForeteller = () =>
       gameStateRef.current?.players[playerId]?.role === "foreteller";
     if (isCurrentForeteller()) {
@@ -94,11 +92,11 @@ const Game = () => {
         "you are not the foreteller, but the foreteller just revealed"
       );
     }
-  };
+  }, [playerId, gameStateRef]);
 
-  const handleCountdownTick = (timeLeft: number) => {
+  const handleCountdownTick = useCallback((timeLeft: number) => {
     setCountdown(timeLeft);
-  };
+  }, [setCountdown]);
 
   useEffect(() => {
     if (hasJoinedRef.current) return;
@@ -109,7 +107,7 @@ const Game = () => {
       setGameState(game);
       console.log("game state upon joining:", game);
     });
-  }, []);
+  }, [lobbyId, playerId]);
 
   useEffect(() => {
     gameStateRef.current = gameState;
@@ -131,56 +129,54 @@ const Game = () => {
       setGameState(updated);
     });
 
-    // socket.onAny((event, ...args) => {
-    //   console.log("[Client socket event]:", event, args);
-    // });
-
     return () => {
       socket.off("joinError", handleJoinError);
       socket.off("foretellerReveal", handleForetellerReveal);
       socket.off("countdownTick", handleCountdownTick);
       socket.off("gameUpdated");
     };
-  }, []);
+  }, [lobbyId, playerId, handleForetellerReveal, handleJoinError, handleCountdownTick]);
 
   return (
-    <div className="flex flex-col min-h-screen w-full">
-      {/* Top Bar */}
-      <div className="w-full">
-        <TopBar phase={gameState?.phase as GamePhase} />
-      </div>
-      {/* Main Content */}
-      <div className="flex-1 overflow-y-auto mt-5">
-        <Narration narration={narration} countdown={countdown} />
-        {/* Player List */}
-        {gameState && (
-          <div className="flex justify-center">
-            <div className="flex flex-wrap justify-center gap-4 py-12 max-w-5xl mx-auto">
-              {Object.values(gameState.players).map((player) => (
-                <PlayerCard
-                  key={player.id}
-                  player={player}
-                  foretellerTurn={foretellerTurn}
-                  werewolfTurn={werewolfTurn}
-                  user={gameState.players[playerId]}
-                  foretellerSelected={foretellerRevealed}
-                  onClick={getClickAction(player)}
-                />
-              ))}
+    playerId && (
+      <div className="flex flex-col min-h-screen w-full">
+        {/* Top Bar */}
+        <div className="w-full">
+          <TopBar phase={gameState?.phase as GamePhase} />
+        </div>
+        {/* Main Content */}
+        <div className="flex-1 overflow-y-auto mt-5">
+          <Narration narration={narration} countdown={countdown} />
+          {/* Player List */}
+          {gameState && (
+            <div className="flex justify-center">
+              <div className="flex flex-wrap justify-center gap-4 py-12 max-w-5xl mx-auto">
+                {Object.values(gameState.players).map((player) => (
+                  <PlayerCard
+                    key={player.id}
+                    player={player}
+                    foretellerTurn={foretellerTurn}
+                    werewolfTurn={werewolfTurn}
+                    user={gameState.players[playerId]}
+                    foretellerSelected={foretellerRevealed}
+                    onClick={getClickAction(player)}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-        {gameState && witchTurn && isWitch && (
-          <div className="flex justify-center mt-5 w-full">
-            <ActionPanel gameState={gameState} />
-          </div>
-        )}
+          )}
+          {gameState && witchTurn && isWitch && (
+            <div className="flex justify-center mt-5 w-full">
+              <ActionPanel gameState={gameState} />
+            </div>
+          )}
+        </div>
+        {/* Bottom Bar */}
+        <div className="w-full flex justify-center items-center fixed bottom-0">
+          <BottomBar role={player?.role as Role} />
+        </div>
       </div>
-      {/* Bottom Bar */}
-      <div className="w-full flex justify-center items-center fixed bottom-0">
-        <BottomBar role={player?.role as Role} />
-      </div>
-    </div>
+    )
   );
 };
 

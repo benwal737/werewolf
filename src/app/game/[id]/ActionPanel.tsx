@@ -8,6 +8,7 @@ interface ActionPanelProps {
 }
 
 const ActionPanel = ({ gameState }: ActionPanelProps) => {
+  console.log(gameState.host)
   return (
     <Card className=" flex flex-col gap-2 bg-slate-800 border-none p-5">
       <Button className="w-20 m-auto">Save ❤️‍🩹</Button>

@@ -66,7 +66,7 @@ export default function Lobby() {
       socket.off("countdownTick");
       socket.off("countdownComplete");
     };
-  }, [lobbyId, playerId, playerName]);
+  }, [lobbyId, playerId, playerName, router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8">

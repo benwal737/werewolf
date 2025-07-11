@@ -8,7 +8,7 @@ export const getPlayer = () => {
   }
 
   let playerId = localStorage.getItem("playerId");
-  let playerName = localStorage.getItem("playerName");
+  const playerName = localStorage.getItem("playerName");
 
   if (!playerId) {
     playerId = uuidv4();
