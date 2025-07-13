@@ -25,7 +25,8 @@ const Game = () => {
   const [countdown, setCountdown] = useState<number | null>(null);
 
   const { playerId } = getPlayer();
-  const player: Player | null = playerId && gameState ? gameState.players[playerId] : null;
+  const player: Player | null =
+    playerId && gameState ? gameState.players[playerId] : null;
 
   const isForeteller = player?.role === "foreteller";
   const foretellerTurn = gameState?.nightStep === "foreteller";
@@ -33,10 +34,7 @@ const Game = () => {
   const werewolfTurn = gameState?.nightStep === "werewolves";
   const isWitch = player?.role === "witch";
   const witchTurn = gameState?.nightStep === "witch";
-  const deathStep = gameState?.nightStep === "deaths";
   const voteStep = gameState?.nightStep === "vote";
-
-  // narration logic moved to Narration.tsx
 
   const foretellerAction = (target: Player) => {
     if (foretellerRevealed) return;
@@ -44,7 +42,7 @@ const Game = () => {
     setForetellerRevealed(true);
   };
 
-  const werewolfAction = (target: Player) => {
+  const voteAction = (target: Player) => {
     socket.emit("playerVoted", lobbyId, playerId, target.id);
   };
 
@@ -56,11 +54,11 @@ const Game = () => {
 
   const getClickAction = (target: Player) => {
     if (playerId === target.id) return undefined;
-    if (!gameState?.players[target.id].alive) return undefined;
+    if (target.id == null || !gameState?.players[target.id].alive) return undefined;
     if (foretellerTurn && isForeteller) {
       return () => foretellerAction(target);
-    } else if (werewolfTurn && isWerewolf) {
-      return () => werewolfAction(target);
+    } else if ((werewolfTurn && isWerewolf) || (voteStep && player?.alive)) {
+      return () => voteAction(target);
     } else if (witchTurn && isWitch) {
       return () => witchAction(target);
     } else {
@@ -158,7 +156,12 @@ const Game = () => {
         </div>
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto mt-5">
-          <Narration gameState={gameState} player={player} foretellerRevealed={foretellerRevealed} countdown={countdown} />
+          <Narration
+            gameState={gameState}
+            player={player}
+            foretellerRevealed={foretellerRevealed}
+            countdown={countdown}
+          />
           {/* Player List */}
           {gameState && (
             <div className="flex justify-center">
