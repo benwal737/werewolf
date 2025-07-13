@@ -20,6 +20,7 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
   const witchTurn = gameState.nightStep === "witch";
   const deathStep = gameState.nightStep === "deaths";
   const voteStep = gameState.nightStep === "vote";
+  const resultsStep = gameState.nightStep === "results";
 
   let narration: React.ReactNode = <span>Some other phase</span>;
 
@@ -70,6 +71,14 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
       : <span>No one died last night</span>;
   } else if (voteStep) {
     narration = <span>Vote for a player to die</span>;
+  } else if (resultsStep) {
+    narration = gameState.villageKill ? (
+      <span>
+        <b className="text-red-500">{gameState.villageKill.name}</b> was killed by the village.
+      </span>
+    ) : (
+      <span>No one was killed today</span>
+    );
   }
 
   return (

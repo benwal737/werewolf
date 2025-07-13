@@ -160,3 +160,37 @@ export const getRole = (lobbyId: string, playerId: string) => {
   if (!game) return;
   return game.players[playerId]?.role;
 };
+
+export const checkWinner = (lobbyId: string) => {
+  const game = getGame(lobbyId);
+  if (!game) return;
+
+  const villagersAlive = getPlayers(lobbyId).filter(
+    (player) => player.alive && player.role !== "werewolf"
+  );
+  const werewolvesAlive = getPlayers(lobbyId).filter(
+    (player) => player.alive && player.role === "werewolf"
+  );
+
+  if (villagersAlive.length === 0) {
+    game.winner = "werewolves";
+  } else if (werewolvesAlive.length === 0) {
+    game.winner = "villagers";
+  }
+};
+
+export const countVotes = (lobbyId: string) => {
+  let maxVotes = 0;
+  let candidates: Player[] = [];
+
+  for (const player of getPlayers(lobbyId)) {
+    if (!player.alive || !player.numVotes) continue;
+    if (player.numVotes > maxVotes) {
+      maxVotes = player.numVotes;
+      candidates = [player];
+    } else if (player.numVotes === maxVotes && maxVotes > 0) {
+      candidates.push(player);
+    }
+  }
+  return candidates;
+};

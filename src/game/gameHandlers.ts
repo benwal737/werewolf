@@ -7,8 +7,10 @@ import {
   getPlayers,
   startCountdown,
   setNightDeaths,
+  checkWinner,
+  countVotes,
 } from "./gameManager.ts";
-import { GamePhase, Substep, Player } from "./types/index.ts";
+import { GamePhase, Substep } from "./types/index.ts";
 
 export default function registerGameHandlers(io: Server, socket: Socket) {
   const handleForetellerPhase = (lobbyId: string) => {
@@ -25,19 +27,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     const game = getGame(lobbyId);
     if (!game) return;
 
-    let maxVotes = 0;
-    let candidates: Player[] = [];
-
-    for (const player of getPlayers(lobbyId)) {
-      if (!player.alive || !player.numVotes) continue;
-      if (player.numVotes > maxVotes) {
-        maxVotes = player.numVotes;
-        candidates = [player];
-      } else if (player.numVotes === maxVotes && maxVotes > 0) {
-        candidates.push(player);
-      }
-    }
-
+    const candidates = countVotes(lobbyId);
     game.werewolfKill = candidates.length === 1 ? candidates[0] : undefined;
 
     // reset votes and check if witch alive
@@ -68,7 +58,8 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     const step = "deaths";
     const phase: GamePhase = "day";
     setPhase(lobbyId, phase, step);
-    setNightDeaths(lobbyId);  
+    setNightDeaths(lobbyId);
+    checkWinner(lobbyId);  
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
     startCountdown(io, lobbyId, 10, () => {
@@ -89,12 +80,35 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     });
   };
 
+  const handleVotePhase = (lobbyId: string) => {
+    const game = getGame(lobbyId);
+    if (!game) return;
+    const step = "results";
+    const phase: GamePhase = "day";
+
+    const candidates = countVotes(lobbyId);
+    game.villageKill = candidates.length === 1 ? candidates[0] : undefined;
+
+    // reset votes
+    for (const player of getPlayers(lobbyId)) {
+      player.vote = undefined;
+      player.numVotes = 0;
+    }
+
+    setPhase(lobbyId, phase, step);
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
+    startCountdown(io, lobbyId, 10, () => {
+      nextPhase(lobbyId, step);
+    });
+  };
+
     const phaseHandlers: Record<Substep, (lobbyId: string) => void> = {
     foreteller: handleForetellerPhase,
     werewolves: handleWerewolvesPhase,
     witch: handleWitchPhase,
     deaths: handleDeathsPhase,
-    vote: () => {},
+    vote: handleVotePhase,
     results: () => {},
     none: () => {},
   };
