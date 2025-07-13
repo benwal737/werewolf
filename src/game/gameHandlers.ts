@@ -76,11 +76,24 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     });
   };
 
-  const phaseHandlers: Record<Substep, (lobbyId: string) => void> = {
+  const handleDeathsPhase = (lobbyId: string) => {
+    const game = getGame(lobbyId);
+    if (!game) return;
+    const step = "vote";
+    const phase: GamePhase = "day";
+    setPhase(lobbyId, phase, step);
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
+    startCountdown(io, lobbyId, 10, () => {
+      nextPhase(lobbyId, step);
+    });
+  };
+
+    const phaseHandlers: Record<Substep, (lobbyId: string) => void> = {
     foreteller: handleForetellerPhase,
     werewolves: handleWerewolvesPhase,
     witch: handleWitchPhase,
-    deaths: () => {},
+    deaths: handleDeathsPhase,
     vote: () => {},
     results: () => {},
     none: () => {},

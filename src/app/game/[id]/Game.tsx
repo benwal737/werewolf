@@ -25,7 +25,7 @@ const Game = () => {
   const [countdown, setCountdown] = useState<number | null>(null);
 
   const { playerId } = getPlayer();
-  const player = playerId ? gameState?.players[playerId] : null;
+  const player: Player | null = playerId && gameState ? gameState.players[playerId] : null;
 
   const isForeteller = player?.role === "foreteller";
   const foretellerTurn = gameState?.nightStep === "foreteller";
@@ -34,58 +34,9 @@ const Game = () => {
   const isWitch = player?.role === "witch";
   const witchTurn = gameState?.nightStep === "witch";
   const deathStep = gameState?.nightStep === "deaths";
+  const voteStep = gameState?.nightStep === "vote";
 
-  const narration = foretellerTurn ? (
-    isForeteller ? (
-      <span>Select a player to reveal their role</span>
-    ) : (
-      <span>Foreteller is revealing a role</span>
-    )
-  ) : werewolfTurn ? (
-    isWerewolf ? (
-      <span>Select a player to kill</span>
-    ) : (
-      <span>Werewolves selecting a player to kill</span>
-    )
-  ) : witchTurn ? (
-    isWitch ? (
-      gameState.witchKilling ? (
-        <>
-          <span>Choose a player to kill</span>
-        </>
-      ) : gameState.werewolfKill ? (
-        <>
-          <span>
-            <b className="text-red-500">{gameState.werewolfKill.name}</b> will
-            die tonight.
-          </span>
-          <br />
-          <span>Choose an avaliable action, or do nothing</span>
-        </>
-      ) : (
-        <>
-          <span>No one will die tonight.</span>
-          <br />
-          <span>Choose an avaliable action, or do nothing</span>
-        </>
-      )
-    ) : (
-      <span>The witch has awoken</span>
-    )
-  ) : deathStep ? (
-    gameState.nightDeaths?.length ? (
-      <span>
-        These players died last night:{" "}
-        <b className="text-red-500">
-          {gameState.nightDeaths?.map((player) => player.name).join(", ")}
-        </b>
-      </span>
-    ) : (
-      <span>No one died last night</span>
-    )
-  ) : (
-    <span>Some other phase</span>
-  );
+  // narration logic moved to Narration.tsx
 
   const foretellerAction = (target: Player) => {
     if (foretellerRevealed) return;
@@ -207,7 +158,7 @@ const Game = () => {
         </div>
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto mt-5">
-          <Narration narration={narration} countdown={countdown} />
+          <Narration gameState={gameState} player={player} foretellerRevealed={foretellerRevealed} countdown={countdown} />
           {/* Player List */}
           {gameState && (
             <div className="flex justify-center">
