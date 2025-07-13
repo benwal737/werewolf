@@ -161,7 +161,6 @@ const Game = () => {
           <Narration
             gameState={gameState}
             player={player}
-            foretellerRevealed={foretellerRevealed}
             countdown={countdown}
           />
           {/* Player List */}

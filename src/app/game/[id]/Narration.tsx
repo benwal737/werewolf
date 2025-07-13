@@ -6,11 +6,10 @@ import { Game, Player } from "@/game/types";
 interface NarrationProps {
   gameState: Game | null;
   player: Player | null;
-  foretellerRevealed: boolean;
   countdown: number | null;
 }
 
-const Narration = ({ gameState, player, foretellerRevealed, countdown }: NarrationProps) => {
+const Narration = ({ gameState, player, countdown }: NarrationProps) => {
   if (!gameState) return null;
 
   const isForeteller = player?.role === "foreteller";
