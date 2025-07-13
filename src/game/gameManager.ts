@@ -130,6 +130,14 @@ export const setNightDeaths = (lobbyId: string) => {
   game.nightDeaths = deaths;
 };
 
+export const setDayDeaths = (lobbyId: string) => {
+  const game = getGame(lobbyId);
+  if (!game) return;
+  if (game.villageKill) {
+    game.players[game.villageKill.id].alive = false;
+  }
+};
+
 export const assignRoles = (lobbyId: string) => {
   const game = getGame(lobbyId);
   if (!game) return;

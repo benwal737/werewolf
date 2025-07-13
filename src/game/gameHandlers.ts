@@ -9,6 +9,7 @@ import {
   setNightDeaths,
   checkWinner,
   countVotes,
+  setDayDeaths,
 } from "./gameManager.ts";
 import { GamePhase, Substep } from "./types/index.ts";
 
@@ -59,7 +60,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     const phase: GamePhase = "day";
     setPhase(lobbyId, phase, step);
     setNightDeaths(lobbyId);
-    checkWinner(lobbyId);  
+    checkWinner(lobbyId);
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
     startCountdown(io, lobbyId, 10, () => {
@@ -94,6 +95,35 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
       player.vote = undefined;
       player.numVotes = 0;
     }
+    setDayDeaths(lobbyId);
+    checkWinner(lobbyId);
+    setPhase(lobbyId, phase, step);
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
+    startCountdown(io, lobbyId, 10, () => {
+      nextPhase(lobbyId, step);
+    });
+  };
+
+  const handleResultsPhase = (lobbyId: string) => {
+    const game = getGame(lobbyId);
+    if (!game) return;
+
+    let step: Substep;
+    let phase: GamePhase;
+
+    if (
+      game.roleCounts.foreteller > 0 &&
+      getPlayers(lobbyId).some(
+        (player) => player.role === "foreteller" && player.alive
+      )
+    ) {
+      step = "foreteller";
+      phase = "night";
+    } else {
+      step = "werewolves";
+      phase = "night";
+    }
 
     setPhase(lobbyId, phase, step);
     const updated = getSafeGameState(lobbyId);
@@ -103,7 +133,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     });
   };
 
-    const phaseHandlers: Record<Substep, (lobbyId: string) => void> = {
+  const phaseHandlers: Record<Substep, (lobbyId: string) => void> = {
     foreteller: handleForetellerPhase,
     werewolves: handleWerewolvesPhase,
     witch: handleWitchPhase,
