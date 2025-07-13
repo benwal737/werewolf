@@ -15,8 +15,10 @@ export const startCountdown = (
 
   let timeLeft = seconds;
   game.countdown = timeLeft;
+  io.to(lobbyId).emit("countdownTick", timeLeft);
 
   const interval = setInterval(() => {
+    timeLeft--;
     game.countdown = timeLeft;
     io.to(lobbyId).emit("countdownTick", timeLeft);
     if (timeLeft === 1) {
@@ -25,7 +27,6 @@ export const startCountdown = (
       game.countdown = undefined;
       onComplete();
     }
-    timeLeft--;
   }, 1000);
 
   game.interval = interval;

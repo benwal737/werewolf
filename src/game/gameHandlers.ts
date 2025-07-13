@@ -15,17 +15,16 @@ import {
 import { GamePhase, Substep } from "./types/index.ts";
 
 export default function registerGameHandlers(io: Server, socket: Socket) {
-  const handleForetellerPhase = (lobbyId: string) => {
+  const resolveForetellerPhase = (lobbyId: string) => {
     setPhase(lobbyId, "night", "werewolves");
     const game = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", game);
-
     startCountdown(io, lobbyId, 30, () => {
       nextPhase(lobbyId, "werewolves");
     });
   };
 
-  const handleWerewolvesPhase = (lobbyId: string) => {
+  const resolveWerewolvesPhase = (lobbyId: string) => {
     const game = getGame(lobbyId);
     if (!game) return;
 
@@ -52,7 +51,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     });
   };
 
-  const handleWitchPhase = (lobbyId: string) => {
+  const resolveWitchPhase = (lobbyId: string) => {
     const game = getGame(lobbyId);
     if (!game) return;
     game.witchKilling = false;
@@ -77,7 +76,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     }
   };
 
-  const handleDeathsPhase = (lobbyId: string) => {
+  const resolveDeathsPhase = (lobbyId: string) => {
     resetNightDeaths(lobbyId);
     const step = "vote";
     const phase: GamePhase = "day";
@@ -89,7 +88,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     });
   };
 
-  const handleVotePhase = (lobbyId: string) => {
+  const resolveVotePhase = (lobbyId: string) => {
     const game = getGame(lobbyId);
     if (!game) return;
     const step = "results";
@@ -120,7 +119,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     }
   };
 
-  const handleResultsPhase = (lobbyId: string) => {
+  const resolveResultsPhase = (lobbyId: string) => {
     const game = getGame(lobbyId);
     if (!game) return;
     game.villageKill = undefined;
@@ -148,19 +147,19 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     });
   };
 
-  const phaseHandlers: Record<Substep, (lobbyId: string) => void> = {
-    foreteller: handleForetellerPhase,
-    werewolves: handleWerewolvesPhase,
-    witch: handleWitchPhase,
-    deaths: handleDeathsPhase,
-    vote: handleVotePhase,
-    results: handleResultsPhase,
+  const phaseResolvers: Record<Substep, (lobbyId: string) => void> = {
+    foreteller: resolveForetellerPhase,
+    werewolves: resolveWerewolvesPhase,
+    witch: resolveWitchPhase,
+    deaths: resolveDeathsPhase,
+    vote: resolveVotePhase,
+    results: resolveResultsPhase,
     none: () => {},
   };
 
   const nextPhase = (lobbyId: string, nightStep: Substep) => {
-    const handler = phaseHandlers[nightStep];
-    if (handler) handler(lobbyId);
+    const resolver = phaseResolvers[nightStep];
+    if (resolver) resolver(lobbyId);
   };
 
   socket.on("joinGame", (lobbyId: string, playerId: string, cb) => {

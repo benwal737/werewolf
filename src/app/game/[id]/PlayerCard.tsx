@@ -47,7 +47,7 @@ export default function PlayerCard({
     if (user.id !== player.id && player.alive && !gameOver && user.alive) {
       return <FaQuestion size={35} />;
     }
-    if (!player.alive || gameOver) {
+    if (!player.alive || gameOver || !user.alive) {
       switch (player.role) {
         case "werewolf":
           return <GiWerewolf size={40} />;
@@ -77,9 +77,9 @@ export default function PlayerCard({
       witchTurn &&
       user.role === "witch" &&
       witchKilling &&
-      player.id !== user.id &&
-      player.alive) ||
-    (voteStep && player.id !== user.id);
+      player.id !== user.id) ||
+    (voteStep && player.id !== user.id) &&
+    (!player.alive || !user.alive)
   const selected = user.vote === player.id || (witchKilling && witchKill?.id === player.id);
   return (
     <Card

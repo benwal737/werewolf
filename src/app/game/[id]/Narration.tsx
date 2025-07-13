@@ -98,9 +98,14 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
   }
 
   return (
-    <div className="flex justify-center gap-2">
-      <TypographyH4>{narration}</TypographyH4>
-      <TypographyH4>{countdown ?? ""}</TypographyH4>
+    <div className="flex items-center w-full py-4 relative">
+      <div className="flex-1 text-center">
+        <TypographyH4>{narration}</TypographyH4>
+      </div>
+      <div className="flex items-center gap-1 absolute right-6 top-1/2 -translate-y-1/2 bg-slate-800 rounded px-3 py-1 shadow-lg min-w-[6ch] justify-center">
+        <span role="img" aria-label="timer">⏰</span>
+        <TypographyH4 className="w-[2ch] tabular-nums text-center">{countdown ?? ""}</TypographyH4>
+      </div>
     </div>
   );
 };
