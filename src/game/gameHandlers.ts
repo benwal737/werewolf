@@ -10,6 +10,7 @@ import {
   checkWinner,
   countVotes,
   setDayDeaths,
+  resetNightDeaths,
 } from "./gameManager.ts";
 import { GamePhase, Substep } from "./types/index.ts";
 
@@ -46,7 +47,6 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setPhase(lobbyId, phase, step);
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-
     startCountdown(io, lobbyId, 30, () => {
       nextPhase(lobbyId, step);
     });
@@ -58,12 +58,19 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     game.witchKilling = false;
     const step = "deaths";
     const phase: GamePhase = "day";
-    setPhase(lobbyId, phase, step);
     setNightDeaths(lobbyId);
+    game.witchSave = undefined;
+    game.witchKill = undefined;
     checkWinner(lobbyId);
-    const updated = getSafeGameState(lobbyId);
-    io.to(lobbyId).emit("gameUpdated", updated);
-    if (!game.winner) {
+    if (game.winner) {
+      setPhase(lobbyId, "end", "none");
+      const updated = getSafeGameState(lobbyId);
+      io.to(lobbyId).emit("gameUpdated", updated);
+      return;
+    } else {
+      setPhase(lobbyId, phase, step);
+      const updated = getSafeGameState(lobbyId);
+      io.to(lobbyId).emit("gameUpdated", updated);
       startCountdown(io, lobbyId, 10, () => {
         nextPhase(lobbyId, step);
       });
@@ -71,8 +78,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
   };
 
   const handleDeathsPhase = (lobbyId: string) => {
-    const game = getGame(lobbyId);
-    if (!game) return;
+    resetNightDeaths(lobbyId);
     const step = "vote";
     const phase: GamePhase = "day";
     setPhase(lobbyId, phase, step);
@@ -117,7 +123,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
   const handleResultsPhase = (lobbyId: string) => {
     const game = getGame(lobbyId);
     if (!game) return;
-
+    game.villageKill = undefined;
     let step: Substep;
     let phase: GamePhase;
 
@@ -226,6 +232,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     if (!game) return;
     const player = game.players[playerId];
     game.witchSave = player;
+    game.witchSaved = true;
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
   });
@@ -243,6 +250,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     if (!game) return;
     const player = game.players[targetId];
     game.witchKill = player;
+    game.witchKilled = true;
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
   });

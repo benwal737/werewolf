@@ -29,6 +29,7 @@ export default function PlayerCard({
   const witchKilling = gameState.witchKilling;
   const witchKill = gameState.witchKill;
   const voteStep = gameState.nightStep === "vote";
+  const gameOver = gameState.phase === "end";
   const renderRoleIcon = () => {
     if (user.role === "werewolf" && player.role === "werewolf") {
       return <GiWerewolf size={40} />;
@@ -43,10 +44,10 @@ export default function PlayerCard({
           return <GiFarmer size={40} />;
       }
     }
-    if (user.id !== player.id && player.alive) {
+    if (user.id !== player.id && player.alive && !gameOver && user.alive) {
       return <FaQuestion size={35} />;
     }
-    if (!player.alive) {
+    if (!player.alive || gameOver) {
       switch (player.role) {
         case "werewolf":
           return <GiWerewolf size={40} />;
@@ -96,7 +97,7 @@ export default function PlayerCard({
         {user.id === player.id ? " (you)" : ""}
       </div>
       <div>{renderRoleIcon()}</div>
-      {(voteStep || (werewolfTurn && user.role === "werewolf")) && (
+      {(voteStep || (werewolfTurn && (user.role === "werewolf" || !user.alive))) && (
         <div className="text-lg font-semibold min-h-[1.5rem]">
           votes: {player.numVotes}
         </div>

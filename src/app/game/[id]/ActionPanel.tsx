@@ -28,21 +28,21 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
         <Button
           className="w-20 m-auto"
           onClick={handleSave}
-          disabled={gameState.witchSave !== undefined || chosen || !willDie}
+          disabled={gameState.witchSaved || chosen || !willDie}
         >
           Save ❤️
         </Button>
-        <p className="m-auto text-white">({gameState.witchSave ? 0 : 1})</p>
+        <p className="m-auto text-white">({gameState.witchSaved ? 0 : 1})</p>
       </div>
       <div className="flex gap-2">
         <Button
           className="w-20 m-auto"
           onClick={handleKill}
-          disabled={gameState.witchKill !== undefined || chosen}
+          disabled={gameState.witchKilled || chosen}
         >
           Kill 🔪
         </Button>
-        <p className="m-auto text-white">({gameState.witchKill ? 0 : 1})</p>
+        <p className="m-auto text-white">({gameState.witchKilled ? 0 : 1})</p>
       </div>
     </Card>
   );

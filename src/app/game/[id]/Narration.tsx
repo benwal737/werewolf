@@ -87,15 +87,14 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
       <span>No one was killed today</span>
     );
   } else if (gameOver) {
-    narration = gameState.winner === "werewolves" ? (
-      <span>
-        Werewolves win!
-      </span>
-    ) : (
-      <span>
-        Villagers win!
-      </span>
-    );
+    narration =
+      gameState.winner === "werewolves" ? (
+        <span>Werewolves win!</span>
+      ) : gameState.winner === "villagers" ? (
+        <span>Villagers win!</span>
+      ) : (
+        <span>It's a draw!</span>
+      );
   }
 
   return (

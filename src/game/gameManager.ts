@@ -19,7 +19,7 @@ export const startCountdown = (
   const interval = setInterval(() => {
     game.countdown = timeLeft;
     io.to(lobbyId).emit("countdownTick", timeLeft);
-    if (timeLeft < 1) {
+    if (timeLeft === 1) {
       clearInterval(interval);
       game.interval = undefined;
       game.countdown = undefined;
@@ -119,15 +119,25 @@ export const setNightDeaths = (lobbyId: string) => {
   if (!game) return;
   const deaths: Player[] = [];
 
+  console.log("setting night deaths:", game.werewolfKill?.name, game.witchKill?.name)
+
   if (game.werewolfKill && game.werewolfKill !== game.witchSave) {
+    console.log("adding werewolf kill:", game.werewolfKill.name)
     game.players[game.werewolfKill.id].alive = false;
     deaths.push(game.werewolfKill);
   }
   if (game.witchKill && game.witchKill !== game.werewolfKill) {
+    console.log("adding witch kill:", game.witchKill.name)
     game.players[game.witchKill.id].alive = false;
     deaths.push(game.witchKill);
   }
   game.nightDeaths = deaths;
+};
+
+export const resetNightDeaths = (lobbyId: string) => {
+  const game = getGame(lobbyId);
+  if (!game) return;
+  game.nightDeaths = [];
 };
 
 export const setDayDeaths = (lobbyId: string) => {
@@ -180,7 +190,9 @@ export const checkWinner = (lobbyId: string) => {
     (player) => player.alive && player.role === "werewolf"
   );
 
-  if (villagersAlive.length === 0) {
+  if (villagersAlive.length === 0 && werewolvesAlive.length === 0) {
+    game.winner = "draw";
+  } else if (villagersAlive.length === 0) {
     game.winner = "werewolves";
   } else if (werewolvesAlive.length === 0) {
     game.winner = "villagers";

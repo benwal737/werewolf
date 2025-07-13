@@ -31,11 +31,13 @@ export type Game = {
   interval?: NodeJS.Timeout;
   werewolfKill?: Player;
   witchSave?: Player;
+  witchSaved?: boolean;
   witchKill?: Player;
   witchKilling?: boolean;
+  witchKilled?: boolean;
   nightDeaths?: Player[];
   villageKill?: Player;
-  winner?: "werewolves" | "villagers";
+  winner?: "werewolves" | "villagers" | "draw";
 };
 
 export type RoleCounts = Record<Role, number>;
