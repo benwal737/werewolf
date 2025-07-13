@@ -2,7 +2,14 @@ export type Role = "werewolf" | "villager" | "witch" | "foreteller";
 
 export type GamePhase = "lobby" | "start" | "night" | "day";
 
-export type Substep = "foreteller" | "werewolves" | "witch" | "reveal" | "vote" | "results" | "none";
+export type Substep =
+  | "foreteller"
+  | "werewolves"
+  | "witch"
+  | "deaths"
+  | "vote"
+  | "results"
+  | "none";
 
 export type Player = {
   id: string;
@@ -26,6 +33,7 @@ export type Game = {
   witchSave?: Player;
   witchKill?: Player;
   witchKilling?: boolean;
+  nightDeaths?: Player[];
 };
 
 export type RoleCounts = Record<Role, number>;

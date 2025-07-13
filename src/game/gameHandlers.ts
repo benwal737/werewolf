@@ -6,6 +6,7 @@ import {
   setPhase,
   getPlayers,
   startCountdown,
+  setNightDeaths,
 } from "./gameManager.ts";
 import { GamePhase, Substep, Player } from "./types/index.ts";
 
@@ -64,9 +65,10 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     const game = getGame(lobbyId);
     if (!game) return;
     game.witchKilling = false;
-    const step = "none";
+    const step = "deaths";
     const phase: GamePhase = "day";
     setPhase(lobbyId, phase, step);
+    setNightDeaths(lobbyId);  
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
     startCountdown(io, lobbyId, 30, () => {
@@ -78,7 +80,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     foreteller: handleForetellerPhase,
     werewolves: handleWerewolvesPhase,
     witch: handleWitchPhase,
-    reveal: () => {},
+    deaths: () => {},
     vote: () => {},
     results: () => {},
     none: () => {},

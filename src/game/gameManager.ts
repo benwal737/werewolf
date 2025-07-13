@@ -114,6 +114,20 @@ export const getPhase = (lobbyId: string) => {
   return getGame(lobbyId)?.phase;
 };
 
+export const setNightDeaths = (lobbyId: string) => {
+  const game = getGame(lobbyId);
+  if (!game) return;
+  const deaths: Player[] = [];
+
+  if (game.werewolfKill && game.werewolfKill !== game.witchSave) {
+    deaths.push(game.werewolfKill);
+  }
+  if (game.witchKill && game.witchKill !== game.werewolfKill) {
+    deaths.push(game.witchKill);
+  }
+  game.nightDeaths = deaths;
+};
+
 export const assignRoles = (lobbyId: string) => {
   const game = getGame(lobbyId);
   if (!game) return;
