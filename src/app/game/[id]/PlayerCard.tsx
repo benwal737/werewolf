@@ -28,6 +28,7 @@ export default function PlayerCard({
   const witchTurn = gameState.nightStep === "witch";
   const witchKilling = gameState.witchKilling;
   const witchKill = gameState.witchKill;
+  const voteStep = gameState.nightStep === "vote";
   const renderRoleIcon = () => {
     if (user.role === "werewolf" && player.role === "werewolf") {
       return <GiWerewolf size={40} />;
@@ -63,7 +64,8 @@ export default function PlayerCard({
     (((foretellerTurn && user.role === "foreteller") ||
       (werewolfTurn && user.role === "werewolf") ||
       (witchTurn && user.role === "witch" && witchKilling)) &&
-      player.id === user.id)
+      player.id === user.id) ||
+    (voteStep && player.id === user.id);
   const choosing =
     (!foretellerSelected &&
       foretellerTurn &&
@@ -75,14 +77,15 @@ export default function PlayerCard({
       user.role === "witch" &&
       witchKilling &&
       player.id !== user.id &&
-      player.alive);
+      player.alive) ||
+    (voteStep && player.id !== user.id);
   const selected = user.vote === player.id || (witchKilling && witchKill?.id === player.id);
   return (
     <Card
       onClick={onClick}
       className={cn(
         "px-6 py-4 flex flex-col items-center text-center transition-all border-2 w-50 justify-between",
-        disable ? "opacity-40 grayscale" : "opacity-100",
+        disable ? "opacity-50 grayscale" : "opacity-100",
         choosing && !selected && "hover:bg-stone-300 cursor-pointer",
         selected && "bg-emerald-100",
         !player.alive && "opacity-40 bg-red-200"
@@ -93,7 +96,7 @@ export default function PlayerCard({
         {user.id === player.id ? " (you)" : ""}
       </div>
       <div>{renderRoleIcon()}</div>
-      {werewolfTurn && user.role === "werewolf" && (
+      {(werewolfTurn && user.role === "werewolf") || (voteStep) && (
         <div className="text-lg font-semibold min-h-[1.5rem]">
           votes: {player.numVotes}
         </div>

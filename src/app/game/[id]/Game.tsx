@@ -53,11 +53,13 @@ const Game = () => {
   };
 
   const getClickAction = (target: Player) => {
+    if (!player?.alive) return undefined;
     if (playerId === target.id) return undefined;
-    if (target.id == null || !gameState?.players[target.id].alive) return undefined;
+    if (target.id == null || !gameState?.players[target.id].alive)
+      return undefined;
     if (foretellerTurn && isForeteller) {
       return () => foretellerAction(target);
-    } else if ((werewolfTurn && isWerewolf) || (voteStep && player?.alive)) {
+    } else if ((werewolfTurn && isWerewolf) || voteStep) {
       return () => voteAction(target);
     } else if (witchTurn && isWitch) {
       return () => witchAction(target);
