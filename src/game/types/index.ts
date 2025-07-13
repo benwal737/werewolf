@@ -1,14 +1,8 @@
 export type Role = "werewolf" | "villager" | "witch" | "foreteller";
 
-export type GamePhase =
-  | "lobby"
-  | "start"
-  | "night"
-  | "voting"
-  | "results"
-  | "end";
+export type GamePhase = "lobby" | "start" | "night" | "day";
 
-export type NightSubstep = "foreteller" | "werewolves" | "witch" | "none";
+export type Substep = "foreteller" | "werewolves" | "witch" | "reveal" | "vote" | "results" | "none";
 
 export type Player = {
   id: string;
@@ -23,7 +17,7 @@ export type Game = {
   host: string | null;
   players: Record<string, Player>;
   phase: GamePhase;
-  nightStep: NightSubstep;
+  nightStep: Substep;
   roleCounts: RoleCounts;
   totalPlayers: number;
   countdown?: number;

@@ -1,11 +1,4 @@
-import {
-  Game,
-  Player,
-  GamePhase,
-  RoleCounts,
-  Role,
-  NightSubstep,
-} from "./types";
+import { Game, Player, GamePhase, RoleCounts, Role, Substep } from "./types";
 
 import { Server } from "socket.io";
 
@@ -108,7 +101,7 @@ export const deleteGame = (lobbyId: string) => {
 export const setPhase = (
   lobbyId: string,
   phase: GamePhase,
-  nightStep: NightSubstep
+  nightStep: Substep
 ) => {
   const game = getGame(lobbyId);
   if (game) {
