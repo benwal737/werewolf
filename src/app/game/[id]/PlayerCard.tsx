@@ -63,8 +63,7 @@ export default function PlayerCard({
     (((foretellerTurn && user.role === "foreteller") ||
       (werewolfTurn && user.role === "werewolf") ||
       (witchTurn && user.role === "witch" && witchKilling)) &&
-      player.id === user.id) ||
-    !player.alive;
+      player.id === user.id)
   const choosing =
     (!foretellerSelected &&
       foretellerTurn &&
@@ -85,7 +84,8 @@ export default function PlayerCard({
         "px-6 py-4 flex flex-col items-center text-center transition-all border-2 w-50 justify-between",
         disable ? "opacity-40 grayscale" : "opacity-100",
         choosing && !selected && "hover:bg-stone-300 cursor-pointer",
-        selected && "bg-emerald-100"
+        selected && "bg-emerald-100",
+        !player.alive && "opacity-40 bg-red-200"
       )}
     >
       <div className="text-lg font-semibold truncate w-full">

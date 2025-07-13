@@ -71,7 +71,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setNightDeaths(lobbyId);  
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 30, () => {
+    startCountdown(io, lobbyId, 10, () => {
       nextPhase(lobbyId, step);
     });
   };

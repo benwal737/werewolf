@@ -120,9 +120,11 @@ export const setNightDeaths = (lobbyId: string) => {
   const deaths: Player[] = [];
 
   if (game.werewolfKill && game.werewolfKill !== game.witchSave) {
+    game.players[game.werewolfKill.id].alive = false;
     deaths.push(game.werewolfKill);
   }
   if (game.witchKill && game.witchKill !== game.werewolfKill) {
+    game.players[game.witchKill.id].alive = false;
     deaths.push(game.witchKill);
   }
   game.nightDeaths = deaths;

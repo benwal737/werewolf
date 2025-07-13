@@ -33,6 +33,7 @@ const Game = () => {
   const werewolfTurn = gameState?.nightStep === "werewolves";
   const isWitch = player?.role === "witch";
   const witchTurn = gameState?.nightStep === "witch";
+  const deathStep = gameState?.nightStep === "deaths";
 
   const narration = foretellerTurn ? (
     isForeteller ? (
@@ -70,6 +71,17 @@ const Game = () => {
       )
     ) : (
       <span>The witch has awoken</span>
+    )
+  ) : deathStep ? (
+    gameState.nightDeaths?.length ? (
+      <span>
+        These players died last night:{" "}
+        <b className="text-red-500">
+          {gameState.nightDeaths?.map((player) => player.name).join(", ")}
+        </b>
+      </span>
+    ) : (
+      <span>No one died last night</span>
     )
   ) : (
     <span>Some other phase</span>
