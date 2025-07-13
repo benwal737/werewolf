@@ -1,6 +1,6 @@
 export type Role = "werewolf" | "villager" | "witch" | "foreteller";
 
-export type GamePhase = "lobby" | "start" | "night" | "day";
+export type GamePhase = "lobby" | "start" | "night" | "day" | "end";
 
 export type Substep =
   | "foreteller"

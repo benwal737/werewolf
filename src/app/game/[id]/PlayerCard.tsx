@@ -96,7 +96,7 @@ export default function PlayerCard({
         {user.id === player.id ? " (you)" : ""}
       </div>
       <div>{renderRoleIcon()}</div>
-      {(werewolfTurn && user.role === "werewolf") || (voteStep) && (
+      {(voteStep || (werewolfTurn && user.role === "werewolf")) && (
         <div className="text-lg font-semibold min-h-[1.5rem]">
           votes: {player.numVotes}
         </div>

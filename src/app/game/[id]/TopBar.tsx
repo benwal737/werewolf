@@ -9,7 +9,7 @@ interface TopBarProps {
 const TopBar = ({ phase }: TopBarProps) => {
   return (
     <div className="p-3 w-full bg-primary">
-      <TypographyH1>{phase?.toLocaleUpperCase()}</TypographyH1>
+      <TypographyH1>{phase === "end" ? "GAME OVER" : phase?.toLocaleUpperCase()}</TypographyH1>
     </div>
   );
 };

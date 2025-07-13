@@ -63,9 +63,11 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     checkWinner(lobbyId);
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 10, () => {
-      nextPhase(lobbyId, step);
-    });
+    if (!game.winner) {
+      startCountdown(io, lobbyId, 10, () => {
+        nextPhase(lobbyId, step);
+      });
+    }
   };
 
   const handleDeathsPhase = (lobbyId: string) => {
@@ -76,7 +78,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setPhase(lobbyId, phase, step);
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 10, () => {
+    startCountdown(io, lobbyId, 30, () => {
       nextPhase(lobbyId, step);
     });
   };
@@ -97,12 +99,19 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     }
     setDayDeaths(lobbyId);
     checkWinner(lobbyId);
-    setPhase(lobbyId, phase, step);
-    const updated = getSafeGameState(lobbyId);
-    io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 10, () => {
-      nextPhase(lobbyId, step);
-    });
+    if (game.winner) {
+      setPhase(lobbyId, "end", "none");
+      const updated = getSafeGameState(lobbyId);
+      io.to(lobbyId).emit("gameUpdated", updated);
+      return;
+    } else {
+      setPhase(lobbyId, phase, step);
+      const updated = getSafeGameState(lobbyId);
+      io.to(lobbyId).emit("gameUpdated", updated);
+      startCountdown(io, lobbyId, 10, () => {
+        nextPhase(lobbyId, step);
+      });
+    }
   };
 
   const handleResultsPhase = (lobbyId: string) => {
@@ -128,7 +137,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setPhase(lobbyId, phase, step);
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 10, () => {
+    startCountdown(io, lobbyId, 30, () => {
       nextPhase(lobbyId, step);
     });
   };
@@ -139,7 +148,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     witch: handleWitchPhase,
     deaths: handleDeathsPhase,
     vote: handleVotePhase,
-    results: () => {},
+    results: handleResultsPhase,
     none: () => {},
   };
 

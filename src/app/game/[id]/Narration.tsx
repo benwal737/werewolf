@@ -21,17 +21,22 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
   const deathStep = gameState.nightStep === "deaths";
   const voteStep = gameState.nightStep === "vote";
   const resultsStep = gameState.nightStep === "results";
+  const gameOver = gameState.phase === "end";
 
   let narration: React.ReactNode = <span>Some other phase</span>;
 
   if (foretellerTurn) {
-    narration = isForeteller
-      ? <span>Select a player to reveal their role</span>
-      : <span>Foreteller is revealing a role</span>;
+    narration = isForeteller ? (
+      <span>Select a player to reveal their role</span>
+    ) : (
+      <span>Foreteller is revealing a role</span>
+    );
   } else if (werewolfTurn) {
-    narration = isWerewolf
-      ? <span>Select a player to kill</span>
-      : <span>Werewolves selecting a player to kill</span>;
+    narration = isWerewolf ? (
+      <span>Select a player to kill</span>
+    ) : (
+      <span>Werewolves selecting a player to kill</span>
+    );
   } else if (witchTurn) {
     if (isWitch) {
       if (gameState.witchKilling) {
@@ -40,7 +45,8 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
         narration = (
           <>
             <span>
-              <b className="text-red-500">{gameState.werewolfKill.name}</b> will die tonight.
+              <b className="text-red-500">{gameState.werewolfKill.name}</b> will
+              die tonight.
             </span>
             <br />
             <span>Choose an available action, or do nothing</span>
@@ -59,25 +65,36 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
       narration = <span>The witch has awoken</span>;
     }
   } else if (deathStep) {
-    narration = gameState.nightDeaths?.length
-      ? (
-        <span>
-          These players died last night:{" "}
-          <b className="text-red-500">
-            {gameState.nightDeaths.map((player) => player.name).join(", ")}
-          </b>
-        </span>
-      )
-      : <span>No one died last night</span>;
+    narration = gameState.nightDeaths?.length ? (
+      <span>
+        These players died last night:{" "}
+        <b className="text-red-500">
+          {gameState.nightDeaths.map((player) => player.name).join(", ")}
+        </b>
+      </span>
+    ) : (
+      <span>No one died last night</span>
+    );
   } else if (voteStep) {
     narration = <span>Vote for a player to die</span>;
   } else if (resultsStep) {
     narration = gameState.villageKill ? (
       <span>
-        <b className="text-red-500">{gameState.villageKill.name}</b> was killed by the village.
+        <b className="text-red-500">{gameState.villageKill.name}</b> was killed
+        by the village.
       </span>
     ) : (
       <span>No one was killed today</span>
+    );
+  } else if (gameOver) {
+    narration = gameState.winner === "werewolves" ? (
+      <span>
+        Werewolves win!
+      </span>
+    ) : (
+      <span>
+        Villagers win!
+      </span>
     );
   }
 
