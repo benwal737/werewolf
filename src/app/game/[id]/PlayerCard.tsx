@@ -101,7 +101,8 @@ export default function PlayerCard({
         "px-6 py-4 flex flex-col items-center text-center transition-all border-2 w-50 justify-between",
         disable ? "opacity-50 grayscale" : "opacity-100",
         choosing && !selected && "hover:bg-stone-300 cursor-pointer",
-        selected && "bg-emerald-100",
+        selected &&
+          "bg-emerald-100" + (werewolfTurn || voteStep ? "cursor-pointer" : ""),
         !player.alive && "opacity-40 bg-red-200"
       )}
     >

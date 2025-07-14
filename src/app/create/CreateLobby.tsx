@@ -150,6 +150,7 @@ const CreateLobby = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     type="number"
                     min={role === "werewolf" || role === "villager" ? 1 : 0}
                     max={
