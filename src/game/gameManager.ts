@@ -90,11 +90,6 @@ export const getPlayers = (lobbyId: string) => {
   return game ? Object.values(game.players) : [];
 };
 
-export const isHost = (lobbyId: string, playerId: string) => {
-  const game = getGame(lobbyId);
-  return game?.host === playerId;
-};
-
 export const deleteGame = (lobbyId: string) => {
   gameStates.delete(lobbyId);
 };
@@ -109,10 +104,6 @@ export const setPhase = (
     game.phase = phase;
     game.substep = nightStep;
   }
-};
-
-export const getPhase = (lobbyId: string) => {
-  return getGame(lobbyId)?.phase;
 };
 
 export const setNightDeaths = (lobbyId: string) => {
