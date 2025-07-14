@@ -13,7 +13,14 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       totalPlayers: number,
       callback: () => void
     ) => {
-      console.log("creating lobby");
+      if (
+        roleCounts.werewolf < 1 ||
+        roleCounts.villager < 1 ||
+        roleCounts.witch > 1 ||
+        roleCounts.foreteller > 1
+      ) {
+        return;
+      }
       const game = createGame(lobbyId, playerId, roleCounts, totalPlayers);
       const player: Player = {
         id: playerId,
@@ -36,7 +43,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
     "joinLobby",
     (lobbyId: string, playerId: string, playerName: string) => {
       const game = getGame(lobbyId);
-      if (!game) return socket.emit("joinError", "Lobby not found");
+      if (!game) return;
 
       if (!game.players[playerId]) {
         const player: Player = {

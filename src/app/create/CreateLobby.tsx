@@ -19,7 +19,7 @@ import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
 import { getPlayer } from "@/utils/getPlayer";
 
-const MIN_PLAYERS = 2;
+const MIN_PLAYERS = 4;
 const MAX_PLAYERS = 15;
 
 const roleSchema = z.object({
