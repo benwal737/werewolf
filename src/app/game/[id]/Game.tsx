@@ -20,7 +20,6 @@ const Game = () => {
   const gameStateRef = useRef<GameState | null>(null);
   const hasJoinedRef = useRef(false);
 
-  const [foretellerRevealed, setForetellerRevealed] = useState(false);
   const [witchSelected, setWitchSelected] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
 
@@ -28,6 +27,7 @@ const Game = () => {
   const player: Player | null =
     playerId && gameState ? gameState.players[playerId] : null;
 
+  const foretellerRevealed = gameState?.foretellerRevealed;
   const isForeteller = player?.role === "foreteller";
   const foretellerTurn = gameState?.substep === "foreteller";
   const isWerewolf = player?.role === "werewolf";
@@ -39,7 +39,6 @@ const Game = () => {
   const foretellerAction = (target: Player) => {
     if (foretellerRevealed) return;
     socket.emit("foretellerSelected", lobbyId, target.id);
-    setForetellerRevealed(true);
   };
 
   const voteAction = (target: Player) => {
@@ -174,7 +173,7 @@ const Game = () => {
                   player={player}
                   gameState={gameState}
                   user={gameState.players[playerId]}
-                  foretellerSelected={foretellerRevealed}
+                  foretellerRevealed={foretellerRevealed}
                   witchSelected={witchSelected}
                   onClick={getClickAction(player)}
                 />

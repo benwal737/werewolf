@@ -16,9 +16,12 @@ import { GamePhase, Substep } from "./types/index.ts";
 
 export default function registerGameHandlers(io: Server, socket: Socket) {
   const resolveForetellerPhase = (lobbyId: string) => {
+    const game = getGame(lobbyId);
+    if (!game) return;
+    game.foretellerRevealed = false;
     setPhase(lobbyId, "night", "werewolves");
-    const game = getSafeGameState(lobbyId);
-    io.to(lobbyId).emit("gameUpdated", game);
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
     startCountdown(io, lobbyId, 30, () => {
       nextPhase(lobbyId, "werewolves");
     });
@@ -197,6 +200,9 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     const game = getGame(lobbyId);
     if (!game) return;
     const player = game.players[target];
+    game.foretellerRevealed = true;
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
     io.to(lobbyId).emit("foretellerReveal", player);
   });
 

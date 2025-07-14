@@ -29,6 +29,7 @@ export type Game = {
   totalPlayers: number;
   countdown?: number;
   interval?: NodeJS.Timeout;
+  foretellerRevealed?: boolean;
   werewolfKill?: Player;
   witchSave?: Player;
   witchSaved?: boolean;

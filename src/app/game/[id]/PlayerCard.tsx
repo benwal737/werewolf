@@ -10,7 +10,7 @@ interface PlayerCardProps {
   player: Player;
   gameState: Game;
   user: Player;
-  foretellerSelected: boolean;
+  foretellerRevealed: boolean | undefined;
   witchSelected: boolean;
   onClick?: () => void;
 }
@@ -19,7 +19,7 @@ export default function PlayerCard({
   player,
   gameState,
   user,
-  foretellerSelected,
+  foretellerRevealed,
   witchSelected,
   onClick,
 }: PlayerCardProps) {
@@ -68,7 +68,7 @@ export default function PlayerCard({
       player.id === user.id) ||
     (voteStep && player.id === user.id && player.alive && user.alive);
   const isForetellerChoosing =
-    !foretellerSelected &&
+    !foretellerRevealed &&
     foretellerTurn &&
     user.role === "foreteller" &&
     player.id !== user.id;
