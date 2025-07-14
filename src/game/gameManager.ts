@@ -42,7 +42,7 @@ export const createGame = (
     host: hostId,
     players: {},
     phase: "lobby",
-    nightStep: "none",
+    substep: "none",
     roleCounts,
     totalPlayers,
   };
@@ -107,7 +107,7 @@ export const setPhase = (
   const game = getGame(lobbyId);
   if (game) {
     game.phase = phase;
-    game.nightStep = nightStep;
+    game.substep = nightStep;
   }
 };
 
@@ -120,15 +120,19 @@ export const setNightDeaths = (lobbyId: string) => {
   if (!game) return;
   const deaths: Player[] = [];
 
-  console.log("setting night deaths:", game.werewolfKill?.name, game.witchKill?.name)
+  console.log(
+    "setting night deaths:",
+    game.werewolfKill?.name,
+    game.witchKill?.name
+  );
 
   if (game.werewolfKill && game.werewolfKill !== game.witchSave) {
-    console.log("adding werewolf kill:", game.werewolfKill.name)
+    console.log("adding werewolf kill:", game.werewolfKill.name);
     game.players[game.werewolfKill.id].alive = false;
     deaths.push(game.werewolfKill);
   }
   if (game.witchKill && game.witchKill !== game.werewolfKill) {
-    console.log("adding witch kill:", game.witchKill.name)
+    console.log("adding witch kill:", game.witchKill.name);
     game.players[game.witchKill.id].alive = false;
     deaths.push(game.witchKill);
   }

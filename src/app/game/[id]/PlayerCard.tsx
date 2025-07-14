@@ -23,12 +23,12 @@ export default function PlayerCard({
   witchSelected,
   onClick,
 }: PlayerCardProps) {
-  const foretellerTurn = gameState.nightStep === "foreteller";
-  const werewolfTurn = gameState.nightStep === "werewolves";
-  const witchTurn = gameState.nightStep === "witch";
+  const foretellerTurn = gameState.substep === "foreteller";
+  const werewolfTurn = gameState.substep === "werewolves";
+  const witchTurn = gameState.substep === "witch";
   const witchKilling = gameState.witchKilling;
   const witchKill = gameState.witchKill;
-  const voteStep = gameState.nightStep === "vote";
+  const voteStep = gameState.substep === "vote";
   const gameOver = gameState.phase === "end";
   const renderRoleIcon = () => {
     if (user.role === "werewolf" && player.role === "werewolf") {
@@ -66,21 +66,34 @@ export default function PlayerCard({
       (werewolfTurn && user.role === "werewolf") ||
       (witchTurn && user.role === "witch" && witchKilling)) &&
       player.id === user.id) ||
-    (voteStep && player.id === user.id);
+    (voteStep && player.id === user.id && player.alive && user.alive);
+  const isForetellerChoosing =
+    !foretellerSelected &&
+    foretellerTurn &&
+    user.role === "foreteller" &&
+    player.id !== user.id;
+
+  const isWerewolfChoosing =
+    werewolfTurn && user.role === "werewolf" && player.role !== "werewolf";
+
+  const isWitchChoosing =
+    !witchSelected &&
+    witchTurn &&
+    user.role === "witch" &&
+    witchKilling &&
+    player.id !== user.id;
+
+  const isVoteChoosing = voteStep && player.id !== user.id;
+
   const choosing =
-    (!foretellerSelected &&
-      foretellerTurn &&
-      user.role === "foreteller" &&
-      player.id !== user.id) ||
-    (werewolfTurn && user.role === "werewolf" && player.role !== "werewolf") ||
-    (!witchSelected &&
-      witchTurn &&
-      user.role === "witch" &&
-      witchKilling &&
-      player.id !== user.id) ||
-    (voteStep && player.id !== user.id) &&
-    (!player.alive || !user.alive)
-  const selected = user.vote === player.id || (witchKilling && witchKill?.id === player.id);
+    (isForetellerChoosing ||
+      isWerewolfChoosing ||
+      isWitchChoosing ||
+      isVoteChoosing) &&
+    player.alive &&
+    user.alive;
+  const selected =
+    user.vote === player.id || (witchKilling && witchKill?.id === player.id);
   return (
     <Card
       onClick={onClick}
@@ -97,7 +110,8 @@ export default function PlayerCard({
         {user.id === player.id ? " (you)" : ""}
       </div>
       <div>{renderRoleIcon()}</div>
-      {(voteStep || (werewolfTurn && (user.role === "werewolf" || !user.alive))) && (
+      {(voteStep ||
+        (werewolfTurn && (user.role === "werewolf" || !user.alive))) && (
         <div className="text-lg font-semibold min-h-[1.5rem]">
           votes: {player.numVotes}
         </div>

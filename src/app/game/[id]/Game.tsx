@@ -29,12 +29,12 @@ const Game = () => {
     playerId && gameState ? gameState.players[playerId] : null;
 
   const isForeteller = player?.role === "foreteller";
-  const foretellerTurn = gameState?.nightStep === "foreteller";
+  const foretellerTurn = gameState?.substep === "foreteller";
   const isWerewolf = player?.role === "werewolf";
-  const werewolfTurn = gameState?.nightStep === "werewolves";
+  const werewolfTurn = gameState?.substep === "werewolves";
   const isWitch = player?.role === "witch";
-  const witchTurn = gameState?.nightStep === "witch";
-  const voteStep = gameState?.nightStep === "vote";
+  const witchTurn = gameState?.substep === "witch";
+  const voteStep = gameState?.substep === "vote";
 
   const foretellerAction = (target: Player) => {
     if (foretellerRevealed) return;
@@ -150,11 +150,13 @@ const Game = () => {
   ]);
 
   return (
-    playerId && (
+    player &&
+    playerId &&
+    gameState && (
       <div className="flex flex-col min-h-screen w-full">
         {/* Top Bar */}
         <div className="w-full">
-          <TopBar phase={gameState?.phase as GamePhase} />
+          <TopBar phase={gameState.phase as GamePhase} />
         </div>
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto mt-5">
@@ -164,24 +166,23 @@ const Game = () => {
             countdown={countdown}
           />
           {/* Player List */}
-          {gameState && (
-            <div className="flex justify-center">
-              <div className="flex flex-wrap justify-center gap-4 py-12 max-w-5xl mx-auto">
-                {Object.values(gameState.players).map((player) => (
-                  <PlayerCard
-                    key={player.id}
-                    player={player}
-                    gameState={gameState}
-                    user={gameState.players[playerId]}
-                    foretellerSelected={foretellerRevealed}
-                    witchSelected={witchSelected}
-                    onClick={getClickAction(player)}
-                  />
-                ))}
-              </div>
+          <div className="flex justify-center">
+            <div className="flex flex-wrap justify-center gap-4 py-12 max-w-5xl mx-auto">
+              {Object.values(gameState.players).map((player) => (
+                <PlayerCard
+                  key={player.id}
+                  player={player}
+                  gameState={gameState}
+                  user={gameState.players[playerId]}
+                  foretellerSelected={foretellerRevealed}
+                  witchSelected={witchSelected}
+                  onClick={getClickAction(player)}
+                />
+              ))}
             </div>
-          )}
-          {gameState && witchTurn && isWitch && !gameState.witchKilling && (
+          </div>
+
+          {witchTurn && isWitch && !gameState.witchKilling && (
             <div className="flex justify-center mt-5 w-full">
               <ActionPanel gameState={gameState} />
             </div>

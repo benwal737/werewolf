@@ -24,7 +24,7 @@ export type Game = {
   host: string | null;
   players: Record<string, Player>;
   phase: GamePhase;
-  nightStep: Substep;
+  substep: Substep;
   roleCounts: RoleCounts;
   totalPlayers: number;
   countdown?: number;

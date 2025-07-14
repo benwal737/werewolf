@@ -217,10 +217,15 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
       if (prev) {
         if (!game.players[prev].numVotes) return;
         game.players[prev].numVotes--;
+        if (prev === targetId) {
+          game.players[playerId].vote = undefined;
+        }
       }
-      game.players[playerId].vote = targetId;
-      const targetVotes = game.players[targetId].numVotes;
-      game.players[targetId].numVotes = targetVotes ? targetVotes + 1 : 1;
+      if (!prev || prev !== targetId) {
+        game.players[playerId].vote = targetId;
+        const targetVotes = game.players[targetId].numVotes;
+        game.players[targetId].numVotes = targetVotes ? targetVotes + 1 : 1;
+      }
       const updated = getSafeGameState(lobbyId);
       io.to(lobbyId).emit("gameUpdated", updated);
     }

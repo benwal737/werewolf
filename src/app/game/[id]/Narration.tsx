@@ -4,107 +4,149 @@ import { TypographyH4 } from "@/components/ui/typography";
 import { Game, Player } from "@/game/types";
 
 interface NarrationProps {
-  gameState: Game | null;
-  player: Player | null;
+  gameState: Game;
+  player: Player;
   countdown: number | null;
 }
 
 const Narration = ({ gameState, player, countdown }: NarrationProps) => {
-  if (!gameState) return null;
+  const isForeteller = player.role === "foreteller";
+  const isWerewolf = player.role === "werewolf";
+  const isWitch = player.role === "witch";
+  const { substep: nightStep, phase, witchSave, witchKill } = gameState;
+  const gameOver = phase === "end";
 
-  const isForeteller = player?.role === "foreteller";
-  const isWerewolf = player?.role === "werewolf";
-  const isWitch = player?.role === "witch";
-  const foretellerTurn = gameState.nightStep === "foreteller";
-  const werewolfTurn = gameState.nightStep === "werewolves";
-  const witchTurn = gameState.nightStep === "witch";
-  const deathStep = gameState.nightStep === "deaths";
-  const voteStep = gameState.nightStep === "vote";
-  const resultsStep = gameState.nightStep === "results";
-  const gameOver = gameState.phase === "end";
-
-  let narration: React.ReactNode = <span>Some other phase</span>;
-
-  if (foretellerTurn) {
-    narration = isForeteller ? (
-      <span>Select a player to reveal their role</span>
+  function getForetellerNarration() {
+    return isForeteller ? (
+      <p>Select a player to reveal their role</p>
     ) : (
-      <span>Foreteller is revealing a role</span>
+      <p>Foreteller is revealing a role</p>
     );
-  } else if (werewolfTurn) {
-    narration = isWerewolf ? (
-      <span>Select a player to kill</span>
-    ) : (
-      <span>Werewolves selecting a player to kill</span>
-    );
-  } else if (witchTurn) {
-    if (isWitch) {
-      if (gameState.witchKilling) {
-        narration = <span>Choose a player to kill</span>;
-      } else if (gameState.werewolfKill) {
-        narration = (
-          <>
-            <span>
-              <b className="text-red-500">{gameState.werewolfKill.name}</b> will
-              die tonight.
-            </span>
-            <br />
-            <span>Choose an available action, or do nothing</span>
-          </>
-        );
-      } else {
-        narration = (
-          <>
-            <span>No one will die tonight.</span>
-            <br />
-            <span>Choose an available action, or do nothing</span>
-          </>
-        );
-      }
+  }
+
+  function getWerewolfNarration() {
+    if (isWerewolf && player.alive) return <p>Choose a player to kill</p>;
+    return <p>Werewolves are hunting</p>;
+  }
+
+  function getWitchNarration() {
+    if (!isWitch) return <p>The witch is casting spells</p>;
+    if (gameState.witchKilling && !witchKill) {
+      return <p>Choose a player to kill</p>;
+    } else if (gameState.witchKilling && witchKill) {
+      return (
+        <p>
+          You chose to kill <b className="text-red-500">{witchKill.name}</b>
+        </p>
+      );
+    } else if (gameState.werewolfKill && !witchSave) {
+      return (
+        <>
+          <p>
+            <b className="text-red-500">{gameState.werewolfKill.name}</b> will
+            die tonight.
+          </p>
+          <p>Choose an available action, or do nothing.</p>
+        </>
+      );
+    } else if (gameState.werewolfKill && witchSave) {
+      return (
+        <p>
+          You saved{" "}
+          <b className="text-green-500">{gameState.werewolfKill.name}</b>
+        </p>
+      );
     } else {
-      narration = <span>The witch has awoken</span>;
+      return (
+        <>
+          <p>No one will die tonight.</p>
+          <p>Choose an available action, or do nothing.</p>
+        </>
+      );
     }
-  } else if (deathStep) {
-    narration = gameState.nightDeaths?.length ? (
-      <span>
+  }
+
+  function getDeathStepNarration() {
+    return gameState.nightDeaths?.length ? (
+      <p>
         These players died last night:{" "}
         <b className="text-red-500">
           {gameState.nightDeaths.map((player) => player.name).join(", ")}
         </b>
-      </span>
+      </p>
     ) : (
-      <span>No one died last night</span>
+      <p>No one died last night.</p>
     );
-  } else if (voteStep) {
-    narration = <span>Vote for a player to die</span>;
-  } else if (resultsStep) {
-    narration = gameState.villageKill ? (
-      <span>
+  }
+
+  function getVoteStepNarration() {
+    return player?.alive ? (
+      <p>Vote on a player to kill</p>
+    ) : (
+      <p>The village is voting</p>
+    );
+  }
+
+  function getResultsStepNarration() {
+    return gameState.villageKill ? (
+      <p>
         <b className="text-red-500">{gameState.villageKill.name}</b> was killed
         by the village.
-      </span>
+      </p>
     ) : (
-      <span>No one was killed today</span>
+      <p>The village could not agree on a player to kill.</p>
     );
-  } else if (gameOver) {
-    narration =
-      gameState.winner === "werewolves" ? (
-        <span>Werewolves win!</span>
-      ) : gameState.winner === "villagers" ? (
-        <span>Villagers win!</span>
-      ) : (
-        <span>It's a draw!</span>
-      );
+  }
+
+  function getGameOverNarration() {
+    if (gameState.winner === "werewolves") return <p>Werewolves win!</p>;
+    if (gameState.winner === "villagers") return <p>Villagers win!</p>;
+    return <p>It&apos;s a draw!</p>;
+  }
+
+  let narration: React.ReactNode = <p>Some other phase</p>;
+  if (gameOver) {
+    narration = getGameOverNarration();
+  } else {
+    switch (nightStep) {
+      case "foreteller":
+        narration = getForetellerNarration();
+        break;
+      case "werewolves":
+        narration = getWerewolfNarration();
+        break;
+      case "witch":
+        narration = getWitchNarration();
+        break;
+      case "deaths":
+        narration = getDeathStepNarration();
+        break;
+      case "vote":
+        narration = getVoteStepNarration();
+        break;
+      case "results":
+        narration = getResultsStepNarration();
+        break;
+      default:
+        narration = <p>Loading...</p>;
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+    }
   }
 
   return (
-    <div className="flex items-center w-full py-4 relative">
-      <div className="flex-1 text-center">
+    <div className="flex items-center justify-center w-full py-4 gap-8">
+      <div className="flex items-center gap-4">
         <TypographyH4>{narration}</TypographyH4>
-      </div>
-      <div className="flex items-center gap-1 absolute right-6 top-1/2 -translate-y-1/2 bg-slate-800 rounded px-3 py-1 shadow-lg min-w-[6ch] justify-center">
-        <span role="img" aria-label="timer">⏰</span>
-        <TypographyH4 className="w-[2ch] tabular-nums text-center">{countdown ?? ""}</TypographyH4>
+        <div className="flex items-center gap-2 bg-slate-800 rounded px-4 py-2 shadow-lg min-w-[6ch] justify-center text-2xl font-bold text-yellow-300">
+          <span role="img" aria-label="timer">
+            ⏰
+          </span>
+          <span className="w-[2ch] tabular-nums text-center">
+            {countdown ?? ""}
+          </span>
+        </div>
       </div>
     </div>
   );
