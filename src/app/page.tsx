@@ -66,12 +66,10 @@ export default function Home() {
   };
 
   const handleJoinLobby = (data: z.infer<typeof joinLobbySchema>) => {
-    console.log("checking stuff");
     const name = form1.getValues("name");
     socket.emit("checkLobby", data.lobbyId, (exists: boolean) => {
       if (!exists) {
-        console.log("shit doesnt exist");
-        alert("Lobby does not exist or game in session");
+        alert("Error: Lobby full or does not exist");
         return;
       }
       localStorage.setItem("playerName", name);
@@ -90,8 +88,14 @@ export default function Home() {
     };
   }, []);
 
+  const backgroundUrl = "/layered-peaks-dark.svg";
   return (
-    <div>
+    <div
+      className="flex flex-col min-h-screen w-full bg-cover bg-center"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
+      }}
+    >
       <TypographyH1 className="mt-10">Werewolf</TypographyH1>
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <Form {...form1}>

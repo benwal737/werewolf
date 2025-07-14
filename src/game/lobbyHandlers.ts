@@ -86,7 +86,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
   socket.on("checkLobby", (lobbyId, callback) => {
     console.log("checking lobby");
     const game = getGame(lobbyId);
-    callback(!!game && game.phase === "lobby");
+    callback(!!game && game.phase === "lobby" && game.totalPlayers > Object.keys(game.players).length);
   });
 
   const countdowns = new Map<string, NodeJS.Timeout>();

@@ -148,11 +148,20 @@ const Game = () => {
     handleCountdownTick,
   ]);
 
+  let backgroundUrl = "/layered-peaks-light.svg";
+  if (gameState?.phase === "night") {
+    backgroundUrl = "/layered-peaks-dark.svg";
+  }
   return (
     player &&
     playerId &&
     gameState && (
-      <div className="flex flex-col min-h-screen w-full">
+      <div
+        className="flex flex-col min-h-screen w-full bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
+        }}
+      >
         {/* Top Bar */}
         <div className="w-full">
           <TopBar phase={gameState.phase as GamePhase} />

@@ -8,8 +8,7 @@ import PlayerList from "./PlayerList";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { TypographyH1, TypographyH4 } from "@/components/ui/typography";
-import {getPlayer} from "@/utils/getPlayer"
-
+import { getPlayer } from "@/utils/getPlayer";
 
 export default function Lobby() {
   const lobbyId = useParams().id as string;
@@ -21,7 +20,7 @@ export default function Lobby() {
   const router = useRouter();
 
   const handleStartGame = () => {
-    console.log("clicked start")
+    console.log("clicked start");
     socket.emit("startGameCountdown", lobbyId);
   };
 
@@ -67,10 +66,15 @@ export default function Lobby() {
       socket.off("countdownComplete");
     };
   }, [lobbyId, playerId, playerName, router]);
-
+  const backgroundUrl = "/layered-peaks-dark.svg";
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8">
-      <Card className="w-full max-w-2xl shadow-lg bg-stone-300">
+    <div
+      className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
+      }}
+    >
+      <Card className="w-full max-w-2xl shadow-lg bg-card/50 backdrop-blur-xl">
         <CardContent className="p-6 space-y-4">
           <TypographyH1 className="text-center">
             Lobby ID: <span className="font-mono">{lobbyId}</span>
@@ -95,7 +99,7 @@ export default function Lobby() {
             {playerId === host && (
               <Button
                 onClick={handleStartGame}
-                disabled={players.length !== totalPlayers}
+                disabled={players.length !== totalPlayers || countdown !== null}
                 className="w-17"
               >
                 Start
@@ -111,7 +115,7 @@ export default function Lobby() {
         </CardContent>
       </Card>
 
-      <Card className="w-full max-w-2xl shadow-md bg-stone-300">
+      <Card className="w-full max-w-2xl shadow-md bg-card/50 backdrop-blur-xl">
         <CardContent className="p-6 flex flex-col items-center">
           <TypographyH1 className="mb-4">Players</TypographyH1>
           {players.length !== totalPlayers ? (

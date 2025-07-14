@@ -19,7 +19,7 @@ import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
 import { getPlayer } from "@/utils/getPlayer";
 
-const MIN_PLAYERS = 4;
+const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 15;
 
 const roleSchema = z.object({
@@ -122,72 +122,82 @@ const CreateLobby = () => {
     );
   };
 
+  const backgroundUrl = "/layered-peaks-dark.svg";
   return (
-    <Form {...form}>
-      <form
-        className="flex flex-col items-center justify-center min-h-screen gap-4"
-        onSubmit={form.handleSubmit(handleSubmit)}
-      >
-        <PlayerCountDisplay form={form} />
-
-        {roleKeys.map((role) => (
-          <FormField
-            key={role}
-            control={form.control}
-            name={`roles.${role}`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  {role === "werewolf"
-                    ? "Werewolves:"
-                    : role === "foreteller"
-                    ? "Foretellers:"
-                    : role === "villager"
-                    ? "Villagers:"
-                    : role === "witch"
-                    ? "Witches:"
-                    : role}{" "}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={isLoading}
-                    type="number"
-                    min={role === "werewolf" || role === "villager" ? 1 : 0}
-                    max={
-                      role === "witch" || role === "foreteller" ? 1 : undefined
-                    }
-                    className="w-32 min-h-[30px] h-[50px]"
-                    value={Number.isNaN(field.value) ? "" : field.value}
-                    onChange={(e) => {
-                      const value = e.target.valueAsNumber;
-                      field.onChange(value);
-                    }}
-                    onBlur={(e) => {
-                      const value = e.target.valueAsNumber;
-                      if (Number.isNaN(value)) {
-                        field.onChange(0);
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
-
-        <Button
-          type="submit"
-          disabled={
-            isLoading ||
-            calculateTotalPlayers(form.watch("roles")) < MIN_PLAYERS ||
-            calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
-          }
+    <div
+      className="flex flex-col min-h-screen w-full bg-cover bg-center"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
+      }}
+    >
+      <Form {...form}>
+        <form
+          className="flex flex-col items-center justify-center min-h-screen gap-4"
+          onSubmit={form.handleSubmit(handleSubmit)}
         >
-          {isLoading ? "Creating..." : "Create Lobby"}
-        </Button>
-      </form>
-    </Form>
+          <PlayerCountDisplay form={form} />
+
+          {roleKeys.map((role) => (
+            <FormField
+              key={role}
+              control={form.control}
+              name={`roles.${role}`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {role === "werewolf"
+                      ? "Werewolves:"
+                      : role === "foreteller"
+                      ? "Foretellers:"
+                      : role === "villager"
+                      ? "Villagers:"
+                      : role === "witch"
+                      ? "Witches:"
+                      : role}{" "}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      type="number"
+                      min={role === "werewolf" || role === "villager" ? 1 : 0}
+                      max={
+                        role === "witch" || role === "foreteller"
+                          ? 1
+                          : undefined
+                      }
+                      className="w-32 min-h-[30px] h-[50px]"
+                      value={Number.isNaN(field.value) ? "" : field.value}
+                      onChange={(e) => {
+                        const value = e.target.valueAsNumber;
+                        field.onChange(value);
+                      }}
+                      onBlur={(e) => {
+                        const value = e.target.valueAsNumber;
+                        if (Number.isNaN(value)) {
+                          field.onChange(0);
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+
+          <Button
+            type="submit"
+            disabled={
+              isLoading ||
+              calculateTotalPlayers(form.watch("roles")) < MIN_PLAYERS ||
+              calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
+            }
+          >
+            {isLoading ? "Creating..." : "Create Lobby"}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 };
 
