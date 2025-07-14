@@ -20,13 +20,13 @@ import { RoleCounts } from "@/game/types";
 import { getPlayer } from "@/utils/getPlayer";
 
 const MIN_PLAYERS = 2;
-const MAX_PLAYERS = 20;
+const MAX_PLAYERS = 15;
 
 const roleSchema = z.object({
   werewolf: z.number().min(1, "Need at least 1 werewolf"),
   villager: z.number().min(1, "Need at least 1 villager"),
-  witch: z.number().min(0),
-  foreteller: z.number().min(0),
+  witch: z.number().min(0).max(1, "Only 1 witch allowed"),
+  foreteller: z.number().min(0).max(1, "Only 1 foreteller allowed"),
 });
 
 const lobbySchema = z
@@ -139,21 +139,23 @@ const CreateLobby = () => {
               <FormItem>
                 <FormLabel>
                   {role === "werewolf"
-                    ? "Werewolves"
+                    ? "Werewolves:"
                     : role === "foreteller"
-                    ? "Foretellers"
+                    ? "Foretellers:"
                     : role === "villager"
-                    ? "Villagers"
+                    ? "Villagers:"
                     : role === "witch"
-                    ? "Witches"
+                    ? "Witches:"
                     : role}{" "}
-                  :
                 </FormLabel>
                 <FormControl>
                   <Input
                     type="number"
                     min={role === "werewolf" || role === "villager" ? 1 : 0}
-                    className="w-full max-w-xs min-h-[30px] h-[50px]"
+                    max={
+                      role === "witch" || role === "foreteller" ? 1 : undefined
+                    }
+                    className="w-32 min-h-[30px] h-[50px]"
                     value={Number.isNaN(field.value) ? "" : field.value}
                     onChange={(e) => {
                       const value = e.target.valueAsNumber;
@@ -173,7 +175,14 @@ const CreateLobby = () => {
           />
         ))}
 
-        <Button type="submit" disabled={!form.formState.isValid || isLoading}>
+        <Button
+          type="submit"
+          disabled={
+            isLoading ||
+            calculateTotalPlayers(form.watch("roles")) < MIN_PLAYERS ||
+            calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
+          }
+        >
           {isLoading ? "Creating..." : "Create Lobby"}
         </Button>
       </form>

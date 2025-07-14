@@ -1,5 +1,6 @@
 import React from "react";
 import { TypographyH4 } from "@/components/ui/typography";
+import CountdownTimer from "./CountdownTimer";
 
 import { Game, Player } from "@/game/types";
 
@@ -139,14 +140,7 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
     <div className="flex items-center justify-center w-full py-4 gap-8">
       <div className="flex items-center gap-4">
         <TypographyH4>{narration}</TypographyH4>
-        <div className="flex items-center gap-2 bg-slate-800 rounded px-4 py-2 shadow-lg min-w-[6ch] justify-center text-2xl font-bold text-yellow-300">
-          <span role="img" aria-label="timer">
-            ⏰
-          </span>
-          <span className="w-[2ch] tabular-nums text-center">
-            {countdown ?? ""}
-          </span>
-        </div>
+        <CountdownTimer countdown={countdown} />
       </div>
     </div>
   );
