@@ -140,7 +140,7 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
     <div className="flex items-center justify-center w-full py-4 gap-8">
       <div className="flex items-center gap-4">
         <TypographyH4>{narration}</TypographyH4>
-        <CountdownTimer countdown={countdown} />
+        {gameState.phase !== "end" && <CountdownTimer countdown={countdown} />}
       </div>
     </div>
   );

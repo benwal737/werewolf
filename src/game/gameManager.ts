@@ -21,7 +21,7 @@ export const startCountdown = (
     timeLeft--;
     game.countdown = timeLeft;
     io.to(lobbyId).emit("countdownTick", timeLeft);
-    if (timeLeft === 1) {
+    if (timeLeft < 1) {
       clearInterval(interval);
       game.interval = undefined;
       game.countdown = undefined;
