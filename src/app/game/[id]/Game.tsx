@@ -11,6 +11,7 @@ import { getPlayer } from "@/utils/getPlayer";
 import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
 import Narration from "./Narration";
+import { ModeToggle } from "@/components/ModeToggle";
 
 const Game = () => {
   const router = useRouter();
@@ -158,10 +159,11 @@ const Game = () => {
     gameState && (
       <div
         className="flex flex-col min-h-screen w-full bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
-        }}
+        // style={{
+        //   backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
+        // }}
       >
+        <ModeToggle />  
         {/* Top Bar */}
         <div className="w-full">
           <TopBar phase={gameState.phase as GamePhase} />

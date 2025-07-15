@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
 import { getPlayer } from "@/utils/getPlayer";
+import { ModeToggle } from "@/components/ModeToggle";
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 15;
@@ -126,10 +127,11 @@ const CreateLobby = () => {
   return (
     <div
       className="flex flex-col min-h-screen w-full bg-cover bg-center"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
-      }}
+      // style={{
+      //   backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
+      // }}
     >
+      <ModeToggle />  
       <Form {...form}>
         <form
           className="flex flex-col items-center justify-center min-h-screen gap-4"

@@ -30,7 +30,7 @@ const PlayerList = ({ players, host, playerId, lobbyId }: PlayerListProps) => {
                 key={player.id}
                 className="flex justify-between min-h-12"
               >
-                <TableCell className="text-stone-100">
+                <TableCell className="">
                   {player.name}
                   {player.id === host && " (host)"}
                 </TableCell>

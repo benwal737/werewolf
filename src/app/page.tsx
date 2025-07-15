@@ -28,6 +28,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import { ModeToggle } from "@/components/ModeToggle";
 
 const createLobbySchema = z.object({
   name: z.string().max(15, {
@@ -92,11 +93,12 @@ export default function Home() {
   return (
     <div
       className="flex flex-col min-h-screen w-full bg-cover bg-center"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
-      }}
+      // style={{
+      //   backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
+      // }}
     >
       <TypographyH1 className="mt-10">Werewolf</TypographyH1>
+      <ModeToggle />
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <Form {...form1}>
           <form
