@@ -8,7 +8,7 @@ if (theme === "dark") {
     "linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('/layered-peaks-dark.svg')";
 } else {
   background =
-    "linear-gradient(rgba(150,255,255,0.8),rgba(255,255,255,0.8)), url('/layered-peaks-light.svg')";
+    "linear-gradient(rgba(150,255,255,0.8),rgba(87,199,133,0.8)), url('/layered-peaks-light.svg')";
 }
 return background;
 };

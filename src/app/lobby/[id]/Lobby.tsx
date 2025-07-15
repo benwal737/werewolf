@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { TypographyH1, TypographyH4 } from "@/components/ui/typography";
 import { getPlayer } from "@/utils/getPlayer";
-import { ModeToggle } from "@/components/ModeToggle";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { getBackground } from "@/utils/getBackground";
 
 export default function Lobby() {
@@ -70,13 +70,13 @@ export default function Lobby() {
   }, [lobbyId, playerId, playerName, router]);
   const background = getBackground();
   return (
-    <div
-      className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8"
-      style={{
-        backgroundImage: background,
-      }}
-    >
-      <ModeToggle />  
+    <ThemeProvider forcedTheme="dark">
+      <div
+        className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8"
+        style={{
+          backgroundImage: background,
+        }}
+      >
       <Card className="w-full max-w-2xl shadow-md bg-card/50 backdrop-blur-sm">
         <CardContent className="p-6 space-y-4">
           <TypographyH1 className="text-center">
@@ -134,6 +134,7 @@ export default function Lobby() {
           />
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }

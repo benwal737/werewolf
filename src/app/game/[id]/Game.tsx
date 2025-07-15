@@ -11,7 +11,7 @@ import { getPlayer } from "@/utils/getPlayer";
 import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
 import Narration from "./Narration";
-import { ModeToggle } from "@/components/ModeToggle";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { getBackground } from "@/utils/getBackground";
 
 const Game = () => {
@@ -151,17 +151,20 @@ const Game = () => {
   ]);
 
   const background = getBackground();
+  // Compute theme based on phase
+  const phase = gameState?.phase;
+  const computedTheme = phase === "night" || phase === "start" ? "dark" : "light";
   return (
     player &&
     playerId &&
     gameState && (
-      <div
-        className="flex flex-col min-h-screen w-full bg-cover bg-center"
-        style={{
-          backgroundImage: background,
-        }}
-      >
-        <ModeToggle />  
+      <ThemeProvider forcedTheme={computedTheme}>
+        <div
+          className="flex flex-col min-h-screen w-full bg-cover bg-center"
+          style={{
+            backgroundImage: background,
+          }}
+        > 
         {/* Top Bar */}
         <div className="w-full">
           <TopBar phase={gameState.phase as GamePhase} />
@@ -201,6 +204,7 @@ const Game = () => {
           <BottomBar role={player?.role as Role} />
         </div>
       </div>
+      </ThemeProvider>
     )
   );
 };

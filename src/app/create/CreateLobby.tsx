@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
 import { getPlayer } from "@/utils/getPlayer";
-import { ModeToggle } from "@/components/ModeToggle";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { getBackground } from "@/utils/getBackground";
 
 const MIN_PLAYERS = 3;
@@ -126,13 +126,13 @@ const CreateLobby = () => {
 
   const background = getBackground(); 
   return (
-    <div
-      className="flex flex-col min-h-screen w-full bg-cover bg-center"
-      style={{
-        backgroundImage: background,
-      }}  
-    >
-      <ModeToggle />  
+    <ThemeProvider forcedTheme="dark">
+      <div
+        className="flex flex-col min-h-screen w-full bg-cover bg-center"
+        style={{
+          backgroundImage: background,
+        }}
+      >
       <Form {...form}>
         <form
           className="flex flex-col items-center justify-center min-h-screen gap-4"
@@ -201,6 +201,7 @@ const CreateLobby = () => {
         </form>
       </Form>
     </div>
+    </ThemeProvider>
   );
 };
 

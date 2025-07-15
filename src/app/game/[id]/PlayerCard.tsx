@@ -66,7 +66,8 @@ export default function PlayerCard({
       (werewolfTurn && user.role === "werewolf") ||
       (witchTurn && user.role === "witch" && witchKilling)) &&
       player.id === user.id) ||
-    (voteStep && player.id === user.id && player.alive && user.alive);
+    (voteStep && player.id === user.id && player.alive && user.alive) ||
+    !player.alive;
   const isForetellerChoosing =
     !foretellerRevealed &&
     foretellerTurn &&
@@ -98,13 +99,12 @@ export default function PlayerCard({
     <Card
       onClick={onClick}
       className={cn(
-        "bg-card/50 backdrop-blur-xl border-white/20 px-6 py-4 flex flex-col items-center text-center transition-all w-50 justify-between",
-        disable ? "opacity-50 grayscale" : "opacity-100",
+        "bg-card/50 backdrop-blur-sm px-6 py-4 flex flex-col items-center text-center transition-all w-50 justify-between",
+        disable ? "opacity-50" : "",
         choosing && !selected && "hover:backdrop-brightness-125 cursor-pointer",
         selected &&
           "backdrop-saturate-200" +
             (werewolfTurn || voteStep ? " cursor-pointer" : ""),
-        !player.alive && "bg-red-500/20"
       )}
     >
       <div className="text-lg font-semibold truncate w-full">
@@ -118,7 +118,7 @@ export default function PlayerCard({
           votes: {player.numVotes}
         </div>
       )}
-      <div className="text-sm mt-1 text-muted-foreground">
+      <div className={cn("text-sm mt-1 isolate filter-none", player.alive && "text-emerald-500", !player.alive && "text-red-500")}>
         {player.alive ? "Alive" : "Dead"}
       </div>
     </Card>

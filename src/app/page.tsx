@@ -28,7 +28,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { ModeToggle } from "@/components/ModeToggle";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { getBackground } from "@/utils/getBackground";
 
 const createLobbySchema = z.object({
@@ -92,14 +92,14 @@ export default function Home() {
 
   const background = getBackground();
   return (
-    <div
-      className="flex flex-col min-h-screen w-full bg-cover bg-center"
-      style={{
-        backgroundImage: background,
-      }}
-    >
+    <ThemeProvider forcedTheme="dark">
+      <div
+        className="flex flex-col min-h-screen w-full bg-cover bg-center"
+        style={{
+          backgroundImage: background,
+        }}
+      >
       <TypographyH1 className="mt-10">Werewolf</TypographyH1>
-      <ModeToggle />
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <Form {...form1}>
           <form
@@ -172,6 +172,7 @@ export default function Home() {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
