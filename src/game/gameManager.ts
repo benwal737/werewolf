@@ -45,6 +45,7 @@ export const createGame = (
     substep: "none",
     roleCounts,
     totalPlayers,
+    dayNum: 1,
   };
   gameStates.set(lobbyId, newGame);
   return newGame;

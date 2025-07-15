@@ -1,15 +1,15 @@
 import React from "react";
-import { GamePhase } from "@/game/types";
+import { GamePhase, Game } from "@/game/types";
 import { TypographyH1 } from "@/components/ui/typography";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface PhaseIndicatorProps {
-  phase: GamePhase | undefined;
+  gameState: Game;
 }
 
-const PhaseIndicator = ({ phase }: PhaseIndicatorProps) => {
+const PhaseIndicator = ({ gameState }: PhaseIndicatorProps) => {
   let heading = "";
-  switch (phase) {
+  switch (gameState.phase) {
     case "night":
       heading = "Night";
       break;
@@ -25,7 +25,7 @@ const PhaseIndicator = ({ phase }: PhaseIndicatorProps) => {
     <Card className="bg-card/50">
       <CardContent>
         <TypographyH1>
-          {heading}
+          {heading} {gameState.dayNum}
         </TypographyH1>
       </CardContent>
     </Card>

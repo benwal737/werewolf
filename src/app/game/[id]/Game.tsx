@@ -171,7 +171,7 @@ const Game = () => {
         > 
         {/* Phase Indicator  */}
         <div className="flex justify-center mt-5 w-full">
-          <PhaseIndicator phase={gameState.phase as GamePhase} />
+          <PhaseIndicator gameState={gameState} />
         </div>
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto mt-5">

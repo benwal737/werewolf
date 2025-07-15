@@ -39,6 +39,7 @@ export type Game = {
   nightDeaths?: Player[];
   villageKill?: Player;
   winner?: "werewolves" | "villagers" | "draw";
+  dayNum?: number;
 };
 
 export type RoleCounts = Record<Role, number>;
