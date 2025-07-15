@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { TypographyH1, TypographyH4 } from "@/components/ui/typography";
 import { getPlayer } from "@/utils/getPlayer";
 import { ModeToggle } from "@/components/ModeToggle";
+import { getBackground } from "@/utils/getBackground";
 
 export default function Lobby() {
   const lobbyId = useParams().id as string;
@@ -67,16 +68,16 @@ export default function Lobby() {
       socket.off("countdownComplete");
     };
   }, [lobbyId, playerId, playerName, router]);
-  const backgroundUrl = "/layered-peaks-dark.svg";
+  const background = getBackground();
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
+        backgroundImage: background,
       }}
     >
       <ModeToggle />  
-      <Card className="w-full max-w-2xl shadow-md bg-card/50 backdrop-blur-sm border-white/30">
+      <Card className="w-full max-w-2xl shadow-md bg-card/50 backdrop-blur-sm">
         <CardContent className="p-6 space-y-4">
           <TypographyH1 className="text-center">
             Lobby ID: <span className="font-mono">{lobbyId}</span>

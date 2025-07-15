@@ -41,7 +41,7 @@ const RoleCard = ({ role }: RoleCardProps) => {
   const { label, description, icon } = roleInfo[role];
 
   return (
-    <Card className="w-full h-full border-2 border-muted shadow-lg bg-stone-400 rounded-none">
+    <Card className="w-full h-full">
       <CardContent className="flex flex-col items-center justify-center text-center h-full p-6 gap-4">
         {icon}
         <h1 className="text-3xl font-bold capitalize">{label}</h1>

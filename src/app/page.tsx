@@ -29,6 +29,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { ModeToggle } from "@/components/ModeToggle";
+import { getBackground } from "@/utils/getBackground";
 
 const createLobbySchema = z.object({
   name: z.string().max(15, {
@@ -89,13 +90,13 @@ export default function Home() {
     };
   }, []);
 
-  const backgroundUrl = "/layered-peaks-dark.svg";
+  const background = getBackground();
   return (
     <div
       className="flex flex-col min-h-screen w-full bg-cover bg-center"
-      // style={{
-      //   backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
-      // }}
+      style={{
+        backgroundImage: background,
+      }}
     >
       <TypographyH1 className="mt-10">Werewolf</TypographyH1>
       <ModeToggle />

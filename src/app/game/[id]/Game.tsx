@@ -12,6 +12,7 @@ import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
 import Narration from "./Narration";
 import { ModeToggle } from "@/components/ModeToggle";
+import { getBackground } from "@/utils/getBackground";
 
 const Game = () => {
   const router = useRouter();
@@ -149,19 +150,16 @@ const Game = () => {
     handleCountdownTick,
   ]);
 
-  let backgroundUrl = "/layered-peaks-light.svg";
-  if (gameState?.phase === "night") {
-    backgroundUrl = "/layered-peaks-dark.svg";
-  }
+  const background = getBackground();
   return (
     player &&
     playerId &&
     gameState && (
       <div
         className="flex flex-col min-h-screen w-full bg-cover bg-center"
-        // style={{
-        //   backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
-        // }}
+        style={{
+          backgroundImage: background,
+        }}
       >
         <ModeToggle />  
         {/* Top Bar */}
