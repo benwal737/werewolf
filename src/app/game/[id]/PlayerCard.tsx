@@ -118,7 +118,7 @@ export default function PlayerCard({
           votes: {player.numVotes}
         </div>
       )}
-      <div className={cn("text-sm mt-1 isolate filter-none", player.alive && "text-emerald-500", !player.alive && "text-red-500")}>
+      <div className={cn("text-sm mt-1", player.alive && "text-emerald-500", !player.alive && "text-red-500")}>
         {player.alive ? "Alive" : "Dead"}
       </div>
     </Card>

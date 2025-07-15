@@ -22,7 +22,6 @@ export default function Lobby() {
   const router = useRouter();
 
   const handleStartGame = () => {
-    console.log("clicked start");
     socket.emit("startGameCountdown", lobbyId);
   };
 
@@ -77,10 +76,10 @@ export default function Lobby() {
           backgroundImage: background,
         }}
       >
-      <Card className="w-full max-w-2xl shadow-md bg-card/50 backdrop-blur-sm">
-        <CardContent className="p-6 space-y-4">
+      <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
+        <CardContent className="space-y-4">
           <TypographyH1 className="text-center">
-            Lobby ID: <span className="font-mono">{lobbyId}</span>
+            Lobby ID: <span>{lobbyId}</span>
           </TypographyH1>
           <TypographyH4 className="mb-4">
             Share this code to play with friends!
@@ -118,8 +117,8 @@ export default function Lobby() {
         </CardContent>
       </Card>
 
-      <Card className="w-full max-w-2xl shadow-md bg-card/50 backdrop-blur-sm border-white/30">
-        <CardContent className="p-6 flex flex-col items-center">
+      <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
+        <CardContent className="flex flex-col items-center">
           <TypographyH1 className="mb-4">Players</TypographyH1>
           {players.length !== totalPlayers ? (
             <TypographyH4 className="mb-4">{`Waiting (${players.length}/${totalPlayers})`}</TypographyH4>

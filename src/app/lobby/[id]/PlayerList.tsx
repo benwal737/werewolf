@@ -21,7 +21,7 @@ const PlayerList = ({ players, host, playerId, lobbyId }: PlayerListProps) => {
   };
 
   return (
-    <Card className="w-full max-w-xl shadow-xl bg-card/50 backdrop-blur-xl border-white/30">
+    <Card className="w-full max-w-xl">
       <CardContent className="p-6 flex flex-col items-center gap-4">
         <Table>
           <TableBody>
