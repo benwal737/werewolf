@@ -98,13 +98,13 @@ export default function PlayerCard({
     <Card
       onClick={onClick}
       className={cn(
-        "bg-card/50 backdrop-blur-xl px-6 py-4 flex flex-col items-center text-center transition-all border-primary/20 w-50 justify-between",
+        "bg-card/50 backdrop-blur-xl border-white/20 px-6 py-4 flex flex-col items-center text-center transition-all w-50 justify-between",
         disable ? "opacity-50 grayscale" : "opacity-100",
         choosing && !selected && "hover:backdrop-brightness-125 cursor-pointer",
         selected &&
-          "bg-brightness-200" +
+          "backdrop-saturate-200" +
             (werewolfTurn || voteStep ? " cursor-pointer" : ""),
-        !player.alive && "opacity-40 bg-red-200"
+        !player.alive && "bg-red-500/20"
       )}
     >
       <div className="text-lg font-semibold truncate w-full">

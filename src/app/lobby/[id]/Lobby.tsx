@@ -74,7 +74,7 @@ export default function Lobby() {
         backgroundImage: `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${backgroundUrl}')`,
       }}
     >
-      <Card className="w-full max-w-2xl shadow-lg bg-card/50 backdrop-blur-xl">
+      <Card className="w-full max-w-2xl shadow-md bg-card/50 backdrop-blur-xl border-white/30">
         <CardContent className="p-6 space-y-4">
           <TypographyH1 className="text-center">
             Lobby ID: <span className="font-mono">{lobbyId}</span>
@@ -115,7 +115,7 @@ export default function Lobby() {
         </CardContent>
       </Card>
 
-      <Card className="w-full max-w-2xl shadow-md bg-card/50 backdrop-blur-xl">
+      <Card className="w-full max-w-2xl shadow-md bg-card/50 backdrop-blur-xl border-white/30">
         <CardContent className="p-6 flex flex-col items-center">
           <TypographyH1 className="mb-4">Players</TypographyH1>
           {players.length !== totalPlayers ? (
