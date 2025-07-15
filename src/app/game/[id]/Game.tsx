@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { Game as GameState, Role, GamePhase, Player } from "@/game/types";
 import BottomBar from "./BottomBar";
-import TopBar from "./TopBar";
+import PhaseIndicator from "./PhaseIndicator";
 import ActionPanel from "./ActionPanel";
 import { getPlayer } from "@/utils/getPlayer";
 import PlayerCard from "./PlayerCard";
@@ -169,9 +169,9 @@ const Game = () => {
             backgroundImage: background,
           }}
         > 
-        {/* Top Bar */}
-        <div className="w-full">
-          <TopBar phase={gameState.phase as GamePhase} />
+        {/* Phase Indicator  */}
+        <div className="flex justify-center mt-5 w-full">
+          <PhaseIndicator phase={gameState.phase as GamePhase} />
         </div>
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto mt-5">
