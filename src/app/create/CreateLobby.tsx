@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -66,9 +67,9 @@ const PlayerCountDisplay = ({
   return (
     <div className="mb-4 p-3 rounded-lg">
       <div className="flex items-center gap-2">
-        <span className="font-semibold">Total Players:</span>
+        <span className="text-2xl font-semibold">Total Players:</span>
         <span
-          className={`text-lg ${
+          className={`text-2xl font-semibold${
             totalPlayers < MIN_PLAYERS || totalPlayers > MAX_PLAYERS
               ? "text-destructive"
               : "text"
@@ -124,83 +125,90 @@ const CreateLobby = () => {
     );
   };
 
-  const background = getBackground(); 
+  const background = getBackground();
   return (
     <ThemeProvider forcedTheme="dark">
       <div
-        className="flex flex-col min-h-screen w-full bg-cover bg-center"
+        className="flex flex-col min-h-screen w-full bg-cover bg-center items-center justify-center"
         style={{
           backgroundImage: background,
         }}
       >
-      <Form {...form}>
-        <form
-          className="flex flex-col items-center justify-center min-h-screen gap-4"
-          onSubmit={form.handleSubmit(handleSubmit)}
-        >
-          <PlayerCountDisplay form={form} />
+        <Card className="w-full max-w-lg h-[70vh] bg-card/50 backdrop-blur-sm">
+          <CardContent>
+            <Form {...form}>
+              <form
+                className="flex flex-col items-center justify-center gap-4 w-full h-full"
+                onSubmit={form.handleSubmit(handleSubmit)}
+              >
+                <PlayerCountDisplay form={form} />
 
-          {roleKeys.map((role) => (
-            <FormField
-              key={role}
-              control={form.control}
-              name={`roles.${role}`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {role === "werewolf"
-                      ? "Werewolves:"
-                      : role === "foreteller"
-                      ? "Foretellers:"
-                      : role === "villager"
-                      ? "Villagers:"
-                      : role === "witch"
-                      ? "Witches:"
-                      : role}{" "}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      type="number"
-                      min={role === "werewolf" || role === "villager" ? 1 : 0}
-                      max={
-                        role === "witch" || role === "foreteller"
-                          ? 1
-                          : undefined
-                      }
-                      className="w-32 min-h-[30px] h-[50px]"
-                      value={Number.isNaN(field.value) ? "" : field.value}
-                      onChange={(e) => {
-                        const value = e.target.valueAsNumber;
-                        field.onChange(value);
-                      }}
-                      onBlur={(e) => {
-                        const value = e.target.valueAsNumber;
-                        if (Number.isNaN(value)) {
-                          field.onChange(0);
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
+                {roleKeys.map((role) => (
+                  <FormField
+                    key={role}
+                    control={form.control}
+                    name={`roles.${role}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {role === "werewolf"
+                            ? "Werewolves:"
+                            : role === "foreteller"
+                            ? "Foretellers:"
+                            : role === "villager"
+                            ? "Villagers:"
+                            : role === "witch"
+                            ? "Witches:"
+                            : role}{" "}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isLoading}
+                            type="number"
+                            min={
+                              role === "werewolf" || role === "villager" ? 1 : 0
+                            }
+                            max={
+                              role === "witch" || role === "foreteller"
+                                ? 1
+                                : undefined
+                            }
+                            className="w-32 min-h-[30px] h-[50px]"
+                            value={Number.isNaN(field.value) ? "" : field.value}
+                            onChange={(e) => {
+                              const value = e.target.valueAsNumber;
+                              field.onChange(value);
+                            }}
+                            onBlur={(e) => {
+                              const value = e.target.valueAsNumber;
+                              if (Number.isNaN(value)) {
+                                field.onChange(0);
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
 
-          <Button
-            type="submit"
-            disabled={
-              isLoading ||
-              calculateTotalPlayers(form.watch("roles")) < MIN_PLAYERS ||
-              calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
-            }
-          >
-            {isLoading ? "Creating..." : "Create Lobby"}
-          </Button>
-        </form>
-      </Form>
-    </div>
+                <Button
+                  className="mt-5 w-32"
+                  type="submit"
+                  disabled={
+                    isLoading ||
+                    calculateTotalPlayers(form.watch("roles")) < MIN_PLAYERS ||
+                    calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
+                  }
+                >
+                  {isLoading ? "Creating..." : "Create Lobby"}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
     </ThemeProvider>
   );
 };
