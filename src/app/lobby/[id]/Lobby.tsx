@@ -83,6 +83,7 @@ export default function Lobby() {
               <TypographyH1 className="w-full text-center">
                 {screen.width > 768 ? "Lobby ID:" : ""} <span className="font-mono">{lobbyId}</span>
               </TypographyH1>
+              {/* TODO: make this work on mobile */}
               {screen.width > 768 && <Button
                 variant="ghost"
                 onClick={() => navigator.clipboard.writeText(lobbyId)}
