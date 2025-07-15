@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { TypographyH1, TypographyH4 } from "@/components/ui/typography";
 import { getPlayer } from "@/utils/getPlayer";
-import { ThemeProvider } from "@/components/ThemeProvider";
 import { getBackground } from "@/utils/getBackground";
 import { LuClipboardCopy } from "react-icons/lu";
+import PageTheme from "@/components/PageTheme";
 
 export default function Lobby() {
   const lobbyId = useParams().id as string;
@@ -70,7 +70,7 @@ export default function Lobby() {
   }, [lobbyId, playerId, playerName, router]);
   const background = getBackground();
   return (
-    <ThemeProvider forcedTheme="dark">
+    <PageTheme forcedTheme="dark">
       <div
         className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8"
         style={{
@@ -148,6 +148,6 @@ export default function Lobby() {
           </CardContent>
         </Card>
       </div>
-    </ThemeProvider>
+    </PageTheme>
   );
 }

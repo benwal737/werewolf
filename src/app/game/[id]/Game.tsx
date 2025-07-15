@@ -11,8 +11,8 @@ import { getPlayer } from "@/utils/getPlayer";
 import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
 import Narration from "./Narration";
-import { ThemeProvider } from "@/components/ThemeProvider";
 import { getBackground } from "@/utils/getBackground";
+import PageTheme from "@/components/PageTheme";
 
 const Game = () => {
   const router = useRouter();
@@ -24,6 +24,7 @@ const Game = () => {
 
   const [witchSelected, setWitchSelected] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [phaseTheme, setPhaseTheme] = useState("dark");
 
   const { playerId } = getPlayer();
   const player: Player | null =
@@ -150,15 +151,18 @@ const Game = () => {
     handleCountdownTick,
   ]);
 
+  useEffect(() => {
+    const phase = gameState?.phase;
+    const phaseTheme = phase === "night" || phase === "start" ? "dark" : "light";
+    setPhaseTheme(phaseTheme);
+  }, [gameState]);
+
   const background = getBackground();
-  // Compute theme based on phase
-  const phase = gameState?.phase;
-  const computedTheme = phase === "night" || phase === "start" ? "dark" : "light";
   return (
     player &&
     playerId &&
     gameState && (
-      <ThemeProvider forcedTheme={computedTheme}>
+      <PageTheme forcedTheme={phaseTheme}>
         <div
           className="flex flex-col min-h-screen w-full bg-cover bg-center"
           style={{
@@ -204,7 +208,7 @@ const Game = () => {
           <BottomBar role={player?.role as Role} />
         </div>
       </div>
-      </ThemeProvider>
+      </PageTheme>
     )
   );
 };

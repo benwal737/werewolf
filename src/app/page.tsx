@@ -28,7 +28,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import PageTheme from "@/components/PageTheme";
 import { getBackground } from "@/utils/getBackground";
 
 const createLobbySchema = z.object({
@@ -92,7 +92,7 @@ export default function Home() {
 
   const background = getBackground();
   return (
-    <ThemeProvider forcedTheme="dark">
+    <PageTheme forcedTheme="dark">
       <div
         className="flex flex-col min-h-screen w-full bg-cover bg-center"
         style={{
@@ -173,6 +173,6 @@ export default function Home() {
         </Dialog>
       </div>
       </div>
-    </ThemeProvider>
+    </PageTheme>
   );
 }

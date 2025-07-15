@@ -19,8 +19,8 @@ import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
 import { getPlayer } from "@/utils/getPlayer";
-import { ThemeProvider } from "@/components/ThemeProvider";
 import { getBackground } from "@/utils/getBackground";
+import PageTheme from "@/components/PageTheme";
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 15;
@@ -127,14 +127,14 @@ const CreateLobby = () => {
 
   const background = getBackground();
   return (
-    <ThemeProvider forcedTheme="dark">
+    <PageTheme forcedTheme="dark">
       <div
         className="flex flex-col min-h-screen w-full bg-cover bg-center items-center justify-center"
         style={{
           backgroundImage: background,
         }}
       >
-        <Card className="w-full max-w-lg h-[70vh] bg-card/50 backdrop-blur-sm">
+        <Card className="w-full max-w-lg h-[80vh] bg-card/50 backdrop-blur-sm">
           <CardContent>
             <Form {...form}>
               <form
@@ -209,7 +209,7 @@ const CreateLobby = () => {
           </CardContent>
         </Card>
       </div>
-    </ThemeProvider>
+    </PageTheme>
   );
 };
 
