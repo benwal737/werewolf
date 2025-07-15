@@ -24,7 +24,7 @@ const Game = () => {
 
   const [witchSelected, setWitchSelected] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
-  const [phaseTheme, setPhaseTheme] = useState("dark");
+  const [phaseTheme, setPhaseTheme] = useState<"light" | "dark">("dark");
 
   const { playerId } = getPlayer();
   const player: Player | null =
@@ -153,8 +153,9 @@ const Game = () => {
 
   useEffect(() => {
     const phase = gameState?.phase;
-    const phaseTheme = phase === "night" || phase === "start" ? "dark" : "light";
-    setPhaseTheme(phaseTheme);
+    const theme = phase === "night" || phase === "start" ? "dark" : "light";
+    console.log("theme:", theme);
+    setPhaseTheme(theme);
   }, [gameState]);
 
   const background = getBackground();
@@ -168,18 +169,16 @@ const Game = () => {
           style={{
             backgroundImage: background,
           }}
-        > 
-        {/* Phase Indicator  */}
-        <div className="flex justify-center mt-5 w-full">
-          <PhaseIndicator gameState={gameState} />
-        </div>
-        {/* Main Content */}
-        <div className="flex-1 overflow-y-auto mt-5">
-          <Narration
-            gameState={gameState}
-            player={player}
-            countdown={countdown}
-          />
+        >
+          {/* Phase Indicator  */}
+          <div className="flex justify-center mt-5 w-full">
+            <PhaseIndicator
+              gameState={gameState}
+              countdown={countdown}
+              player={player}
+            />
+          </div>
+          {/* Main Content */}
           {/* Player List */}
           <div className="flex justify-center">
             <div className="flex flex-wrap justify-center gap-4 py-12 max-w-5xl mx-auto">
@@ -207,7 +206,6 @@ const Game = () => {
         <div className="w-full flex justify-center items-center fixed bottom-0">
           <BottomBar role={player?.role as Role} />
         </div>
-      </div>
       </PageTheme>
     )
   );

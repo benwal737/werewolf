@@ -143,6 +143,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     }
 
     setPhase(lobbyId, phase, step);
+    game.dayNum++;
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
     startCountdown(io, lobbyId, 30, () => {

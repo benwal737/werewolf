@@ -1,16 +1,14 @@
 import React from "react";
 import { TypographyH4 } from "@/components/ui/typography";
-import CountdownTimer from "./CountdownTimer";
 
 import { Game, Player } from "@/game/types";
 
 interface NarrationProps {
   gameState: Game;
   player: Player;
-  countdown: number | null;
 }
 
-const Narration = ({ gameState, player, countdown }: NarrationProps) => {
+const Narration = ({ gameState, player }: NarrationProps) => {
   const isForeteller = player.role === "foreteller";
   const isWerewolf = player.role === "werewolf";
   const isWitch = player.role === "witch";
@@ -138,9 +136,8 @@ const Narration = ({ gameState, player, countdown }: NarrationProps) => {
 
   return (
     <div className="flex items-center justify-center w-full py-4 gap-8">
-      <div className="flex items-center gap-4">
-        <TypographyH4>{narration}</TypographyH4>
-        {gameState.phase !== "end" && <CountdownTimer countdown={countdown} />}
+      <div className="text-center text-muted-foreground text-sm">
+        {narration}
       </div>
     </div>
   );
