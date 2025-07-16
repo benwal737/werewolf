@@ -22,6 +22,7 @@ import { getPlayer } from "@/utils/getPlayer";
 import { getBackground } from "@/utils/getBackground";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
+import { clickSound } from "@/utils/sounds";
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 15;
@@ -193,6 +194,7 @@ const CreateLobby = () => {
                 ))}
 
                 <Button
+                  onClick={clickSound}
                   className="mt-5 w-32"
                   type="submit"
                   disabled={
