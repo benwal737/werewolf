@@ -27,9 +27,11 @@ import {
   // DialogDescription,
   DialogFooter,
   DialogClose,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import PageTheme from "@/components/PageTheme";
 import { getBackground } from "@/utils/getBackground";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const createLobbySchema = z.object({
   name: z.string().max(15, {
@@ -99,59 +101,26 @@ export default function Home() {
           backgroundImage: background,
         }}
       >
-      <TypographyH1 className="mt-10">Werewolf</TypographyH1>
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <Form {...form1}>
-          <form
-            className="flex flex-col items-center justify-center gap-4"
-            onSubmit={form1.handleSubmit(handleCreateLobby)}
-          >
-            <FormField
-              control={form1.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      className="w-full max-w-xs min-h-[30px] h-[50px]"
-                      placeholder="Enter your name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" disabled={!form1.watch("name")}>
-              Create Lobby
-            </Button>
-          </form>
-        </Form>
-
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button type="button" disabled={!form1.watch("name")}>
-              Join Lobby
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-background text-foreground border-border">
-            <DialogHeader>
-              <DialogTitle>Enter Lobby ID</DialogTitle>
-            </DialogHeader>
-            <Form {...form2}>
+        <TypographyH1 className="mt-10">Werewolf</TypographyH1>
+        <Card className="bg-card/50 backdrop-blur-sm size-fit p-10 m-auto flex flex-col items-center justify-center">
+            <CardTitle className="text-xl">
+              Enter a name to play!
+            </CardTitle>
+          <CardContent className="flex flex-col items-center justify-center gap-4">
+            <Form {...form1}>
               <form
-                onSubmit={form2.handleSubmit(handleJoinLobby)}
-                className="grid gap-4"
+                className="flex flex-col items-center justify-center gap-4"
+                onSubmit={form1.handleSubmit(handleCreateLobby)}
               >
                 <FormField
-                  control={form2.control}
-                  name="lobbyId"
+                  control={form1.control}
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Input
-                          className="w-full max-w-xs min-h-[30px] h-[50px]"
-                          placeholder="Lobby ID"
+                          className="w-[200px]"
+                          placeholder="Your name here..."
                           {...field}
                         />
                       </FormControl>
@@ -159,19 +128,74 @@ export default function Home() {
                     </FormItem>
                   )}
                 />
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline" type="button">
-                      Cancel
-                    </Button>
-                  </DialogClose>
-                  <Button type="submit">Join</Button>
-                </DialogFooter>
+                <Button
+                  className="w-[200px]"
+                  type="submit"
+                  disabled={!form1.watch("name")}
+                >
+                  Create Lobby
+                </Button>
               </form>
             </Form>
-          </DialogContent>
-        </Dialog>
-      </div>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  className="w-[200px]"
+                  type="button"
+                  disabled={!form1.watch("name")}
+                >
+                  Join Lobby
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Lobby ID</DialogTitle>
+                </DialogHeader>
+                <DialogDescription>
+                  Enter a valid lobby ID to join an existing game.
+                </DialogDescription>
+                <Form {...form2}>
+                  <form
+                    onSubmit={form2.handleSubmit(handleJoinLobby)}
+                    className="grid gap-4"
+                  >
+                    <FormField
+                      control={form2.control}
+                      name="lobbyId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              className="w-full min-h-[30px] h-[50px]"
+                              placeholder="Lobby ID"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <DialogFooter className="flex justify-between">
+                      <DialogClose asChild>
+                        <Button
+                          className="w-[100px]"
+                          variant="outline"
+                          type="button"
+                        >
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                      <Button className="w-[100px]" type="submit">
+                        Join
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </CardContent>
+        </Card>
       </div>
     </PageTheme>
   );
