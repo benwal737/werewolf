@@ -8,21 +8,22 @@ import PlayerList from "./PlayerList";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { TypographyH1, TypographyH4 } from "@/components/ui/typography";
-import { getPlayer } from "@/utils/getPlayer";
-import { getBackground } from "@/utils/getBackground";
+import { usePlayer } from "@/utils/usePlayer";
+import { useBackground } from "@/utils/useBackground";
 import { LuClipboardCopy } from "react-icons/lu";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
 import { clickSound } from "@/utils/sounds";
 
 export default function Lobby() {
+  const background = useBackground();
   const lobbyId = useParams().id as string;
   const [players, setPlayers] = useState<Player[]>([]);
   const [host, setHost] = useState<string | null>(null);
   const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
-  const { playerName, playerId } = getPlayer();
+  const { playerName, playerId } = usePlayer();
   const router = useRouter();
 
   const handleStartGame = () => {
@@ -32,6 +33,7 @@ export default function Lobby() {
   };
 
   useEffect(() => {
+    if (!playerId || !playerName) return;
     socket.emit("joinLobby", lobbyId, playerId, playerName);
 
     const handleJoinError = (msg: string) => {
@@ -73,7 +75,7 @@ export default function Lobby() {
       socket.off("countdownComplete");
     };
   }, [lobbyId, playerId, playerName, router]);
-  const background = getBackground();
+
   return (
     <PageTheme forcedTheme="dark">
       <div

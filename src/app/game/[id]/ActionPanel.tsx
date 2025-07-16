@@ -27,42 +27,50 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
   };
   return (
     <Card className=" flex flex-col gap-2 p-5 bg-card/50 backdrop-blur-sm">
-      <div className="flex gap-2">
-        <Button
-          className="w-20 m-auto"
-          onClick={handleSave}
-          disabled={gameState.witchSaved || chosen || !willDie}
-        >
-          Save
-        </Button>
-        <p
-          className={
-            gameState.witchSaved
-              ? "text-muted m-auto"
-              : "text-muted-foreground m-auto"
-          }
-        >
-          ({gameState.witchSaved ? 0 : 1})
+      {gameState.witchKilling ? (
+        <p className="text-center">
+          Choose Wisely. One you select a player, your answer will be locked in.
         </p>
-      </div>
-      <div className="flex gap-2">
-        <Button
-          className="w-20 m-auto"
-          onClick={handleKill}
-          disabled={gameState.witchKilled || chosen}
-        >
-          Kill
-        </Button>
-        <p
-          className={
-            gameState.witchKilled
-              ? "text-muted m-auto"
-              : "text-muted-foreground m-auto"
-          }
-        >
-          ({gameState.witchKilled ? 0 : 1})
-        </p>
-      </div>
+      ) : (
+        <>
+          <div className="flex gap-2">
+            <Button
+              className="w-20 m-auto"
+              onClick={handleSave}
+              disabled={gameState.witchSaved || chosen || !willDie}
+            >
+              Save
+            </Button>
+            <p
+              className={
+                gameState.witchSaved
+                  ? "text-muted m-auto"
+                  : "text-muted-foreground m-auto"
+              }
+            >
+              ({gameState.witchSaved ? 0 : 1})
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              className="w-20 m-auto"
+              onClick={handleKill}
+              disabled={gameState.witchKilled || chosen}
+            >
+              Kill
+            </Button>
+            <p
+              className={
+                gameState.witchKilled
+                  ? "text-muted m-auto"
+                  : "text-muted-foreground m-auto"
+              }
+            >
+              ({gameState.witchKilled ? 0 : 1})
+            </p>
+          </div>
+        </>
+      )}
     </Card>
   );
 };

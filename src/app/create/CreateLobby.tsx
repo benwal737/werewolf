@@ -18,8 +18,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
-import { getPlayer } from "@/utils/getPlayer";
-import { getBackground } from "@/utils/getBackground";
+import { usePlayer } from "@/utils/usePlayer";
+import { useBackground } from "@/utils/useBackground";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
 import { clickSound } from "@/utils/sounds";
@@ -93,6 +93,8 @@ function makeid(length: number) {
 }
 
 const CreateLobby = () => {
+  const background = useBackground();
+  const { playerName, playerId } = usePlayer();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof lobbySchema>>({
@@ -111,7 +113,6 @@ const CreateLobby = () => {
     setIsLoading(true);
     const totalPlayers = calculateTotalPlayers(data.roles);
     const lobbyId = makeid(5);
-    const { playerName, playerId } = getPlayer();
     socket.emit(
       "createLobby",
       lobbyId,
@@ -125,7 +126,6 @@ const CreateLobby = () => {
     );
   };
 
-  const background = getBackground();
   return (
     <PageTheme forcedTheme="dark">
       <div
@@ -199,6 +199,8 @@ const CreateLobby = () => {
                   type="submit"
                   disabled={
                     isLoading ||
+                    !playerId ||
+                    !playerName ||
                     calculateTotalPlayers(form.watch("roles")) < MIN_PLAYERS ||
                     calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
                   }

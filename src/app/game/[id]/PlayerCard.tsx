@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Player } from "@/game/types";
-import { GiCauldron, GiFarmer, GiWerewolf, GiThirdEye } from "react-icons/gi";
+import { GiCauldron, GiVillage, GiWerewolf, GiThirdEye } from "react-icons/gi";
 import { FaQuestion } from "react-icons/fa";
 
 import { Game } from "@/game/types";
@@ -41,7 +41,7 @@ export default function PlayerCard({
         case "witch":
           return <GiCauldron size={35} />;
         case "villager":
-          return <GiFarmer size={40} />;
+          return <GiVillage size={35} />;
       }
     }
     if (user.id !== player.id && player.alive && !gameOver && user.alive) {
@@ -56,7 +56,7 @@ export default function PlayerCard({
         case "witch":
           return <GiCauldron size={35} />;
         case "villager":
-          return <GiFarmer size={40} />;
+          return <GiVillage size={35} />;
       }
     }
     return null;

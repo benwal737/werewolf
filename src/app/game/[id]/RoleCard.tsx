@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Role } from "@/game/types";
-import { GiCauldron, GiFarmer, GiWerewolf, GiThirdEye } from "react-icons/gi";
+import { GiCauldron, GiVillage, GiWerewolf, GiThirdEye } from "react-icons/gi";
+import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface RoleCardProps {
   role: Role | undefined;
@@ -14,7 +15,7 @@ const roleInfo: Record<
     label: "Villager",
     description:
       "You are an ordinary townsperson. Try to figure out who the werewolves are.",
-    icon: <GiFarmer size={80} className="" />,
+    icon: <GiVillage size={80} className="" />,
   },
   werewolf: {
     label: "Werewolf",
@@ -44,8 +45,8 @@ const RoleCard = ({ role }: RoleCardProps) => {
     <Card className="w-full h-full">
       <CardContent className="flex flex-col items-center justify-center text-center h-full p-6 gap-4">
         {icon}
-        <h1 className="text-3xl font-bold capitalize">{label}</h1>
-        <p className="text-sm max-w-md">{description}</p>
+        <DialogTitle>{label}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
       </CardContent>
     </Card>
   );

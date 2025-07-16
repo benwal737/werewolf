@@ -1,15 +1,6 @@
 import React from "react";
 import { Role } from "@/game/types";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  // DialogHeader,
-  // DialogTitle,
-  // DialogDescription,
-  // DialogFooter,
-  // DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import RoleCard from "./RoleCard";
 import { clickSound } from "@/utils/sounds";
@@ -26,7 +17,7 @@ const BottomBar = ({ role }: BottomBarProps) => {
           {role && (
             <Button
               type="button"
-              className="text-2xl p-7"
+              className="text-2xl p-7 mb-2 bg-card-foreground hover:bg-card-foreground/80"
               onClick={clickSound}
             >
               {role[0].toUpperCase() + role.slice(1)}

@@ -1,6 +1,4 @@
 import React from "react";
-import { TypographyH4 } from "@/components/ui/typography";
-
 import { Game, Player } from "@/game/types";
 
 interface NarrationProps {

@@ -3,18 +3,19 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
-import { Game as GameState, Role, GamePhase, Player } from "@/game/types";
+import { Game as GameState, Role, Player } from "@/game/types";
 import BottomBar from "./BottomBar";
 import PhaseIndicator from "./PhaseIndicator";
 import ActionPanel from "./ActionPanel";
-import { getPlayer } from "@/utils/getPlayer";
+import { usePlayer } from "@/utils/usePlayer";
 import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
-import { getBackground } from "@/utils/getBackground";
 import PageTheme from "@/components/PageTheme";
 import { clickSound } from "@/utils/sounds";
+import { useBackground } from "@/utils/useBackground";
 
 const Game = () => {
+  const background = useBackground();
   const router = useRouter();
   const lobbyId = useParams().id;
 
@@ -26,7 +27,7 @@ const Game = () => {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [phaseTheme, setPhaseTheme] = useState<"light" | "dark">("dark");
 
-  const { playerId } = getPlayer();
+  const { playerId } = usePlayer();
   const player: Player | null =
     playerId && gameState ? gameState.players[playerId] : null;
 
@@ -161,7 +162,6 @@ const Game = () => {
     setPhaseTheme(theme);
   }, [gameState]);
 
-  const background = getBackground();
   return (
     player &&
     playerId &&
@@ -199,7 +199,7 @@ const Game = () => {
             </div>
           </div>
 
-          {witchTurn && isWitch && !gameState.witchKilling && (
+          {witchTurn && isWitch && (
             <div className="flex justify-center mt-5 w-full">
               <ActionPanel gameState={gameState} />
             </div>

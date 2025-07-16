@@ -24,15 +24,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  // DialogDescription,
   DialogFooter,
   DialogClose,
   DialogDescription,
 } from "@/components/ui/dialog";
-import PageTheme from "@/components/PageTheme";
-import { getBackground } from "@/utils/getBackground";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useBackground } from "@/utils/useBackground";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { clickSound } from "@/utils/sounds";
+import PageTheme from "@/components/PageTheme";
 
 const createLobbySchema = z.object({
   name: z.string().max(15, {
@@ -48,6 +47,7 @@ const joinLobbySchema = z.object({
 });
 
 export default function Home() {
+  const background = useBackground();
   const router = useRouter();
 
   const form1 = useForm<z.infer<typeof createLobbySchema>>({
@@ -93,7 +93,6 @@ export default function Home() {
     };
   }, []);
 
-  const background = getBackground();
   return (
     <PageTheme forcedTheme="dark">
       <div
