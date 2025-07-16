@@ -32,7 +32,7 @@ const PhaseIndicator = ({
   const phase = gameState.phase;
   const phaseNumber = gameState.dayNum;
   return (
-    <Card className="bg-card/50 backdrop-blur-sm w-full mx-5">
+    <Card className="bg-card/50 backdrop-blur-sm w-full mx-20">
       <CardContent className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div>
