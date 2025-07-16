@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import RoleCard from "./RoleCard";
+import { clickSound } from "@/utils/sounds";
 
 interface BottomBarProps {
   role: Role | undefined;
@@ -25,7 +26,8 @@ const BottomBar = ({ role }: BottomBarProps) => {
           {role && (
             <Button
               type="button"
-              className="text-2xl p-7 cursor-pointer hover:bg-slate-800"
+              className="text-2xl p-7"
+              onClick={clickSound}
             >
               {role[0].toUpperCase() + role.slice(1)}
             </Button>

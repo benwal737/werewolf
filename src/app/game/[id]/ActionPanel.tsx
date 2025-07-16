@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { socket } from "@/lib/socketClient";
 import { useParams } from "next/navigation";
+import { clickSound } from "@/utils/sounds";
 
 interface ActionPanelProps {
   gameState: Game;
@@ -15,10 +16,12 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
   const willDie = gameState.werewolfKill;
   const [chosen, setChosen] = useState<boolean>(false);
   const handleSave = () => {
+    clickSound();
     setChosen(true);
     socket.emit("witchSave", lobbyId, willDie?.id);
   };
   const handleKill = () => {
+    clickSound();
     setChosen(true);
     socket.emit("witchKilling", lobbyId);
   };

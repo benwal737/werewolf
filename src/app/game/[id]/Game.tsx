@@ -10,9 +10,9 @@ import ActionPanel from "./ActionPanel";
 import { getPlayer } from "@/utils/getPlayer";
 import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
-import Narration from "./Narration";
 import { getBackground } from "@/utils/getBackground";
 import PageTheme from "@/components/PageTheme";
+import { clickSound } from "@/utils/sounds";
 
 const Game = () => {
   const router = useRouter();
@@ -41,15 +41,18 @@ const Game = () => {
 
   const foretellerAction = (target: Player) => {
     if (foretellerRevealed) return;
+    clickSound();
     socket.emit("foretellerSelected", lobbyId, target.id);
   };
 
   const voteAction = (target: Player) => {
+    clickSound();
     socket.emit("playerVoted", lobbyId, playerId, target.id);
   };
 
   const witchAction = (target: Player) => {
     if (witchSelected) return;
+    clickSound();
     socket.emit("witchKilled", lobbyId, target.id);
     setWitchSelected(true);
   };
