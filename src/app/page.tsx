@@ -101,8 +101,8 @@ export default function Home() {
           backgroundImage: background,
         }}
       >
-        <TypographyH1 className="mt-10">Werewolf</TypographyH1>
-        <Card className="bg-card/50 backdrop-blur-sm size-fit p-10 m-auto flex flex-col items-center justify-center">
+        <TypographyH1 className="mt-20 text-7xl font-sans">Werewolf</TypographyH1>
+        <Card className="bg-card/50 backdrop-blur-sm size-fit p-10 mx-auto my-30 flex flex-col items-center justify-center">
             <CardTitle className="text-xl">
               Enter a name to play!
             </CardTitle>
