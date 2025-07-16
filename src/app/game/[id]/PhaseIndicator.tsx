@@ -44,15 +44,17 @@ const PhaseIndicator = ({
           </div>
           <div>
             <h2 className="text-2xl font-bold">
-              {heading} {phaseNumber}
+              {heading} {phase !== "end" && phaseNumber}
             </h2>
             <Narration gameState={gameState} player={player} />
           </div>
         </div>
 
-        <div className="text-right">
-          <CountdownTimer countdown={countdown} />
-        </div>
+        {phase !== "end" && (
+          <div className="text-right">
+            <CountdownTimer countdown={countdown} />
+          </div>
+        )}
       </CardContent>
     </Card>
   );

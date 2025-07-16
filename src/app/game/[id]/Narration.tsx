@@ -43,9 +43,8 @@ const Narration = ({ gameState, player }: NarrationProps) => {
         <>
           <p>
             <b className="text-red-500">{gameState.werewolfKill.name}</b> will
-            die tonight.
+            die tonight. Choose an available action, or do nothing.
           </p>
-          <p>Choose an available action, or do nothing.</p>
         </>
       );
     } else if (gameState.werewolfKill && witchSave) {
@@ -58,8 +57,9 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     } else {
       return (
         <>
-          <p>No one will die tonight.</p>
-          <p>Choose an available action, or do nothing.</p>
+          <p>
+            No one will die tonight. Choose an available action, or do nothing.
+          </p>
         </>
       );
     }
@@ -128,17 +128,13 @@ const Narration = ({ gameState, player }: NarrationProps) => {
         break;
       default:
         narration = <p>Loading...</p>;
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
     }
   }
 
-  return (
-    <div className="text-center text-muted-foreground text-lg">
-      {narration}
-    </div>
-  );
+  return <div className="text-muted-foreground text-lg">{narration}</div>;
 };
 
 export default Narration;
