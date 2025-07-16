@@ -21,6 +21,7 @@ import { RoleCounts } from "@/game/types";
 import { getPlayer } from "@/utils/getPlayer";
 import { getBackground } from "@/utils/getBackground";
 import PageTheme from "@/components/PageTheme";
+import { Loader2Icon } from "lucide-react";
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 15;
@@ -65,18 +66,16 @@ const PlayerCountDisplay = ({
   const totalPlayers = calculateTotalPlayers(roles);
 
   return (
-    <div className="mb-4 p-3 rounded-lg">
-      <div className="flex items-center gap-2">
-        <span className="text-2xl font-semibold">Total Players:</span>
-        <span
-          className={`text-2xl font-semibold${
-            totalPlayers < MIN_PLAYERS || totalPlayers > MAX_PLAYERS
-              ? "text-destructive"
-              : "text"
-          }`}
-        >
-          {totalPlayers}
-        </span>
+    <div className="flex gap-2 mb-4">
+      <div className="text-2xl font-semibold">Total Players: </div>
+      <div
+        className={`text-2xl font-semibold${
+          totalPlayers < MIN_PLAYERS || totalPlayers > MAX_PLAYERS
+            ? " text-destructive"
+            : ""
+        }`}
+      >
+        {totalPlayers}
       </div>
     </div>
   );
@@ -134,7 +133,7 @@ const CreateLobby = () => {
           backgroundImage: background,
         }}
       >
-        <Card className="w-full max-w-lg h-[80vh] bg-card/50 backdrop-blur-sm">
+        <Card className="size-fit p-10 bg-card/50 backdrop-blur-sm">
           <CardContent>
             <Form {...form}>
               <form
@@ -202,7 +201,14 @@ const CreateLobby = () => {
                     calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
                   }
                 >
-                  {isLoading ? "Creating..." : "Create Lobby"}
+                  {isLoading ? (
+                    <>
+                      <Loader2Icon className="animate-spin" />
+                      Creating
+                    </>
+                  ) : (
+                    "Create Lobby"
+                  )}
                 </Button>
               </form>
             </Form>
