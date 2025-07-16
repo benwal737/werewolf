@@ -128,17 +128,15 @@ const Narration = ({ gameState, player }: NarrationProps) => {
         break;
       default:
         narration = <p>Loading...</p>;
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
     }
   }
 
   return (
-    <div className="flex items-center justify-center w-full py-4 gap-8">
-      <div className="text-center text-muted-foreground text-sm">
-        {narration}
-      </div>
+    <div className="text-center text-muted-foreground text-lg">
+      {narration}
     </div>
   );
 };

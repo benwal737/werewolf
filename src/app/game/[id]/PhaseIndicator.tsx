@@ -32,27 +32,26 @@ const PhaseIndicator = ({
   const phase = gameState.phase;
   const phaseNumber = gameState.dayNum;
   return (
-    <Card className="bg-card/50 backdrop-blur-sm">
+    <Card className="bg-card/50 backdrop-blur-sm w-full mx-5">
       <CardContent className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div>
             {phase === "night" ? (
-              <Moon className="h-6 w-6" />
+              <Moon className="h-12 w-12" />
             ) : (
-              <Sun className="h-6 w-6" />
+              <Sun className="h-12 w-12" />
             )}
           </div>
           <div>
-            <h2 className="text-2xl font-bold">{heading} {phaseNumber}</h2>
+            <h2 className="text-2xl font-bold">
+              {heading} {phaseNumber}
+            </h2>
             <Narration gameState={gameState} player={player} />
           </div>
         </div>
 
         <div className="text-right">
-          <div className="text-3xl font-mono font-bold">
-            <CountdownTimer countdown={countdown} />
-          </div>
-          <p className="text-sm text-muted-foreground">remaining</p>
+          <CountdownTimer countdown={countdown} />
         </div>
       </CardContent>
     </Card>

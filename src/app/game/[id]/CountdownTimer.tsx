@@ -1,4 +1,5 @@
 import React from "react";
+import { IoIosTimer } from "react-icons/io";
 
 interface CountdownTimerProps {
   countdown: number | null;
@@ -6,9 +7,10 @@ interface CountdownTimerProps {
 
 const CountdownTimer = ({ countdown }: CountdownTimerProps) => {
   return (
-    <div className="flex items-center gap-2 rounded px-4 py-2 w-[90px] justify-center text-2xl font-bold">
+    <div className="text-4xl font-mono font-bold flex">
+      <IoIosTimer />
       <span className="w-[2ch] tabular-nums text-center">
-        {countdown ?? ""}
+        {countdown ? countdown : ""}
       </span>
     </div>
   );
