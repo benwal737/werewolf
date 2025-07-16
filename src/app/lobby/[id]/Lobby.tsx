@@ -12,6 +12,7 @@ import { getPlayer } from "@/utils/getPlayer";
 import { getBackground } from "@/utils/getBackground";
 import { LuClipboardCopy } from "react-icons/lu";
 import PageTheme from "@/components/PageTheme";
+import { Loader2Icon } from "lucide-react";
 
 export default function Lobby() {
   const lobbyId = useParams().id as string;
@@ -19,10 +20,12 @@ export default function Lobby() {
   const [host, setHost] = useState<string | null>(null);
   const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
   const { playerName, playerId } = getPlayer();
   const router = useRouter();
 
   const handleStartGame = () => {
+    setLoading(true);
     socket.emit("startGameCountdown", lobbyId);
   };
 
@@ -81,17 +84,20 @@ export default function Lobby() {
           <CardContent className="space-y-4 flex flex-col items-center">
             <div className="relative w-[24vw] flex items-center">
               <TypographyH1 className="w-full text-center">
-                {screen.width > 768 ? "Lobby ID:" : ""} <span className="font-mono">{lobbyId}</span>
+                {screen.width > 768 ? "Lobby ID:" : ""}{" "}
+                <span className="font-mono">{lobbyId}</span>
               </TypographyH1>
               {/* TODO: make this work on mobile */}
-              {screen.width > 768 && <Button
-                variant="ghost"
-                onClick={() => navigator.clipboard.writeText(lobbyId)}
-                className="w-8 absolute right-0 top-1/2 -translate-y-1/2"
-                aria-label="Copy Lobby ID"
-              >
-                <LuClipboardCopy />
-              </Button>}
+              {screen.width > 768 && (
+                <Button
+                  variant="ghost"
+                  onClick={() => navigator.clipboard.writeText(lobbyId)}
+                  className="w-8 absolute right-0 top-1/2 -translate-y-1/2"
+                  aria-label="Copy Lobby ID"
+                >
+                  <LuClipboardCopy />
+                </Button>
+              )}
             </div>
             <TypographyH4 className="mb-4">
               Share this code to play with friends!
@@ -118,7 +124,14 @@ export default function Lobby() {
                   }
                   className="w-17"
                 >
-                  Start
+                  {loading ? (
+                    <>
+                      <Loader2Icon className="animate-spin" />
+                      Starting
+                    </>
+                  ) : (
+                    "Start"
+                  )}
                 </Button>
               )}
             </div>

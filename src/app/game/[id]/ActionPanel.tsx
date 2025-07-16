@@ -23,16 +23,24 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
     socket.emit("witchKilling", lobbyId);
   };
   return (
-    <Card className=" flex flex-col gap-2 bg-slate-800 border-none p-5">
+    <Card className=" flex flex-col gap-2 p-5 bg-card/50 backdrop-blur-sm">
       <div className="flex gap-2">
         <Button
           className="w-20 m-auto"
           onClick={handleSave}
           disabled={gameState.witchSaved || chosen || !willDie}
         >
-          Save ❤️
+          Save
         </Button>
-        <p className="m-auto text-white">({gameState.witchSaved ? 0 : 1})</p>
+        <p
+          className={
+            gameState.witchSaved
+              ? "text-muted m-auto"
+              : "text-muted-foreground m-auto"
+          }
+        >
+          ({gameState.witchSaved ? 0 : 1})
+        </p>
       </div>
       <div className="flex gap-2">
         <Button
@@ -40,9 +48,17 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
           onClick={handleKill}
           disabled={gameState.witchKilled || chosen}
         >
-          Kill 🔪
+          Kill
         </Button>
-        <p className="m-auto text-white">({gameState.witchKilled ? 0 : 1})</p>
+        <p
+          className={
+            gameState.witchKilled
+              ? "text-muted m-auto"
+              : "text-muted-foreground m-auto"
+          }
+        >
+          ({gameState.witchKilled ? 0 : 1})
+        </p>
       </div>
     </Card>
   );

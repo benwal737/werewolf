@@ -133,7 +133,7 @@ const CreateLobby = () => {
           backgroundImage: background,
         }}
       >
-        <Card className="size-fit p-10 bg-card/50 backdrop-blur-sm">
+        <Card className="size-fit min-w-[25vw] p-10 bg-card/50 backdrop-blur-sm">
           <CardContent>
             <Form {...form}>
               <form
