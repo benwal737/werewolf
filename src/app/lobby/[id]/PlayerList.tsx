@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { socket } from "@/lib/socketClient";
 import { Card, CardContent } from "@/components/ui/card";
 import { GiBootKick } from "react-icons/gi";
+import { clickSound } from "@/utils/sounds";
 
 interface PlayerListProps {
   players: Player[];
@@ -16,7 +17,7 @@ const PlayerList = ({ players, host, playerId, lobbyId }: PlayerListProps) => {
   const isHost = host === playerId;
 
   const handleKick = (lobbyId: string, playerIdToKick: string) => {
-    console.log("kicking");
+    clickSound();
     socket.emit("kickPlayer", lobbyId, playerIdToKick);
   };
 

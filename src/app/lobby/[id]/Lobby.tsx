@@ -13,6 +13,7 @@ import { getBackground } from "@/utils/getBackground";
 import { LuClipboardCopy } from "react-icons/lu";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
+import { clickSound } from "@/utils/sounds";
 
 export default function Lobby() {
   const lobbyId = useParams().id as string;
@@ -25,6 +26,7 @@ export default function Lobby() {
   const router = useRouter();
 
   const handleStartGame = () => {
+    clickSound();
     setLoading(true);
     socket.emit("startGameCountdown", lobbyId);
   };
@@ -91,7 +93,10 @@ export default function Lobby() {
               {screen.width > 768 && (
                 <Button
                   variant="ghost"
-                  onClick={() => navigator.clipboard.writeText(lobbyId)}
+                  onClick={() => {
+                    clickSound();
+                    navigator.clipboard.writeText(lobbyId);
+                  }}
                   className="w-8 absolute right-0 top-1/2 -translate-y-1/2"
                   aria-label="Copy Lobby ID"
                 >
@@ -107,6 +112,7 @@ export default function Lobby() {
               <Button
                 variant="default"
                 onClick={() => {
+                  clickSound();
                   socket.emit("leaveLobby", lobbyId, playerId);
                   localStorage.removeItem("playerName");
                   router.push("/");
@@ -124,14 +130,7 @@ export default function Lobby() {
                   }
                   className="w-17"
                 >
-                  {loading ? (
-                    <>
-                      <Loader2Icon className="animate-spin" />
-                      Starting
-                    </>
-                  ) : (
-                    "Start"
-                  )}
+                  {loading ? <Loader2Icon className="animate-spin" /> : "Start"}
                 </Button>
               )}
             </div>
