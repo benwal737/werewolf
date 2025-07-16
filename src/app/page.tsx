@@ -32,6 +32,7 @@ import {
 import PageTheme from "@/components/PageTheme";
 import { getBackground } from "@/utils/getBackground";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { clickSound } from "@/utils/sounds";
 
 const createLobbySchema = z.object({
   name: z.string().max(15, {
@@ -101,11 +102,11 @@ export default function Home() {
           backgroundImage: background,
         }}
       >
-        <TypographyH1 className="mt-20 text-7xl font-sans">Werewolf</TypographyH1>
+        <TypographyH1 className="mt-20 text-7xl font-sans">
+          Werewolf
+        </TypographyH1>
         <Card className="bg-card/50 backdrop-blur-sm size-fit p-10 mx-auto my-30 flex flex-col items-center justify-center">
-            <CardTitle className="text-xl">
-              Enter a name to play!
-            </CardTitle>
+          <CardTitle className="text-xl">Enter a name to play!</CardTitle>
           <CardContent className="flex flex-col items-center justify-center gap-4">
             <Form {...form1}>
               <form
@@ -129,6 +130,7 @@ export default function Home() {
                   )}
                 />
                 <Button
+                  onClick={clickSound}
                   className="w-[200px]"
                   type="submit"
                   disabled={!form1.watch("name")}
@@ -141,6 +143,7 @@ export default function Home() {
             <Dialog>
               <DialogTrigger asChild>
                 <Button
+                  onClick={clickSound}
                   className="w-[200px]"
                   type="button"
                   disabled={!form1.watch("name")}
@@ -179,6 +182,7 @@ export default function Home() {
                     <DialogFooter className="flex justify-between">
                       <DialogClose asChild>
                         <Button
+                          onClick={clickSound}
                           className="w-[100px]"
                           variant="outline"
                           type="button"
@@ -186,7 +190,11 @@ export default function Home() {
                           Cancel
                         </Button>
                       </DialogClose>
-                      <Button className="w-[100px]" type="submit">
+                      <Button
+                        onClick={clickSound}
+                        className="w-[100px]"
+                        type="submit"
+                      >
                         Join
                       </Button>
                     </DialogFooter>
