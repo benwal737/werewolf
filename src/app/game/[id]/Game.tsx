@@ -20,7 +20,6 @@ const Game = () => {
   const lobbyId = useParams().id;
 
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const gameStateRef = useRef<GameState | null>(null);
   const hasJoinedRef = useRef(false);
 
   const [witchSelected, setWitchSelected] = useState(false);
@@ -84,23 +83,15 @@ const Game = () => {
 
   const handleForetellerReveal = useCallback(
     (target: Player) => {
-      if (!playerId) return;
-      const isCurrentForeteller = () =>
-        gameStateRef.current?.players[playerId]?.role === "foreteller";
-      if (isCurrentForeteller()) {
-        console.log("you’re the foreteller and you just revealed");
+      if (isForeteller) {
         toast(`You saw ${target.name} - they are a ${target.role}.`, {
           description: "Foreteller Vision",
           duration: 10000,
           position: "top-left",
         });
-      } else {
-        console.log(
-          "you are not the foreteller, but the foreteller just revealed"
-        );
       }
     },
-    [playerId, gameStateRef]
+    [isForeteller]
   );
 
   const handleCountdownTick = useCallback(
@@ -111,24 +102,17 @@ const Game = () => {
   );
 
   useEffect(() => {
+    if (!playerId) return;
     if (hasJoinedRef.current) return;
     hasJoinedRef.current = true;
 
     socket.emit("joinGame", lobbyId, playerId, (game: GameState) => {
-      console.log("updating game");
       setGameState(game);
-      console.log("game state upon joining:", game);
     });
   }, [lobbyId, playerId]);
 
   useEffect(() => {
-    gameStateRef.current = gameState;
-  }, [gameState]);
-
-  useEffect(() => {
     socket.emit("requestCountdown", lobbyId, (timeLeft: number | null) => {
-      console.log("requesting countdown");
-      console.log("time left:", timeLeft);
       if (typeof timeLeft === "number") {
         setCountdown(timeLeft);
       }
@@ -158,7 +142,6 @@ const Game = () => {
   useEffect(() => {
     const phase = gameState?.phase;
     const theme = phase === "night" || phase === "start" ? "dark" : "light";
-    console.log("theme:", theme);
     setPhaseTheme(theme);
   }, [gameState]);
 

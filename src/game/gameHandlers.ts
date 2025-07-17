@@ -42,10 +42,19 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
       player.numVotes = 0;
     }
 
-    const hasWitch = game.roleCounts.witch > 0 && witchAlive;
-    const step = hasWitch ? "witch" : "none";
-    const phase: GamePhase = hasWitch ? "night" : "day";
+    const step = witchAlive ? "witch" : "deaths";
+    const phase: GamePhase = witchAlive ? "night" : "day";
 
+    if (!witchAlive) {
+      setNightDeaths(lobbyId);
+      checkWinner(lobbyId);
+      if (game.winner) {
+        setPhase(lobbyId, "end", "none");
+        const updated = getSafeGameState(lobbyId);
+        io.to(lobbyId).emit("gameUpdated", updated);
+        return;
+      }
+    }
     setPhase(lobbyId, phase, step);
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
