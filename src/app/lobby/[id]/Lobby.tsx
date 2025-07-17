@@ -15,6 +15,7 @@ import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
 import { clickSound } from "@/utils/sounds";
 import { TextShimmer } from "@/components/ui/text-shimmer";
+import Clipboard from "react-clipboard-animation";
 
 export default function Lobby() {
   const background = useBackground();
@@ -25,6 +26,7 @@ export default function Lobby() {
   const [started, setStarted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [validLobby, setValidLobby] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { playerName, playerId } = usePlayer();
   const router = useRouter();
 
@@ -33,6 +35,14 @@ export default function Lobby() {
     setLoading(true);
     socket.emit("startGameCountdown", lobbyId);
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (copied) setCopied(false);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [copied]);
 
   useEffect(() => {
     if (!playerId || !playerName) return;
@@ -94,23 +104,17 @@ export default function Lobby() {
             <CardContent className="flex flex-col items-center gap-2">
               <div className="relative w-[24vw] flex items-center">
                 <TypographyH1 className="w-full text-center">
-                  {screen.width > 768 ? "Lobby ID:" : ""}{" "}
-                  <span className="font-mono">{lobbyId}</span>
+                  Lobby ID:
+                  <span className="font-mono"> {lobbyId}</span>
                 </TypographyH1>
-                {/* TODO: make this work on mobile */}
-                {screen.width > 768 && (
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      clickSound();
-                      navigator.clipboard.writeText(lobbyId);
-                    }}
-                    className="w-8 absolute right-0 top-1/2 -translate-y-1/2"
-                    aria-label="Copy Lobby ID"
-                  >
-                    <LuClipboardCopy />
-                  </Button>
-                )}
+                <Clipboard
+                  copied={copied}
+                  setCopied={setCopied}
+                  text={lobbyId}
+                  color="white"
+                  size={24}
+                  className=""
+                />
               </div>
               <TypographyH4 className="mb-4">
                 Share this code to play with friends!
@@ -133,9 +137,7 @@ export default function Lobby() {
                 {playerId === host && (
                   <Button
                     onClick={handleStartGame}
-                    disabled={
-                      players.length !== totalPlayers || started
-                    } 
+                    disabled={players.length !== totalPlayers || started}
                     className="w-17"
                   >
                     {loading ? (
@@ -153,9 +155,7 @@ export default function Lobby() {
             <CardContent className="flex flex-col items-center gap-2">
               <TypographyH1 className="mb-4">Players</TypographyH1>
               {started ? (
-                <TextShimmer>
-                  Game starting...
-                </TextShimmer>
+                <TextShimmer>Game starting...</TextShimmer>
               ) : players.length !== totalPlayers ? (
                 <TypographyH4 className="mb-4">{`Waiting (${players.length}/${totalPlayers})`}</TypographyH4>
               ) : (
