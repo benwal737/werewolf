@@ -23,6 +23,7 @@ export default function Lobby() {
   const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [validLobby, setValidLobby] = useState(false);
   const { playerName, playerId } = usePlayer();
   const router = useRouter();
 
@@ -36,8 +37,7 @@ export default function Lobby() {
     if (!playerId || !playerName) return;
     socket.emit("joinLobby", lobbyId, playerId, playerName);
 
-    const handleJoinError = (msg: string) => {
-      alert(msg);
+    const handleJoinError = () => {
       router.push("/");
     };
 
@@ -49,10 +49,10 @@ export default function Lobby() {
       setPlayers(Object.values(data.players));
       setHost(data.host);
       setTotalPlayers(data.totalPlayers);
+      setValidLobby(true);
     };
 
     const handleKicked = () => {
-      alert("You have been kicked from the lobby");
       router.push("/");
     };
 
@@ -84,83 +84,93 @@ export default function Lobby() {
           backgroundImage: background,
         }}
       >
-        <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
-          <CardContent className="space-y-4 flex flex-col items-center">
-            <div className="relative w-[24vw] flex items-center">
-              <TypographyH1 className="w-full text-center">
-                {screen.width > 768 ? "Lobby ID:" : ""}{" "}
-                <span className="font-mono">{lobbyId}</span>
-              </TypographyH1>
-              {/* TODO: make this work on mobile */}
-              {screen.width > 768 && (
+        <div
+          className={`transition-opacity duration-300 flex flex-col items-center gap-6 px-4 py-8${
+            validLobby ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
+            <CardContent className="space-y-4 flex flex-col items-center">
+              <div className="relative w-[24vw] flex items-center">
+                <TypographyH1 className="w-full text-center">
+                  {screen.width > 768 ? "Lobby ID:" : ""}{" "}
+                  <span className="font-mono">{lobbyId}</span>
+                </TypographyH1>
+                {/* TODO: make this work on mobile */}
+                {screen.width > 768 && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      clickSound();
+                      navigator.clipboard.writeText(lobbyId);
+                    }}
+                    className="w-8 absolute right-0 top-1/2 -translate-y-1/2"
+                    aria-label="Copy Lobby ID"
+                  >
+                    <LuClipboardCopy />
+                  </Button>
+                )}
+              </div>
+              <TypographyH4 className="mb-4">
+                Share this code to play with friends!
+              </TypographyH4>
+
+              <div className="flex justify-center gap-4">
                 <Button
-                  variant="ghost"
+                  variant="destructive"
                   onClick={() => {
                     clickSound();
-                    navigator.clipboard.writeText(lobbyId);
+                    socket.emit("leaveLobby", lobbyId, playerId);
+                    localStorage.removeItem("playerName");
+                    router.push("/");
                   }}
-                  className="w-8 absolute right-0 top-1/2 -translate-y-1/2"
-                  aria-label="Copy Lobby ID"
-                >
-                  <LuClipboardCopy />
-                </Button>
-              )}
-            </div>
-            <TypographyH4 className="mb-4">
-              Share this code to play with friends!
-            </TypographyH4>
-
-            <div className="flex justify-center gap-4">
-              <Button
-                variant="default"
-                onClick={() => {
-                  clickSound();
-                  socket.emit("leaveLobby", lobbyId, playerId);
-                  localStorage.removeItem("playerName");
-                  router.push("/");
-                }}
-                className="w-17"
-              >
-                Leave
-              </Button>
-
-              {playerId === host && (
-                <Button
-                  onClick={handleStartGame}
-                  disabled={
-                    players.length !== totalPlayers || countdown !== null
-                  }
                   className="w-17"
                 >
-                  {loading ? <Loader2Icon className="animate-spin" /> : "Start"}
+                  Leave
                 </Button>
-              )}
-            </div>
 
-            {countdown !== null && (
-              <div className="text-center text-xl font-bold text-red-600 animate-pulse">
-                Game starting in {countdown}...
+                {playerId === host && (
+                  <Button
+                    onClick={handleStartGame}
+                    disabled={
+                      players.length !== totalPlayers || countdown !== null
+                    }
+                    className="w-17"
+                  >
+                    {loading ? (
+                      <Loader2Icon className="animate-spin" />
+                    ) : (
+                      "Start"
+                    )}
+                  </Button>
+                )}
               </div>
-            )}
-          </CardContent>
-        </Card>
 
-        <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
-          <CardContent className="flex flex-col items-center">
-            <TypographyH1 className="mb-4">Players</TypographyH1>
-            {players.length !== totalPlayers ? (
-              <TypographyH4 className="mb-4">{`Waiting (${players.length}/${totalPlayers})`}</TypographyH4>
-            ) : (
-              <TypographyH4 className="mb-4">{`Ready (${players.length}/${totalPlayers})`}</TypographyH4>
-            )}
-            <PlayerList
-              players={players}
-              host={host}
-              playerId={playerId}
-              lobbyId={lobbyId}
-            />
-          </CardContent>
-        </Card>
+              {countdown !== null && (
+                <div className="text-center text-xl font-bold text-red-600 animate-pulse">
+                  Game starting in {countdown}...
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
+            <CardContent className="flex flex-col items-center">
+              <TypographyH1 className="mb-4">Players</TypographyH1>
+              {players.length !== totalPlayers ? (
+                <TypographyH4 className="mb-4">{`Waiting (${players.length}/${totalPlayers})`}</TypographyH4>
+              ) : (
+                <TypographyH4 className="mb-4">{`Ready (${players.length}/${totalPlayers})`}</TypographyH4>
+              )}
+              <PlayerList
+                players={players}
+                host={host}
+                playerId={playerId}
+                lobbyId={lobbyId}
+              />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </PageTheme>
   );

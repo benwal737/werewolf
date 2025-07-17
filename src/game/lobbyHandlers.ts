@@ -43,7 +43,9 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
     "joinLobby",
     (lobbyId: string, playerId: string, playerName: string) => {
       const game = getGame(lobbyId);
-      if (!game) return;
+      if (!game || game.phase !== "lobby") {
+        return socket.emit("joinError", "Game not found");
+      }
 
       if (!game.players[playerId]) {
         const player: Player = {
@@ -71,6 +73,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
     io.to(lobbyId).emit("playerJoined", {
       players: getGame(lobbyId)?.players,
       host: getGame(lobbyId)?.host,
+      totalPlayers: getGame(lobbyId)?.totalPlayers,
     });
   });
 
@@ -79,6 +82,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
     io.to(lobbyId).emit("playerJoined", {
       players: getGame(lobbyId)?.players,
       host: getGame(lobbyId)?.host,
+      totalPlayers: getGame(lobbyId)?.totalPlayers,
     });
     io.to(playerId).emit("kicked");
   });

@@ -38,9 +38,9 @@ const PlayerList = ({ players, host, playerId, lobbyId }: PlayerListProps) => {
                 {isHost && player.id !== playerId && (
                   <TableCell>
                     <Button
-                      variant="default"
+                      variant="destructive"
                       onClick={() => handleKick(lobbyId, player.id)}
-                      className="size-7"
+                      className="size-6 rounded-full"
                     >
                       <GiBootKick />
                     </Button>
