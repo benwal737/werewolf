@@ -14,6 +14,7 @@ import { LuClipboardCopy } from "react-icons/lu";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
 import { clickSound } from "@/utils/sounds";
+import { TextShimmer } from "@/components/ui/text-shimmer";
 
 export default function Lobby() {
   const background = useBackground();
@@ -21,7 +22,7 @@ export default function Lobby() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [host, setHost] = useState<string | null>(null);
   const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
-  const [countdown, setCountdown] = useState<number | null>(null);
+  const [started, setStarted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [validLobby, setValidLobby] = useState(false);
   const { playerName, playerId } = usePlayer();
@@ -59,8 +60,8 @@ export default function Lobby() {
     socket.on("joinError", handleJoinError);
     socket.on("playerJoined", handlePlayerJoined);
     socket.on("kicked", handleKicked);
-    socket.on("countdownTick", (seconds: number) => {
-      setCountdown(seconds);
+    socket.on("startCountdown", () => {
+      setStarted(true);
     });
     socket.on("countdownComplete", () => {
       socket.emit("startGame", lobbyId);
@@ -71,7 +72,7 @@ export default function Lobby() {
       socket.off("playerJoined", handlePlayerJoined);
       socket.off("joinError", handleJoinError);
       socket.off("kicked", handleKicked);
-      socket.off("countdownTick");
+      socket.off("startCountdown");
       socket.off("countdownComplete");
     };
   }, [lobbyId, playerId, playerName, router]);
@@ -79,18 +80,18 @@ export default function Lobby() {
   return (
     <PageTheme forcedTheme="dark">
       <div
-        className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8"
+        className="flex flex-col items-center justify-start min-h-screen gap-6 px-4 py-30"
         style={{
           backgroundImage: background,
         }}
       >
         <div
-          className={`transition-opacity duration-300 flex flex-col items-center gap-6 px-4 py-8${
+          className={`transition-opacity duration-300 flex flex-col items-center gap-8 px-4 py-8${
             validLobby ? "opacity-100" : "opacity-0"
           }`}
         >
-          <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
-            <CardContent className="space-y-4 flex flex-col items-center">
+          <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm p-8">
+            <CardContent className="flex flex-col items-center gap-2">
               <div className="relative w-[24vw] flex items-center">
                 <TypographyH1 className="w-full text-center">
                   {screen.width > 768 ? "Lobby ID:" : ""}{" "}
@@ -133,8 +134,8 @@ export default function Lobby() {
                   <Button
                     onClick={handleStartGame}
                     disabled={
-                      players.length !== totalPlayers || countdown !== null
-                    }
+                      players.length !== totalPlayers || started
+                    } 
                     className="w-17"
                   >
                     {loading ? (
@@ -145,19 +146,17 @@ export default function Lobby() {
                   </Button>
                 )}
               </div>
-
-              {countdown !== null && (
-                <div className="text-center text-xl font-bold text-red-600 animate-pulse">
-                  Game starting in {countdown}...
-                </div>
-              )}
             </CardContent>
           </Card>
 
-          <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm">
-            <CardContent className="flex flex-col items-center">
+          <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm p-8">
+            <CardContent className="flex flex-col items-center gap-2">
               <TypographyH1 className="mb-4">Players</TypographyH1>
-              {players.length !== totalPlayers ? (
+              {started ? (
+                <TextShimmer>
+                  Game starting...
+                </TextShimmer>
+              ) : players.length !== totalPlayers ? (
                 <TypographyH4 className="mb-4">{`Waiting (${players.length}/${totalPlayers})`}</TypographyH4>
               ) : (
                 <TypographyH4 className="mb-4">{`Ready (${players.length}/${totalPlayers})`}</TypographyH4>

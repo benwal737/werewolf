@@ -23,7 +23,7 @@ const PlayerList = ({ players, host, playerId, lobbyId }: PlayerListProps) => {
 
   return (
     <Card className="w-full max-w-xl">
-      <CardContent className="p-6 flex flex-col items-center gap-4">
+      <CardContent className="px-3 flex flex-col items-center gap-4">
         <Table>
           <TableBody>
             {players.map((player) => (

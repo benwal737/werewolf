@@ -100,9 +100,9 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       console.log("countdown already started in lobby");
       return;
     }
-    let timeLeft = 5;
+    let timeLeft = 3;
     const interval = setInterval(() => {
-      io.to(lobbyId).emit("countdownTick", timeLeft);
+      io.to(lobbyId).emit("startCountdown");
       timeLeft--;
       if (timeLeft < 0) {
         clearInterval(interval);
