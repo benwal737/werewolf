@@ -84,6 +84,7 @@ export default function Home() {
 
   useEffect(() => {
     const onConnect = () => console.log("connected to socket server");
+    console.log("connected");
 
     socket.on("connect", onConnect);
     socket.connect();
@@ -153,10 +154,10 @@ export default function Home() {
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                   <DialogTitle>Lobby ID</DialogTitle>
+                  <DialogDescription>
+                    Enter a valid lobby ID to join an existing game.
+                  </DialogDescription>
                 </DialogHeader>
-                <DialogDescription>
-                  Enter a valid lobby ID to join an existing game.
-                </DialogDescription>
                 <Form {...form2}>
                   <form
                     onSubmit={form2.handleSubmit(handleJoinLobby)}

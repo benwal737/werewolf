@@ -2,6 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useBackground } from "@/utils/useBackground";
 
 export default function PageTheme({
   children,
@@ -25,7 +26,17 @@ export default function PageTheme({
     }
   }, [mounted, forcedTheme, resolvedTheme, setTheme]);
 
-  if (!mounted) return null;
+  const background = useBackground();
+
+  if (!mounted)
+    return (
+      <div
+        className="flex flex-col min-h-screen w-full bg-cover bg-center"
+        style={{
+          backgroundImage: background,
+        }}
+      ></div>
+    );
 
   return <>{children}</>;
 }
