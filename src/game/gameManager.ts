@@ -183,9 +183,9 @@ export const getRole = (lobbyId: string, playerId: string) => {
   return game.players[playerId]?.role;
 };
 
-export const checkWinner = (lobbyId: string) => {
+export const isWinner = (lobbyId: string, io: Server): boolean => {
   const game = getGame(lobbyId);
-  if (!game) return;
+  if (!game) return false;
 
   const villagersAlive = getPlayers(lobbyId).filter(
     (player) => player.alive && player.role !== "werewolf"
@@ -200,6 +200,15 @@ export const checkWinner = (lobbyId: string) => {
     game.winner = "werewolves";
   } else if (werewolvesAlive.length === 0) {
     game.winner = "villagers";
+  }
+
+  if (game.winner) {
+    setPhase(lobbyId, "end", "none");
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
+    return true;
+  } else {
+    return false;
   }
 };
 

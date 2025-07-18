@@ -7,7 +7,7 @@ import {
   getPlayers,
   startCountdown,
   setNightDeaths,
-  checkWinner,
+  isWinner,
   countVotes,
   setDayDeaths,
   resetNightDeaths,
@@ -47,13 +47,8 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
 
     if (!witchAlive) {
       setNightDeaths(lobbyId);
-      checkWinner(lobbyId);
-      if (game.winner) {
-        setPhase(lobbyId, "end", "none");
-        const updated = getSafeGameState(lobbyId);
-        io.to(lobbyId).emit("gameUpdated", updated);
-        return;
-      }
+      const winner = isWinner(lobbyId, io);
+      if (winner) return;
     }
     setPhase(lobbyId, phase, step);
     const updated = getSafeGameState(lobbyId);
@@ -72,20 +67,14 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setNightDeaths(lobbyId);
     game.witchSave = undefined;
     game.witchKill = undefined;
-    checkWinner(lobbyId);
-    if (game.winner) {
-      setPhase(lobbyId, "end", "none");
-      const updated = getSafeGameState(lobbyId);
-      io.to(lobbyId).emit("gameUpdated", updated);
-      return;
-    } else {
-      setPhase(lobbyId, phase, step);
-      const updated = getSafeGameState(lobbyId);
-      io.to(lobbyId).emit("gameUpdated", updated);
-      startCountdown(io, lobbyId, 10, () => {
-        nextPhase(lobbyId, step);
-      });
-    }
+    const winner = isWinner(lobbyId, io);
+    if (winner) return;
+    setPhase(lobbyId, phase, step);
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
+    startCountdown(io, lobbyId, 10, () => {
+      nextPhase(lobbyId, step);
+    });
   };
 
   const resolveDeathsPhase = (lobbyId: string) => {
@@ -115,13 +104,8 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
       player.numVotes = 0;
     }
     setDayDeaths(lobbyId);
-    checkWinner(lobbyId);
-    if (game.winner) {
-      setPhase(lobbyId, "end", "none");
-      const updated = getSafeGameState(lobbyId);
-      io.to(lobbyId).emit("gameUpdated", updated);
-      return;
-    } else {
+    const winner = isWinner(lobbyId, io);
+    if (!winner) {
       setPhase(lobbyId, phase, step);
       const updated = getSafeGameState(lobbyId);
       io.to(lobbyId).emit("gameUpdated", updated);
