@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
 import { usePlayer } from "@/utils/usePlayer";
-import { useBackground } from "@/utils/useBackground";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
 import { clickSound } from "@/utils/sounds";
@@ -93,7 +92,6 @@ function makeid(length: number) {
 }
 
 const CreateLobby = () => {
-  const background = useBackground();
   const { playerName, playerId } = usePlayer();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -128,12 +126,7 @@ const CreateLobby = () => {
 
   return (
     <PageTheme forcedTheme="dark">
-      <div
-        className="flex flex-col min-h-screen w-full bg-cover bg-center items-center justify-center"
-        style={{
-          backgroundImage: background,
-        }}
-      >
+      <div className="flex flex-col min-h-screen w-full bg-cover bg-center items-center justify-center">
         <Card className="size-fit min-w-[25vw] p-10 bg-card/50 backdrop-blur-sm">
           <CardContent>
             <Form {...form}>

@@ -3,6 +3,7 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useBackground } from "@/utils/useBackground";
+import Particles from "@/blocks/Backgrounds/Particles/Particles";
 
 export default function PageTheme({
   children,
@@ -28,15 +29,69 @@ export default function PageTheme({
 
   const background = useBackground();
 
-  if (!mounted)
+  if (!mounted) {
     return (
       <div
         className="flex flex-col min-h-screen w-full bg-cover bg-center"
-        style={{
-          backgroundImage: background,
-        }}
-      ></div>
+        style={{ backgroundImage: background }}
+      />
     );
+  }
 
-  return <>{children}</>;
+  if (forcedTheme === "dark") {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 0,
+            backgroundImage: background,
+          }}
+        >
+          <Particles
+            particleColors={["#ffffff", "#ffffff"]}
+            particleCount={150}
+            particleSpread={10}
+            speed={0.1}
+            particleBaseSize={75}
+            moveParticlesOnHover={false}
+            alphaParticles={false}
+            disableRotation={true}
+          />
+        </div>
+        {children}
+      </div>
+    );
+  }
+
+  if (forcedTheme === "light") {
+    return (
+      <div
+        className="min-h-screen w-full bg-cover bg-center"
+        style={{ backgroundImage: background }}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="min-h-screen w-full bg-cover bg-center"
+      style={{ backgroundImage: background }}
+    >
+      {children}
+    </div>
+  );
 }

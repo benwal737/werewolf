@@ -12,10 +12,8 @@ import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
 import PageTheme from "@/components/PageTheme";
 import { clickSound } from "@/utils/sounds";
-import { useBackground } from "@/utils/useBackground";
 
 const Game = () => {
-  const background = useBackground();
   const router = useRouter();
   const lobbyId = useParams().id;
 
@@ -150,12 +148,7 @@ const Game = () => {
     playerId &&
     gameState && (
       <PageTheme forcedTheme={phaseTheme}>
-        <div
-          className="flex flex-col min-h-screen w-full bg-cover bg-center"
-          style={{
-            backgroundImage: background,
-          }}
-        >
+        <div className="flex flex-col min-h-screen w-full bg-cover bg-center">
           {/* Phase Indicator  */}
           <div className="flex justify-center mt-5 w-full">
             <PhaseIndicator

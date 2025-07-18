@@ -28,7 +28,6 @@ import {
   DialogClose,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useBackground } from "@/utils/useBackground";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { clickSound } from "@/utils/sounds";
 import PageTheme from "@/components/PageTheme";
@@ -50,7 +49,6 @@ const joinLobbySchema = z.object({
 });
 
 export default function Home() {
-  const background = useBackground();
   const router = useRouter();
 
   const [showAlert, setShowAlert] = useState(false);
@@ -108,12 +106,7 @@ export default function Home() {
 
   return (
     <PageTheme forcedTheme="dark">
-      <div
-        className="flex flex-col min-h-screen w-full bg-cover bg-center"
-        style={{
-          backgroundImage: background,
-        }}
-      >
+      <div className="flex flex-col min-h-screen w-full bg-cover bg-center">
         <TypographyH1 className="mt-20 text-7xl font-sans">
           Werewolf
         </TypographyH1>
@@ -147,7 +140,11 @@ export default function Home() {
                   type="submit"
                   disabled={!form1.watch("name") || creating}
                 >
-                  {creating ? <Loader2Icon className="animate-spin" /> : "Create Lobby"}
+                  {creating ? (
+                    <Loader2Icon className="animate-spin" />
+                  ) : (
+                    "Create Lobby"
+                  )}
                 </Button>
               </form>
             </Form>
@@ -211,7 +208,11 @@ export default function Home() {
                         type="submit"
                         disabled={joining}
                       >
-                        {joining ? <Loader2Icon className="animate-spin" /> : "Join"}
+                        {joining ? (
+                          <Loader2Icon className="animate-spin" />
+                        ) : (
+                          "Join"
+                        )}
                       </Button>
                     </DialogFooter>
                   </form>
