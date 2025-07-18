@@ -1,8 +1,8 @@
 import React from "react";
-import { Game, Player } from "@/game/types";
+import { GameState, Player } from "@/game/types";
 
 interface NarrationProps {
-  gameState: Game;
+  gameState: GameState;
   player: Player;
 }
 

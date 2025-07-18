@@ -20,7 +20,7 @@ export type Player = {
   numVotes?: number;
 };
 
-export type Game = {
+export type GameState = {
   host: string | null;
   players: Record<string, Player>;
   phase: GamePhase;

@@ -166,6 +166,23 @@ export default function Home() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
+                {showAlert && (
+                  <>
+                    <Alert variant="destructive">
+                      <AlertCircleIcon />
+                      <AlertTitle>Error joining lobby</AlertTitle>
+                      <AlertDescription>
+                        <p>Make sure that:</p>
+                        <ul className="list-inside list-disc text-sm">
+                          <li>The lobby ID is correct</li>
+                          <li>The lobby is not full</li>
+                          <li>The game has not started yet</li>
+                        </ul>
+                      </AlertDescription>
+                    </Alert>
+                    <Separator />
+                  </>
+                )}
                 <DialogHeader>
                   <DialogTitle>Lobby ID</DialogTitle>
                   <DialogDescription>
@@ -219,23 +236,6 @@ export default function Home() {
                     </DialogFooter>
                   </form>
                 </Form>
-                {showAlert && (
-                  <>
-                    <Separator />
-                    <Alert variant="destructive">
-                      <AlertCircleIcon />
-                      <AlertTitle>Error joining lobby</AlertTitle>
-                      <AlertDescription>
-                        <p>Make sure that:</p>
-                        <ul className="list-inside list-disc text-sm">
-                          <li>The lobby ID is correct</li>
-                          <li>The lobby is not full</li>
-                          <li>The game has not started yet</li>
-                        </ul>
-                      </AlertDescription>
-                    </Alert>
-                  </>
-                )}
               </DialogContent>
             </Dialog>
           </CardContent>

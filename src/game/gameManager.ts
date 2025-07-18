@@ -1,8 +1,15 @@
-import { Game, Player, GamePhase, RoleCounts, Role, Substep } from "./types";
+import {
+  GameState,
+  Player,
+  GamePhase,
+  RoleCounts,
+  Role,
+  Substep,
+} from "./types";
 
 import { Server } from "socket.io";
 
-const gameStates = new Map<string, Game>();
+const gameStates = new Map<string, GameState>();
 
 export const startCountdown = (
   io: Server,
@@ -38,7 +45,7 @@ export const createGame = (
   roleCounts: RoleCounts,
   totalPlayers: number
 ) => {
-  const newGame: Game = {
+  const newGame: GameState = {
     host: hostId,
     players: {},
     phase: "lobby",
@@ -55,7 +62,7 @@ export const getGame = (lobbyId: string) => {
   return gameStates.get(lobbyId);
 };
 
-export const getSafeGameState = (lobbyId: string): Game => {
+export const getSafeGameState = (lobbyId: string): GameState => {
   const game = getGame(lobbyId);
   if (!game) throw new Error("Game not found");
 

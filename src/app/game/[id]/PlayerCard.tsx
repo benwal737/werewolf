@@ -4,11 +4,11 @@ import { Player } from "@/game/types";
 import { GiCauldron, GiVillage, GiWerewolf, GiThirdEye } from "react-icons/gi";
 import { FaQuestion } from "react-icons/fa";
 
-import { Game } from "@/game/types";
+import { GameState } from "@/game/types";
 
 interface PlayerCardProps {
   player: Player;
-  gameState: Game;
+  gameState: GameState;
   user: Player;
   foretellerRevealed: boolean | undefined;
   witchSelected: boolean;
@@ -104,7 +104,7 @@ export default function PlayerCard({
         choosing && !selected && "hover:backdrop-brightness-125 cursor-pointer",
         selected &&
           "backdrop-saturate-200" +
-            (werewolfTurn || voteStep ? " cursor-pointer" : ""),
+            (werewolfTurn || voteStep ? " cursor-pointer" : "")
       )}
     >
       <div className="text-lg font-semibold truncate w-full">
@@ -118,7 +118,13 @@ export default function PlayerCard({
           votes: {player.numVotes}
         </div>
       )}
-      <div className={cn("text-sm mt-1", player.alive && "text-green-600", !player.alive && "text-red-500")}>
+      <div
+        className={cn(
+          "text-sm mt-1",
+          player.alive && "text-green-600",
+          !player.alive && "text-red-500"
+        )}
+      >
         {player.alive ? "Alive" : "Dead"}
       </div>
     </Card>

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
-import { Game as GameState, Role, Player } from "@/game/types";
+import { GameState, Role, Player } from "@/game/types";
 import BottomBar from "./BottomBar";
 import PhaseIndicator from "./PhaseIndicator";
 import ActionPanel from "./ActionPanel";

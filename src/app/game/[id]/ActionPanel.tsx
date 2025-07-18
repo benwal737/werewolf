@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Game } from "@/game/types";
+import { GameState } from "@/game/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { socket } from "@/lib/socketClient";
@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 import { clickSound } from "@/utils/sounds";
 
 interface ActionPanelProps {
-  gameState: Game;
+  gameState: GameState;
 }
 
 const ActionPanel = ({ gameState }: ActionPanelProps) => {

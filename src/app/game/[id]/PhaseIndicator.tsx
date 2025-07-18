@@ -1,12 +1,12 @@
 import React from "react";
-import { Game, Player } from "@/game/types";
+import { GameState, Player } from "@/game/types";
 import { Card, CardContent } from "@/components/ui/card";
 import CountdownTimer from "./CountdownTimer";
 import Narration from "./Narration";
 import { Moon, Sun } from "lucide-react";
 
 interface PhaseIndicatorProps {
-  gameState: Game;
+  gameState: GameState;
   countdown: number | null;
   player: Player;
 }
