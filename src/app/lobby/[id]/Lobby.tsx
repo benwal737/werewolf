@@ -8,7 +8,7 @@ import PlayerList from "./PlayerList";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { TypographyH1, TypographyH4 } from "@/components/ui/typography";
-import { usePlayer } from "@/utils/usePlayer";
+import { usePlayer } from "@/hooks/usePlayer";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
 import { clickSound } from "@/utils/sounds";

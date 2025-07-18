@@ -7,11 +7,12 @@ import { GameState, Role, Player } from "@/game/types";
 import BottomBar from "./BottomBar";
 import PhaseIndicator from "./PhaseIndicator";
 import ActionPanel from "./ActionPanel";
-import { usePlayer } from "@/utils/usePlayer";
+import { usePlayer } from "@/hooks/usePlayer";
+import usePlayerAction from "@/hooks/usePlayerAction";
 import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
 import PageTheme from "@/components/PageTheme";
-import { clickSound } from "@/utils/sounds";
+import usePhaseTheme from "@/hooks/usePhaseTheme";
 
 const Game = () => {
   const router = useRouter();
@@ -22,7 +23,6 @@ const Game = () => {
 
   const [witchSelected, setWitchSelected] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
-  const [phaseTheme, setPhaseTheme] = useState<"light" | "dark">("dark");
 
   const { playerId } = usePlayer();
   const player: Player | null =
@@ -30,45 +30,20 @@ const Game = () => {
 
   const foretellerRevealed = gameState?.foretellerRevealed;
   const isForeteller = player?.role === "foreteller";
-  const foretellerTurn = gameState?.substep === "foreteller";
-  const isWerewolf = player?.role === "werewolf";
-  const werewolfTurn = gameState?.substep === "werewolves";
   const isWitch = player?.role === "witch";
   const witchTurn = gameState?.substep === "witch";
-  const voteStep = gameState?.substep === "vote";
-
-  const foretellerAction = (target: Player) => {
-    if (foretellerRevealed) return;
-    clickSound();
-    socket.emit("foretellerSelected", lobbyId, target.id);
-  };
-
-  const voteAction = (target: Player) => {
-    clickSound();
-    socket.emit("playerVoted", lobbyId, playerId, target.id);
-  };
-
-  const witchAction = (target: Player) => {
-    if (witchSelected) return;
-    clickSound();
-    socket.emit("witchKilled", lobbyId, target.id);
-    setWitchSelected(true);
-  };
 
   const getClickAction = (target: Player) => {
-    if (!player?.alive) return undefined;
-    if (playerId === target.id) return undefined;
-    if (target.id == null || !gameState?.players[target.id].alive)
-      return undefined;
-    if (foretellerTurn && isForeteller) {
-      return () => foretellerAction(target);
-    } else if ((werewolfTurn && isWerewolf) || voteStep) {
-      return () => voteAction(target);
-    } else if (witchTurn && isWitch) {
-      return () => witchAction(target);
-    } else {
-      return undefined;
-    }
+    return usePlayerAction(
+      socket,
+      lobbyId,
+      playerId,
+      target,
+      player,
+      gameState,
+      witchSelected,
+      setWitchSelected
+    );
   };
 
   const handleJoinError = useCallback(
@@ -137,17 +112,11 @@ const Game = () => {
     handleCountdownTick,
   ]);
 
-  useEffect(() => {
-    const phase = gameState?.phase;
-    const theme = phase === "night" || phase === "start" ? "dark" : "light";
-    setPhaseTheme(theme);
-  }, [gameState]);
-
   return (
     player &&
     playerId &&
     gameState && (
-      <PageTheme forcedTheme={phaseTheme}>
+      <PageTheme forcedTheme={usePhaseTheme(gameState)}>
         <div className="flex flex-col min-h-screen w-full bg-cover bg-center">
           {/* Phase Indicator  */}
           <div className="flex justify-center mt-5 w-full">

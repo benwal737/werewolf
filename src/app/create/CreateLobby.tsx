@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
-import { usePlayer } from "@/utils/usePlayer";
+import { usePlayer } from "@/hooks/usePlayer";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
 import { clickSound } from "@/utils/sounds";

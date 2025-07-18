@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { useBackground } from "@/utils/useBackground";
+import { useBackground } from "@/hooks/useBackground";
 import Particles from "@/blocks/Backgrounds/Particles/Particles";
 
 export default function PageTheme({
