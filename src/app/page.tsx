@@ -34,6 +34,7 @@ import PageTheme from "@/components/PageTheme";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, Loader2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { GiWolfHead } from "react-icons/gi";
 
 const createLobbySchema = z.object({
   name: z.string().max(15, {
@@ -107,9 +108,10 @@ export default function Home() {
   return (
     <PageTheme forcedTheme="dark">
       <div className="flex flex-col min-h-screen w-full bg-cover bg-center">
-        <TypographyH1 className="mt-20 text-7xl font-sans">
-          Werewolf
-        </TypographyH1>
+        <div className="flex items-center justify-center mt-20 gap-5">
+          <TypographyH1 className="text-7xl font-sans">Werewolf</TypographyH1>
+          <GiWolfHead className="text-7xl" />
+        </div>
         <Card className="size-fit p-10 mx-auto my-30 flex flex-col items-center justify-center bg-card/50 backdrop-blur-sm">
           <CardTitle className="text-xl">Enter a name to play!</CardTitle>
           <CardContent className="flex flex-col items-center justify-center gap-4 bg-0">

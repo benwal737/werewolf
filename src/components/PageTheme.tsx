@@ -70,7 +70,16 @@ export default function PageTheme({
             disableRotation={true}
           />
         </div>
-        {children}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {children}
+        </div>
       </div>
     );
   }
