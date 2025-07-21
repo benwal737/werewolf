@@ -44,6 +44,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
     (lobbyId: string, playerId: string, playerName: string) => {
       const game = getGame(lobbyId);
       if (!game || game.phase !== "lobby") {
+        console.log("Game not found");
         return socket.emit("joinError", "Game not found");
       }
 
