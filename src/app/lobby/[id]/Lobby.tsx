@@ -17,6 +17,7 @@ import Clipboard from "react-clipboard-animation";
 
 export default function Lobby() {
   const lobbyId = useParams().id as string;
+  const { playerName, playerId } = usePlayer();
   const [players, setPlayers] = useState<Player[]>([]);
   const [host, setHost] = useState<string | null>(null);
   const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
@@ -24,13 +25,17 @@ export default function Lobby() {
   const [loading, setLoading] = useState(false);
   const [validLobby, setValidLobby] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { playerName, playerId } = usePlayer();
   const router = useRouter();
 
   const handleStartGame = () => {
     clickSound();
     setLoading(true);
     socket.emit("startGameCountdown", lobbyId);
+  };
+
+  const handleJoinError = () => {
+    console.log("join error");
+    router.push("/");
   };
 
   useEffect(() => {
@@ -42,12 +47,7 @@ export default function Lobby() {
   }, [copied]);
 
   useEffect(() => {
-    const handleJoinError = () => {
-      router.push("/");
-    };
-    if (!playerId || !playerName) {
-      return handleJoinError();
-    }
+    if (!playerId || !playerName) return;
 
     socket.emit("joinLobby", lobbyId, playerId, playerName);
 
