@@ -13,7 +13,21 @@ import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
 import { clickSound } from "@/utils/sounds";
 import { TextShimmer } from "@/components/ui/text-shimmer";
-import Clipboard from "react-clipboard-animation";
+import dynamic from "next/dynamic";
+
+interface ClipboardProps {
+  copied: boolean;
+  setCopied: (copied: boolean) => void;
+  text: string;
+  color?: string;
+  size?: number;
+  className?: string;
+}
+
+const Clipboard = dynamic<ClipboardProps>(
+  () => import("react-clipboard-animation").then((mod) => mod.default || mod),
+  { ssr: false }
+);
 
 export default function Lobby() {
   const lobbyId = useParams().id as string;
@@ -96,10 +110,9 @@ export default function Lobby() {
           <>
             <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm p-8">
               <CardContent className="flex flex-col items-center gap-2">
-                <div className="relative w-[24vw] flex items-center">
+                <div className="pl-5 flex items-center gap-2">
                   <TypographyH1 className="w-full text-center">
-                    Lobby ID:
-                    <span className="font-mono"> {lobbyId}</span>
+                    {"Lobby ID: " + lobbyId}
                   </TypographyH1>
                   <Clipboard
                     copied={copied}
@@ -107,7 +120,6 @@ export default function Lobby() {
                     text={lobbyId}
                     color="white"
                     size={24}
-                    className=""
                   />
                 </div>
                 <TypographyH4 className="mb-4">
