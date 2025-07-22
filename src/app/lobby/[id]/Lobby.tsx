@@ -35,7 +35,7 @@ export default function Lobby() {
 
   const handleJoinError = () => {
     console.log("join error");
-    router.push("/lobby-not-found");
+    router.push("/lobby/not-found");
   };
 
   useEffect(() => {

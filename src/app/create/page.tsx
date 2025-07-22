@@ -1,5 +1,3 @@
-"use client"
-
 import CreateLobby from "./CreateLobby"
 
 const page = () => {

@@ -1,7 +1,7 @@
-import React from "react";
+import NotFound from "./NotFound";
 
 const page = () => {
-  return <div>lobby not found</div>;
+  return <NotFound />;
 };
 
 export default page;

@@ -12,7 +12,7 @@ const NotFound = () => {
         <FuzzyText baseIntensity={0.2} hoverIntensity={0.5} enableHover={true}>
           404
         </FuzzyText>
-        <div className="text-2xl font-bold mt-4">Page Not Found</div>
+        <div className="text-2xl font-bold mt-4">Lobby Not Found</div>
         <Link href="/" className="text-primary font-bold text-lg">
           Go Back Home
         </Link>

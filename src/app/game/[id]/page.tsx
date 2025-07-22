@@ -1,5 +1,3 @@
-"use client";
-
 import Game from "./Game";
 
 const page = () => {
