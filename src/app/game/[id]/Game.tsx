@@ -148,7 +148,7 @@ const Game = () => {
     playerId &&
     gameState && (
       <PageTheme forcedTheme={phaseTheme}>
-        <div className="flex flex-col min-h-screen w-full bg-cover bg-center">
+        <div className="flex flex-col min-h-screen w-full bg-cover bg-center overflow-y-auto">
           {/* Phase Indicator  */}
           <div className="flex justify-center mt-5 w-full">
             <PhaseIndicator
@@ -158,9 +158,9 @@ const Game = () => {
             />
           </div>
           {/* Main Content */}
-          <div className="flex justify-center w-full my-5">
+          <div className="flex flex-col lg:flex-row justify-center w-full my-5 lg:items-start">
             {/* Left Container */}
-            <div className="ml-20 mr-5 w-2/3">
+            <div className="ml-20 mr-20 lg:mr-5 lg:w-2/3">
               {/* Player List */}
               <PlayerList
                 players={Object.values(gameState.players)}

@@ -109,7 +109,7 @@ export default function Lobby() {
   return (
     <PageTheme forcedTheme="dark">
       <div
-        className={`transition-opacity duration-300 flex flex-col items-center gap-8 px-4 py-30 justify-start min-h-screen`}
+        className={`transition-opacity duration-300 flex flex-col items-center gap-8 px-4 py-30 justify-start min-h-screen overflow-y-auto`}
       >
         {validLobby ? (
           <>

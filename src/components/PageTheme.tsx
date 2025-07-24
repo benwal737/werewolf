@@ -41,24 +41,10 @@ export default function PageTheme({
   if (forcedTheme === "dark") {
     return (
       <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-          position: "relative",
-          overflow: "hidden",
-        }}
+        className="relative min-h-screen w-full bg-cover bg-center"
+        style={{ backgroundImage: background }}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: 0,
-            backgroundImage: background,
-          }}
-        >
+        <div className="absolute inset-0 z-0">
           <Particles
             particleColors={["#ffffff", "#ffffff"]}
             particleCount={150}
@@ -70,27 +56,7 @@ export default function PageTheme({
             disableRotation={true}
           />
         </div>
-        <div
-          style={{
-            position: "relative",
-            zIndex: 1,
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          {children}
-        </div>
-      </div>
-    );
-  }
-
-  if (forcedTheme === "light") {
-    return (
-      <div
-        className="min-h-screen w-full bg-cover bg-center"
-        style={{ backgroundImage: background }}
-      >
-        {children}
+        <div className="relative z-10">{children}</div>
       </div>
     );
   }
