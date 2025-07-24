@@ -99,7 +99,7 @@ export default function PlayerCard({
     <Card
       onClick={onClick}
       className={cn(
-        "bg-card/50 backdrop-blur-sm px-6 py-4 transition-all w-full",
+        "bg-card/50 backdrop-blur-sm px-6 py-4 transition-all w-full h-20 justify-center",
         disable ? "opacity-50" : "",
         choosing && !selected && "hover:backdrop-brightness-125 cursor-pointer",
         selected &&

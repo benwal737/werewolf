@@ -3,16 +3,33 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
-import { GameState, Role, Player } from "@/game/types";
+import { GameState, Role, Player, Message } from "@/game/types";
 import BottomBar from "./BottomBar";
 import PhaseIndicator from "./PhaseIndicator";
 import ActionPanel from "./ActionPanel";
+import PlayerList from "./PlayerList";
 import { usePlayer } from "@/hooks/usePlayer";
 import usePlayerAction from "@/hooks/usePlayerAction";
 import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
 import PageTheme from "@/components/PageTheme";
 import usePhaseTheme from "@/hooks/usePhaseTheme";
+import GameChat from "./GameChat";
+
+const messages: Message[] = [
+  {
+    id: "1",
+    text: "Hello",
+    sender: "Player 1",
+    timestamp: "2022-01-01T00:00:00Z",
+  },
+  {
+    id: "2",
+    text: "Whats up",
+    sender: "Player 2",
+    timestamp: "2022-01-01T00:00:00Z",
+  },
+];
 
 const Game = () => {
   const router = useRouter();
@@ -127,29 +144,22 @@ const Game = () => {
           <div className="flex justify-center w-full my-5">
             {/* Left Container */}
             <div className="ml-20 mr-5 w-2/3">
-              {/* Action Panel */}
-              {witchTurn && isWitch && (
-                <div className="flex justify-center w-full mb-5">
-                  <ActionPanel gameState={gameState} />
-                </div>
-              )}
               {/* Player List */}
-              <div className="grid grid-cols-2 gap-4 w-full">
-                {Object.values(gameState.players).map((player) => (
-                  <PlayerCard
-                    key={player.id}
-                    player={player}
-                    gameState={gameState}
-                    user={gameState.players[playerId]}
-                    foretellerRevealed={foretellerRevealed}
-                    witchSelected={witchSelected}
-                    onClick={getClickAction(player)}
-                  />
-                ))}
-              </div>
+              <PlayerList
+                players={Object.values(gameState.players)}
+                currentUserId={playerId}
+                gameState={gameState}
+                foretellerRevealed={foretellerRevealed}
+                witchSelected={witchSelected}
+                getClickAction={getClickAction}
+              />
             </div>
             {/* Right Container */}
-            <div className="mr-20 w-1/3 bg-card/50 backdrop-blur-sm p-5"></div>
+            <div className="mr-20 w-1/3">
+              {/* Action Panel */}
+              {witchTurn && isWitch && <ActionPanel gameState={gameState} />}
+              <GameChat messages={messages} />
+            </div>
           </div>
         </div>
         {/* Bottom Bar */}

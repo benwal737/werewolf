@@ -20,6 +20,13 @@ export type Player = {
   numVotes?: number;
 };
 
+export type Message = {
+  id: string;
+  text: string;
+  sender: string;
+  timestamp: string;
+};
+
 export type GameState = {
   host: string | null;
   players: Record<string, Player>;
@@ -40,6 +47,9 @@ export type GameState = {
   villageKill?: Player;
   winner?: "werewolves" | "villagers" | "draw";
   dayNum: number;
+  gameChat: Message[];
+  werewolfChat: Message[];
+  deadChat: Message[];
 };
 
 export type RoleCounts = Record<Role, number>;

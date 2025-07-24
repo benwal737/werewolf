@@ -53,6 +53,9 @@ export const createGame = (
     roleCounts,
     totalPlayers,
     dayNum: 1,
+    gameChat: [],
+    werewolfChat: [],
+    deadChat: [],
   };
   gameStates.set(lobbyId, newGame);
   return newGame;
