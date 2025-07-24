@@ -14,6 +14,13 @@ import {
 } from "./gameManager.ts";
 import { GamePhase, Substep } from "./types/index.ts";
 
+const FORETELLER_TIME = 5;
+const WEREWOLVES_TIME = 5;
+const WITCH_TIME = 60;
+const DEATHS_TIME = 5;
+const VOTE_TIME = 5;
+const RESULTS_TIME = 5;
+
 export default function registerGameHandlers(io: Server, socket: Socket) {
   const resolveForetellerPhase = (lobbyId: string) => {
     const game = getGame(lobbyId);
@@ -22,7 +29,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setPhase(lobbyId, "night", "werewolves");
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 30, () => {
+    startCountdown(io, lobbyId, WEREWOLVES_TIME, () => {
       nextPhase(lobbyId, "werewolves");
     });
   };
@@ -43,6 +50,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     }
 
     const step = witchAlive ? "witch" : "deaths";
+    const time = witchAlive ? WITCH_TIME : DEATHS_TIME;
     const phase: GamePhase = witchAlive ? "night" : "day";
 
     if (!witchAlive) {
@@ -53,7 +61,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setPhase(lobbyId, phase, step);
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 30, () => {
+    startCountdown(io, lobbyId, time, () => {
       nextPhase(lobbyId, step);
     });
   };
@@ -72,7 +80,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setPhase(lobbyId, phase, step);
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 10, () => {
+    startCountdown(io, lobbyId, DEATHS_TIME, () => {
       nextPhase(lobbyId, step);
     });
   };
@@ -84,7 +92,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setPhase(lobbyId, phase, step);
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 30, () => {
+    startCountdown(io, lobbyId, VOTE_TIME, () => {
       nextPhase(lobbyId, step);
     });
   };
@@ -109,7 +117,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
       setPhase(lobbyId, phase, step);
       const updated = getSafeGameState(lobbyId);
       io.to(lobbyId).emit("gameUpdated", updated);
-      startCountdown(io, lobbyId, 10, () => {
+      startCountdown(io, lobbyId, RESULTS_TIME, () => {
         nextPhase(lobbyId, step);
       });
     }
@@ -119,9 +127,9 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     const game = getGame(lobbyId);
     if (!game) return;
     game.villageKill = undefined;
-    let step: Substep;
-    let phase: GamePhase;
-
+    let step: Substep = "werewolves";
+    let phase: GamePhase = "night";
+    let time = WEREWOLVES_TIME;
     if (
       game.roleCounts.foreteller > 0 &&
       getPlayers(lobbyId).some(
@@ -130,16 +138,14 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     ) {
       step = "foreteller";
       phase = "night";
-    } else {
-      step = "werewolves";
-      phase = "night";
+      time = FORETELLER_TIME;
     }
 
     setPhase(lobbyId, phase, step);
     game.dayNum++;
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    startCountdown(io, lobbyId, 30, () => {
+    startCountdown(io, lobbyId, time, () => {
       nextPhase(lobbyId, step);
     });
   };
@@ -173,12 +179,12 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     if (game.host === playerId && game.phase === "start") {
       if (game.roleCounts.foreteller > 0) {
         setPhase(lobbyId, "night", "foreteller");
-        startCountdown(io, lobbyId, 30, () => {
+        startCountdown(io, lobbyId, FORETELLER_TIME, () => {
           nextPhase(lobbyId, "foreteller");
         });
       } else {
         setPhase(lobbyId, "night", "werewolves");
-        startCountdown(io, lobbyId, 30, () => {
+        startCountdown(io, lobbyId, WEREWOLVES_TIME, () => {
           nextPhase(lobbyId, "werewolves");
         });
       }
