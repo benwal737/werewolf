@@ -1,6 +1,8 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Message } from "@/game/types";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 interface GameChatProps {
   messages: Message[];
@@ -9,10 +11,22 @@ interface GameChatProps {
 const GameChat = ({ messages }: GameChatProps) => {
   return (
     <Card className="w-full bg-card/50 backdrop-blur-sm h-70">
-      <CardContent>
-        {messages.map((message, index) => (
-          <p key={index}>{message.text}</p>
-        ))}
+      <CardContent className="flex flex-col items-center justify-start h-full w-full">
+        <div className="flex flex-col items-center justify-start h-48 w-100 overflow-y-scroll border rounded-lg px-2 pb-2 animate-scroll">
+          {messages.map((message) => (
+            <>
+              <Separator className="my-2" />
+              <div className="flex gap-2 w-full">
+                <b>{message.sender}:</b>
+                <p>{message.text}</p>
+              </div>
+            </>
+          ))}
+        </div>
+        <Input
+          placeholder="Type your message here..."
+          className="absolute bottom-0 mb-3 mt-2 w-100 border-none"
+        />
       </CardContent>
     </Card>
   );

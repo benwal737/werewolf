@@ -21,13 +21,31 @@ const messages: Message[] = [
     id: "1",
     text: "Hello",
     sender: "Player 1",
-    timestamp: "2022-01-01T00:00:00Z",
   },
   {
     id: "2",
     text: "Whats up",
     sender: "Player 2",
-    timestamp: "2022-01-01T00:00:00Z",
+  },
+  {
+    id: "3",
+    text: "Whats up",
+    sender: "Player 3",
+  },
+  {
+    id: "4",
+    text: "Whats up",
+    sender: "Player 4",
+  },
+  {
+    id: "5",
+    text: "Whats up",
+    sender: "Player 5",
+  },
+  {
+    id: "6",
+    text: "Whats up",
+    sender: "Player 6",
   },
 ];
 
