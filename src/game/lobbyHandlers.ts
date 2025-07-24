@@ -1,5 +1,11 @@
 import { Socket, Server } from "socket.io";
-import { createGame, addPlayer, removePlayer, getGame } from "./gameManager.ts";
+import {
+  createGame,
+  addPlayer,
+  removePlayer,
+  getGame,
+  getPlayers,
+} from "./gameManager.ts";
 import { Player, RoleCounts } from "./types";
 
 export default function registerLobbyHandlers(io: Server, socket: Socket) {
@@ -43,9 +49,12 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
     "joinLobby",
     (lobbyId: string, playerId: string, playerName: string) => {
       const game = getGame(lobbyId);
-      if (!game || game.phase !== "lobby") {
-        console.log("Game not found");
-        return socket.emit("joinError", "Game not found");
+      if (
+        !game ||
+        game.phase !== "lobby" ||
+        getPlayers(lobbyId).length >= game.totalPlayers
+      ) {
+        return socket.emit("joinError");
       }
 
       if (!game.players[playerId]) {
@@ -89,16 +98,18 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("checkLobby", (lobbyId, callback) => {
-    console.log("checking lobby");
     const game = getGame(lobbyId);
-    callback(!!game && game.phase === "lobby" && game.totalPlayers > Object.keys(game.players).length);
+    callback(
+      !!game &&
+        game.phase === "lobby" &&
+        game.totalPlayers > getPlayers(lobbyId).length
+    );
   });
 
   const countdowns = new Map<string, NodeJS.Timeout>();
 
   socket.on("startGameCountdown", (lobbyId: string) => {
     if (countdowns.has(lobbyId)) {
-      console.log("countdown already started in lobby");
       return;
     }
     let timeLeft = 3;

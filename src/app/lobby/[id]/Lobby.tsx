@@ -65,11 +65,10 @@ export default function Lobby() {
 
     socket.emit("checkLobby", lobbyId, (exists: boolean) => {
       if (!exists) {
-        return router.push("/lobby/not-found");
+        return handleJoinError();
       }
+      socket.emit("joinLobby", lobbyId, playerId, playerName);
     });
-
-    socket.emit("joinLobby", lobbyId, playerId, playerName);
 
     const handlePlayerJoined = (data: {
       players: Record<string, Player>;
