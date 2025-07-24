@@ -63,6 +63,12 @@ export default function Lobby() {
   useEffect(() => {
     if (!playerId || !playerName) return;
 
+    socket.emit("checkLobby", lobbyId, (exists: boolean) => {
+      if (!exists) {
+        return router.push("/lobby/not-found");
+      }
+    });
+
     socket.emit("joinLobby", lobbyId, playerId, playerName);
 
     const handlePlayerJoined = (data: {
