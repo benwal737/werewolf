@@ -124,28 +124,32 @@ const Game = () => {
             />
           </div>
           {/* Main Content */}
-          {/* Player List */}
-          <div className="flex justify-center">
-            <div className="flex flex-wrap justify-center gap-4 py-12 max-w-5xl mx-auto">
-              {Object.values(gameState.players).map((player) => (
-                <PlayerCard
-                  key={player.id}
-                  player={player}
-                  gameState={gameState}
-                  user={gameState.players[playerId]}
-                  foretellerRevealed={foretellerRevealed}
-                  witchSelected={witchSelected}
-                  onClick={getClickAction(player)}
-                />
-              ))}
+          <div className="flex justify-between w-full">
+            {/* Player List */}
+            <div className="mx-20 w-1/2">
+              {/* Action Panel */}
+              {witchTurn && isWitch && (
+                <div className="flex justify-center mt-5 w-full">
+                  <ActionPanel gameState={gameState} />
+                </div>
+              )}
+              <div className="flex flex-col justify-center gap-4 py-12 w-full mx-auto">
+                {Object.values(gameState.players).map((player) => (
+                  <PlayerCard
+                    key={player.id}
+                    player={player}
+                    gameState={gameState}
+                    user={gameState.players[playerId]}
+                    foretellerRevealed={foretellerRevealed}
+                    witchSelected={witchSelected}
+                    onClick={getClickAction(player)}
+                  />
+                ))}
+              </div>
             </div>
+            {/* Game Chat */}
+            <div className="mr-20 w-1/2 bg-card/50 backdrop-blur-sm p-5"></div>
           </div>
-
-          {witchTurn && isWitch && (
-            <div className="flex justify-center mt-5 w-full">
-              <ActionPanel gameState={gameState} />
-            </div>
-          )}
         </div>
         {/* Bottom Bar */}
         <div className="w-full flex justify-center items-center fixed bottom-0">

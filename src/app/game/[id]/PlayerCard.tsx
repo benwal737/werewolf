@@ -99,7 +99,7 @@ export default function PlayerCard({
     <Card
       onClick={onClick}
       className={cn(
-        "bg-card/50 backdrop-blur-sm px-6 py-4 flex flex-col items-center text-center transition-all w-50 justify-between",
+        "bg-card/50 backdrop-blur-sm px-6 py-4 transition-all w-full",
         disable ? "opacity-50" : "",
         choosing && !selected && "hover:backdrop-brightness-125 cursor-pointer",
         selected &&
@@ -107,25 +107,31 @@ export default function PlayerCard({
             (werewolfTurn || voteStep ? " cursor-pointer" : "")
       )}
     >
-      <div className="text-lg font-semibold truncate w-full">
-        {player.name}
-        {user.id === player.id ? " (you)" : ""}
-      </div>
-      <div>{renderRoleIcon()}</div>
-      {(voteStep ||
-        (werewolfTurn && (user.role === "werewolf" || !user.alive))) && (
-        <div className="text-lg font-semibold min-h-[1.5rem]">
-          votes: {player.numVotes}
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          <div>{renderRoleIcon()}</div>
+          <div className="flex items-center gap-1">
+            <span className="text-lg font-semibold">{player.name}</span>
+            <span className="text-md text-muted-foreground">
+              {user.id === player.id && "(You)"}
+            </span>
+          </div>
         </div>
-      )}
-      <div
-        className={cn(
-          "text-sm mt-1",
-          player.alive && "text-green-600",
-          !player.alive && "text-red-500"
+        {(voteStep ||
+          (werewolfTurn && (user.role === "werewolf" || !user.alive))) && (
+          <div className="text-lg font-semibold min-h-[1.5rem]">
+            votes: {player.numVotes}
+          </div>
         )}
-      >
-        {player.alive ? "Alive" : "Dead"}
+        <div
+          className={cn(
+            "text-sm mt-1",
+            player.alive && "text-green-600",
+            !player.alive && "text-red-500"
+          )}
+        >
+          {player.alive ? "Alive" : "Dead"}
+        </div>
       </div>
     </Card>
   );
