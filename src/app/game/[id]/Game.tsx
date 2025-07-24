@@ -124,16 +124,17 @@ const Game = () => {
             />
           </div>
           {/* Main Content */}
-          <div className="flex justify-between w-full">
-            {/* Player List */}
-            <div className="mx-20 w-1/2">
+          <div className="flex justify-center w-full my-5">
+            {/* Left Container */}
+            <div className="ml-20 mr-5 w-1/2">
               {/* Action Panel */}
               {witchTurn && isWitch && (
-                <div className="flex justify-center mt-5 w-full">
+                <div className="flex justify-center w-full mb-5">
                   <ActionPanel gameState={gameState} />
                 </div>
               )}
-              <div className="flex flex-col justify-center gap-4 py-12 w-full mx-auto">
+              {/* Player List */}
+              <div className="flex flex-col justify-center gap-4 w-full">
                 {Object.values(gameState.players).map((player) => (
                   <PlayerCard
                     key={player.id}
@@ -147,7 +148,7 @@ const Game = () => {
                 ))}
               </div>
             </div>
-            {/* Game Chat */}
+            {/* Right Container */}
             <div className="mr-20 w-1/2 bg-card/50 backdrop-blur-sm p-5"></div>
           </div>
         </div>

@@ -32,7 +32,7 @@ export default function PlayerCard({
   const gameOver = gameState.phase === "end";
   const renderRoleIcon = () => {
     if (user.role === "werewolf" && player.role === "werewolf") {
-      return <GiWerewolf size={40} />;
+      return <GiWerewolf size={35} />;
     }
     if (user.id === player.id) {
       switch (user.role) {
@@ -50,7 +50,7 @@ export default function PlayerCard({
     if (!player.alive || gameOver || !user.alive) {
       switch (player.role) {
         case "werewolf":
-          return <GiWerewolf size={40} />;
+          return <GiWerewolf size={35} />;
         case "foreteller":
           return <GiThirdEye size={35} />;
         case "witch":
