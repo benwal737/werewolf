@@ -19,6 +19,7 @@ const Game = () => {
   const lobbyId = useParams().id;
 
   const [gameState, setGameState] = useState<GameState | null>(null);
+  const phaseTheme = usePhaseTheme(gameState);
   const hasJoinedRef = useRef(false);
 
   const [witchSelected, setWitchSelected] = useState(false);
@@ -46,13 +47,9 @@ const Game = () => {
     );
   };
 
-  const handleJoinError = useCallback(
-    (msg: string) => {
-      alert(msg);
-      router.push("/");
-    },
-    [router]
-  );
+  const handleJoinError = useCallback(() => {
+    router.push("/not-found");
+  }, [router]);
 
   const handleForetellerReveal = useCallback(
     (target: Player) => {
@@ -116,7 +113,7 @@ const Game = () => {
     player &&
     playerId &&
     gameState && (
-      <PageTheme forcedTheme={usePhaseTheme(gameState)}>
+      <PageTheme forcedTheme={phaseTheme}>
         <div className="flex flex-col min-h-screen w-full bg-cover bg-center">
           {/* Phase Indicator  */}
           <div className="flex justify-center mt-5 w-full">

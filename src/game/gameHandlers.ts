@@ -161,7 +161,12 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
 
   socket.on("joinGame", (lobbyId: string, playerId: string, cb) => {
     const game = getGame(lobbyId);
-    if (!game || game.phase === "lobby") return socket.emit("joinError");
+    const playerExists = getPlayers(lobbyId).some(
+      (player) => player.id === playerId
+    );
+    if (!game || game.phase === "lobby" || !playerExists) {
+      return socket.emit("joinError");
+    }
 
     socket.join(lobbyId);
 
