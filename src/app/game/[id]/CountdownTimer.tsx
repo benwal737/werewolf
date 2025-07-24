@@ -7,11 +7,9 @@ interface CountdownTimerProps {
 
 const CountdownTimer = ({ countdown }: CountdownTimerProps) => {
   return (
-    <div className="text-4xl font-bold flex justify-start w-[4ch] items-center">
+    <div className="text-4xl font-bold flex justify-end w-[4ch] items-center gap-1">
+      <span className="w-fit text-center">{countdown ? countdown : ""}</span>
       <IoIosTimer />
-      <span className="w-fit text-center">
-        {countdown ? countdown : ""}
-      </span>
     </div>
   );
 };
