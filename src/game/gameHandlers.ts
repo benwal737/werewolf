@@ -2,7 +2,7 @@ import { Socket, Server } from "socket.io";
 import {
   getGame,
   getSafeGameState,
-  assignRoles,
+  assignRolesAndColors,
   setPhase,
   getPlayers,
   startCountdown,
@@ -195,7 +195,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("startGame", (lobbyId: string) => {
-    assignRoles(lobbyId);
+    assignRolesAndColors(lobbyId);
     setPhase(lobbyId, "start", "none");
   });
 

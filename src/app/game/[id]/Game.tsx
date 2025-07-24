@@ -10,7 +10,6 @@ import ActionPanel from "./ActionPanel";
 import PlayerList from "./PlayerList";
 import { usePlayer } from "@/hooks/usePlayer";
 import usePlayerAction from "@/hooks/usePlayerAction";
-import PlayerCard from "./PlayerCard";
 import { toast } from "sonner";
 import PageTheme from "@/components/PageTheme";
 import usePhaseTheme from "@/hooks/usePhaseTheme";
@@ -173,7 +172,7 @@ const Game = () => {
               />
             </div>
             {/* Right Container */}
-            <div className="mr-20 w-1/3">
+            <div className={`mr-20 w-1/3`}>
               {/* Action Panel */}
               {witchTurn && isWitch && <ActionPanel gameState={gameState} />}
               <GameChat messages={messages} />

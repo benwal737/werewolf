@@ -155,7 +155,25 @@ export const setDayDeaths = (lobbyId: string) => {
   }
 };
 
-export const assignRoles = (lobbyId: string) => {
+const colorPool = [
+  "bg-red-500",
+  "bg-green-500",
+  "bg-amber-400",
+  "bg-blue-500",
+  "bg-orange-500",
+  "bg-purple-500",
+  "bg-cyan-400",
+  "bg-pink-400",
+  "bg-lime-400",
+  "bg-slate-700",
+  "bg-teal-600",
+  "bg-violet-300",
+  "bg-indigo-500",
+  "bg-fuchsia-500",
+  "bg-sky-500",
+];
+
+export const assignRolesAndColors = (lobbyId: string) => {
   const game = getGame(lobbyId);
   if (!game) return;
 
@@ -177,6 +195,7 @@ export const assignRoles = (lobbyId: string) => {
   playerIds.forEach((playerId, index) => {
     const role = rolesToAssign[index];
     game.players[playerId].role = role;
+    game.players[playerId].color = colorPool[index];
   });
 };
 

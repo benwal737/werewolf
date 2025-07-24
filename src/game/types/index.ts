@@ -18,6 +18,7 @@ export type Player = {
   alive: boolean;
   vote?: string;
   numVotes?: number;
+  color?: string;
 };
 
 export type Message = {

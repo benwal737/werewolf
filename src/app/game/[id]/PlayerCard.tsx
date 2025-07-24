@@ -32,31 +32,79 @@ export default function PlayerCard({
   const gameOver = gameState.phase === "end";
   const renderRoleIcon = () => {
     if (user.role === "werewolf" && player.role === "werewolf") {
-      return <GiWerewolf size={35} />;
+      return (
+        <div className={`icon-badge ${player.color}`}>
+          <GiWerewolf size={30} />
+        </div>
+      );
     }
     if (user.id === player.id) {
       switch (user.role) {
         case "foreteller":
-          return <GiThirdEye size={35} />;
+          return (
+            <div className={`icon-badge ${player.color}`}>
+              <GiThirdEye size={30} />
+            </div>
+          );
         case "witch":
-          return <GiCauldron size={35} />;
+          return (
+            <div className={`icon-badge ${player.color}`}>
+              <GiCauldron size={30} />
+            </div>
+          );
         case "villager":
-          return <GiVillage size={35} />;
+          return (
+            <div className={`icon-badge ${player.color}`}>
+              <GiVillage size={30} />
+            </div>
+          );
+        case "werewolf":
+          return (
+            <div className={`icon-badge ${player.color}`}>
+              <GiWerewolf size={30} />
+            </div>
+          );
+        case "villager":
+          return (
+            <div className={`icon-badge ${player.color}`}>
+              <GiVillage size={30} />
+            </div>
+          );
       }
     }
     if (user.id !== player.id && player.alive && !gameOver && user.alive) {
-      return <FaQuestion size={35} />;
+      return (
+        <div className={`icon-badge ${player.color}`}>
+          <FaQuestion size={30} />
+        </div>
+      );
     }
     if (!player.alive || gameOver || !user.alive) {
       switch (player.role) {
         case "werewolf":
-          return <GiWerewolf size={35} />;
+          return (
+            <div className={`icon-badge ${player.color}`}>
+              <GiWerewolf size={30} />
+            </div>
+          );
         case "foreteller":
-          return <GiThirdEye size={35} />;
+          return (
+            <div className={`icon-badge ${player.color}`}>
+              <GiThirdEye size={30} />
+            </div>
+          );
         case "witch":
-          return <GiCauldron size={35} />;
+          return (
+            <div className={`icon-badge ${player.color}`}>
+              <GiCauldron size={30} />
+            </div>
+          );
         case "villager":
-          return <GiVillage size={35} />;
+          return (
+            <div className={`icon-badge ${player.color}`}>
+              <GiVillage size={30} />
+            </div>
+          );
       }
     }
     return null;
