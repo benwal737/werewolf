@@ -27,18 +27,18 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
     socket.emit("witchKilling", lobbyId);
   };
   return (
-    <Card className="p-5 bg-card/50 backdrop-blur-sm w-full h-45 mb-5">
+    <Card className="p-5 bg-card/50 backdrop-blur-sm w-full h-45 mb-5 transition-all duration-500">
       {gameState.witchKilling ? (
         <p className="text-center">
           Choose Wisely. One you select a player, your answer will be locked in.
         </p>
       ) : (
-        <div className="flex items-center justify-between gap-4">
-          <GiSpellBook size={80} color="foreground-muted" />
+        <div className="flex items-center justify-around gap-4 w-full h-full">
+          <GiSpellBook size={80} />
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <Button
-                className="w-20"
+                className="w-40"
                 onClick={handleSave}
                 disabled={gameState.witchSaved || chosen || !willDie}
               >
@@ -54,7 +54,7 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
             </div>
             <div className="flex items-center gap-2">
               <Button
-                className="w-20"
+                className="w-40"
                 onClick={handleKill}
                 disabled={gameState.witchKilled || chosen}
               >
