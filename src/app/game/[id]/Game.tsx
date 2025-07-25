@@ -154,7 +154,7 @@ const Game = () => {
     gameState && (
       <PageTheme forcedTheme={phaseTheme}>
         <div className="flex flex-col min-h-screen w-full bg-cover bg-center overflow-y-auto">
-          {isWinner && <Confetti className="w-full h-full" recycle={false} numberOfPieces={1000}/>}
+          {isWinner && <Confetti className="w-full h-full" recycle={false} numberOfPieces={500}/>}
           {/* Phase Indicator  */}
           <div className="flex justify-center mt-5 w-full">
             <PhaseIndicator
