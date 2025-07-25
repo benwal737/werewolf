@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import PageTheme from "@/components/PageTheme";
 import usePhaseTheme from "@/hooks/usePhaseTheme";
 import GameChat from "./GameChat";
+import Confetti from "react-confetti";
 
 const messages: Message[] = [
   {
@@ -143,12 +144,17 @@ const Game = () => {
     handleCountdownTick,
   ]);
 
+  const isWinner =
+    (gameState?.winner === "villagers" && player?.role !== "werewolf") ||
+    (gameState?.winner === "werewolves" && player?.role === "werewolf");
+
   return (
     player &&
     playerId &&
     gameState && (
       <PageTheme forcedTheme={phaseTheme}>
         <div className="flex flex-col min-h-screen w-full bg-cover bg-center overflow-y-auto">
+          {isWinner && <Confetti className="w-full h-full" recycle={false} numberOfPieces={1000}/>}
           {/* Phase Indicator  */}
           <div className="flex justify-center mt-5 w-full">
             <PhaseIndicator

@@ -27,7 +27,7 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
     socket.emit("witchKilling", lobbyId);
   };
   return (
-    <Card className="p-5 bg-card/50 backdrop-blur-sm w-full h-45 mb-5 transition-all duration-500">
+    <Card className="p-5 bg-card/50 backdrop-blur-sm sm:w-full lg:w-full md:w-1/2 h-45 mb-5 transition-all duration-500">
       {gameState.witchKilling ? (
         <p className="text-center">
           Choose Wisely. One you select a player, your answer will be locked in.

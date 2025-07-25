@@ -11,8 +11,8 @@ interface GameChatProps {
 const GameChat = ({ messages }: GameChatProps) => {
   return (
     <Card className="w-full bg-card/50 backdrop-blur-sm h-70 mb-20">
-      <CardContent className="flex flex-col items-center justify-start h-full w-full">
-        <div className="flex flex-col items-center justify-start h-48 w-fit overflow-y-scroll border rounded-lg px-2 pb-2">
+      <CardContent className="flex flex-col items-center justify-start h-full w-full px-4">
+        <div className="flex flex-col items-center justify-start h-48 w-full overflow-y-scroll border rounded-lg px-2 pb-2">
           {messages.map((message) => (
             <>
               <Separator className="my-2" />
@@ -25,7 +25,7 @@ const GameChat = ({ messages }: GameChatProps) => {
         </div>
         <Input
           placeholder="Type your message here..."
-          className="absolute bottom-0 mb-3 mt-2 w-fit border-none"
+          className="absolute bottom-0 mb-3 mt-2 w-5/6 border-none"
         />
       </CardContent>
     </Card>

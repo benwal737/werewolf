@@ -13,6 +13,14 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   const { substep: nightStep, phase, witchSave, witchKill } = gameState;
   const gameOver = phase === "end";
 
+  const isLoser =
+    (gameState?.winner === "villagers" && player?.role == "werewolf") ||
+    (gameState?.winner === "werewolves" && player?.role === "werewolf");
+
+  const isWinner =
+    (gameState?.winner === "villagers" && player?.role !== "werewolf") ||
+    (gameState?.winner === "werewolves" && player?.role === "werewolf");
+
   function getForetellerNarration() {
     return isForeteller ? (
       <p>Select a player to reveal their role</p>
@@ -132,7 +140,19 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     }
   }
 
-  return <div className="text-muted-foreground text-lg">{narration}</div>;
+  return (
+    <div
+      className={
+        isLoser
+          ? "text-red-500 text-lg"
+          : isWinner
+          ? "text-green-600 text-lg"
+          : "text-muted-foreground text-lg"
+      }
+    >
+      {narration}
+    </div>
+  );
 };
 
 export default Narration;
