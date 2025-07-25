@@ -41,7 +41,7 @@ export default function PageTheme({
   if (forcedTheme === "dark") {
     return (
       <div
-        className="relative min-h-screen w-full bg-cover bg-center"
+        className="relative min-h-screen w-full bg-cover bg-center overflow-x-hidden"
         style={{ backgroundImage: background }}
       >
         <div className="absolute inset-0 z-0">

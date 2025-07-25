@@ -10,7 +10,7 @@ interface GameChatProps {
 
 const GameChat = ({ messages }: GameChatProps) => {
   return (
-    <Card className="w-full bg-card/50 backdrop-blur-sm h-70">
+    <Card className="w-full bg-card/50 backdrop-blur-sm h-70 mb-20">
       <CardContent className="flex flex-col items-center justify-start h-full w-full">
         <div className="flex flex-col items-center justify-start h-48 w-fit overflow-y-scroll border rounded-lg px-2 pb-2">
           {messages.map((message) => (

@@ -28,7 +28,7 @@ const PlayerList = ({
   });
 
   return (
-    <div className="lg:grid lg:grid-cols-2 md:flex md:flex-col gap-5 w-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
       {sortedPlayers.map((player) => (
         <PlayerCard
           key={player.id}
@@ -38,6 +38,7 @@ const PlayerList = ({
           foretellerRevealed={foretellerRevealed}
           witchSelected={witchSelected}
           onClick={getClickAction(player)}
+          className="w-full"
         />
       ))}
     </div>

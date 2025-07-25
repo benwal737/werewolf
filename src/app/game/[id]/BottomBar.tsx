@@ -11,7 +11,7 @@ interface BottomBarProps {
 
 const BottomBar = ({ role }: BottomBarProps) => {
   return (
-    <div className="bg-card/50 backdrop-blur-sm w-full flex justify-center items-center p-3">
+    <div className="bg-card/50 backdrop-blur-sm w-full flex justify-center items-center p-3 h-18">
       <Dialog>
         <DialogTrigger asChild>
           {role && (

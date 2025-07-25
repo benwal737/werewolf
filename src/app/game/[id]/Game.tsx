@@ -158,9 +158,15 @@ const Game = () => {
             />
           </div>
           {/* Main Content */}
-          <div className="flex flex-col lg:flex-row justify-center w-full my-5 lg:items-start">
+          <div className="flex flex-col lg:flex-row justify-center my-5 lg:items-start items-stretch gap-5 mx-10 md:mx-20">
             {/* Left Container */}
-            <div className="ml-20 mr-20 lg:mr-5 lg:w-2/3">
+            <div className="lg:w-2/3 lg:mb-0 w-full">
+              {/* Action Panel (md and below) */}
+              {witchTurn && isWitch && (
+                <div className="block lg:hidden mb-4">
+                  <ActionPanel gameState={gameState} />
+                </div>
+              )}
               {/* Player List */}
               <PlayerList
                 players={Object.values(gameState.players)}
@@ -172,9 +178,13 @@ const Game = () => {
               />
             </div>
             {/* Right Container */}
-            <div className={`mr-20 w-1/3`}>
-              {/* Action Panel */}
-              {witchTurn && isWitch && <ActionPanel gameState={gameState} />}
+            <div className="w-full lg:w-1/3">
+              {/* Action Panel (lg and up) */}
+              {witchTurn && isWitch && (
+                <div className="hidden lg:block mb-4">
+                  <ActionPanel gameState={gameState} />
+                </div>
+              )}
               <GameChat messages={messages} />
             </div>
           </div>
