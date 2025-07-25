@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Player } from "@/game/types";
-import { GiCauldron, GiVillage, GiWerewolf, GiThirdEye } from "react-icons/gi";
+import { GiCauldron, GiVillage, GiWolfHead, GiThirdEye, GiWerewolf } from "react-icons/gi";
 import { FaQuestion } from "react-icons/fa";
 
 import { GameState } from "@/game/types";
@@ -36,7 +36,7 @@ export default function PlayerCard({
     if (user.role === "werewolf" && player.role === "werewolf") {
       return (
         <div className={`icon-badge ${player.color}`}>
-          <GiWerewolf size={30} />
+          <GiWolfHead size={30} />
         </div>
       );
     }
@@ -63,7 +63,7 @@ export default function PlayerCard({
         case "werewolf":
           return (
             <div className={`icon-badge ${player.color}`}>
-              <GiWerewolf size={30} />
+              <GiWolfHead size={30} />
             </div>
           );
         case "villager":
@@ -86,7 +86,7 @@ export default function PlayerCard({
         case "werewolf":
           return (
             <div className={`icon-badge ${player.color}`}>
-              <GiWerewolf size={30} />
+              <GiWolfHead size={30} />
             </div>
           );
         case "foreteller":
