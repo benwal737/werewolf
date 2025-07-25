@@ -14,13 +14,13 @@ const GameChat = ({ messages }: GameChatProps) => {
       <CardContent className="flex flex-col items-center justify-start h-full w-full px-4">
         <div className="flex flex-col items-center justify-start h-48 w-full overflow-y-scroll border rounded-lg px-2 pb-2">
           {messages.map((message) => (
-            <>
+            <div key={message.id}>
               <Separator className="my-2" />
               <div className="flex gap-2 w-full">
                 <b>{message.sender}:</b>
                 <p>{message.text}</p>
               </div>
-            </>
+            </div>
           ))}
         </div>
         <Input
