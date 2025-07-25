@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Player } from "@/game/types";
-import { GiCauldron, GiVillage, GiWolfHead, GiThirdEye, GiWerewolf } from "react-icons/gi";
+import { GiCauldron, GiVillage, GiWolfHead, GiThirdEye } from "react-icons/gi";
 import { FaQuestion } from "react-icons/fa";
 
 import { GameState } from "@/game/types";

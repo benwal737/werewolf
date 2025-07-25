@@ -47,11 +47,6 @@ export default function Lobby() {
     socket.emit("startGameCountdown", lobbyId);
   };
 
-  const handleJoinError = () => {
-    console.log("join error");
-    router.push("/lobby/not-found");
-  };
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (copied) setCopied(false);
@@ -61,6 +56,11 @@ export default function Lobby() {
   }, [copied]);
 
   useEffect(() => {
+    const handleJoinError = () => {
+      console.log("join error");
+      router.push("/lobby/not-found");
+    };
+
     if (!playerId || !playerName) return;
 
     socket.emit("checkLobby", lobbyId, (exists: boolean) => {
