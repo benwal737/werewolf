@@ -1,10 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Player } from "@/game/types";
+import { Player, Role } from "@/game/types";
 import { GiCauldron, GiVillage, GiWolfHead, GiThirdEye } from "react-icons/gi";
 import { FaQuestion } from "react-icons/fa";
-
+import { useState } from "react";
 import { GameState } from "@/game/types";
+import { Button } from "@/components/ui/button";
+import { IoMdCheckmark, IoMdClose } from "react-icons/io";
+import { IconType } from "react-icons";
 
 interface PlayerCardProps {
   player: Player;
@@ -12,8 +15,10 @@ interface PlayerCardProps {
   user: Player;
   foretellerRevealed: boolean | undefined;
   witchSelected: boolean;
-  onClick?: () => void;
+  playerAction?: () => void;
   className?: string;
+  showingConfirmation?: boolean;
+  setShowingConfirmation?: (showingConfirmation: boolean) => void;
 }
 
 export default function PlayerCard({
@@ -22,8 +27,10 @@ export default function PlayerCard({
   user,
   foretellerRevealed,
   witchSelected,
-  onClick,
+  playerAction,
   className,
+  showingConfirmation,
+  setShowingConfirmation,
 }: PlayerCardProps) {
   const foretellerTurn = gameState.substep === "foreteller";
   const werewolfTurn = gameState.substep === "werewolves";
@@ -31,86 +38,70 @@ export default function PlayerCard({
   const witchKilling = gameState.witchKilling;
   const witchKill = gameState.witchKill;
   const voteStep = gameState.substep === "vote";
+  const deathStep = gameState.substep === "results";
   const gameOver = gameState.phase === "end";
+  const voted = user.vote !== undefined;
+
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const handleShowConfirmation = () => {
+    if (
+      voted ||
+      showingConfirmation ||
+      !user.alive ||
+      !player.alive ||
+      user.id === player.id
+    )
+      return;
+    setShowConfirmation(true);
+    setShowingConfirmation?.(true);
+  };
+
+  const handleConfirmVote = () => {
+    clearConfirmation();
+    playerAction?.();
+  };
+
+  const clearConfirmation = () => {
+    setShowConfirmation(false);
+    setShowingConfirmation?.(false);
+  };
+
+  const roleIcons: Record<Role, IconType> = {
+    foreteller: GiThirdEye,
+    witch: GiCauldron,
+    villager: GiVillage,
+    werewolf: GiWolfHead,
+  };
+
+  const getRoleIcon = (role: Role) => {
+    const Icon = roleIcons[role];
+    return Icon ? <Icon size={30} /> : null;
+  };
+
   const renderRoleIcon = () => {
-    if (user.role === "werewolf" && player.role === "werewolf") {
-      return (
-        <div className={`icon-badge ${player.color}`}>
-          <GiWolfHead size={30} />
-        </div>
-      );
-    }
-    if (user.id === player.id) {
-      switch (user.role) {
-        case "foreteller":
-          return (
-            <div className={`icon-badge ${player.color}`}>
-              <GiThirdEye size={30} />
-            </div>
-          );
-        case "witch":
-          return (
-            <div className={`icon-badge ${player.color}`}>
-              <GiCauldron size={30} />
-            </div>
-          );
-        case "villager":
-          return (
-            <div className={`icon-badge ${player.color}`}>
-              <GiVillage size={30} />
-            </div>
-          );
-        case "werewolf":
-          return (
-            <div className={`icon-badge ${player.color}`}>
-              <GiWolfHead size={30} />
-            </div>
-          );
-        case "villager":
-          return (
-            <div className={`icon-badge ${player.color}`}>
-              <GiVillage size={30} />
-            </div>
-          );
-      }
-    }
-    if (user.id !== player.id && player.alive && !gameOver && user.alive) {
+    const role: Role = player.role;
+    const IconWrapper = (
+      <div className={`icon-badge ${player.color}`}>{getRoleIcon(role)}</div>
+    );
+
+    if (user.role === "werewolf" && player.role === "werewolf")
+      return IconWrapper;
+
+    if (user.id === player.id) return IconWrapper;
+
+    if (player.alive && user.alive && !gameOver && user.id !== player.id)
       return (
         <div className={`icon-badge ${player.color}`}>
           <FaQuestion size={30} />
         </div>
       );
-    }
-    if (!player.alive || gameOver || !user.alive) {
-      switch (player.role) {
-        case "werewolf":
-          return (
-            <div className={`icon-badge ${player.color}`}>
-              <GiWolfHead size={30} />
-            </div>
-          );
-        case "foreteller":
-          return (
-            <div className={`icon-badge ${player.color}`}>
-              <GiThirdEye size={30} />
-            </div>
-          );
-        case "witch":
-          return (
-            <div className={`icon-badge ${player.color}`}>
-              <GiCauldron size={30} />
-            </div>
-          );
-        case "villager":
-          return (
-            <div className={`icon-badge ${player.color}`}>
-              <GiVillage size={30} />
-            </div>
-          );
-      }
-    }
+
+    if (!player.alive || gameOver || !user.alive) return IconWrapper;
+
     return null;
   };
+
   const disable =
     (((foretellerTurn && user.role === "foreteller") ||
       (werewolfTurn && user.role === "werewolf") ||
@@ -134,7 +125,8 @@ export default function PlayerCard({
     witchKilling &&
     player.id !== user.id;
 
-  const isVoteChoosing = voteStep && player.id !== user.id;
+  const isVoteChoosing =
+    voteStep && player.id !== user.id && !voted && !showConfirmation;
 
   const choosing =
     (isForetellerChoosing ||
@@ -147,7 +139,13 @@ export default function PlayerCard({
     user.vote === player.id || (witchKilling && witchKill?.id === player.id);
   return (
     <Card
-      onClick={onClick}
+      onClick={
+        voteStep
+          ? showConfirmation
+            ? () => {}
+            : handleShowConfirmation
+          : playerAction
+      }
       className={cn(
         "bg-card/50 backdrop-blur-sm px-6 py-4 transition-all h-20 justify-center",
         className,
@@ -168,10 +166,20 @@ export default function PlayerCard({
             </span>
           </div>
         </div>
-        {(voteStep ||
-          (werewolfTurn && (user.role === "werewolf" || !user.alive))) && (
-          <div className="text-lg font-semibold min-h-[1.5rem]">
-            votes: {player.numVotes}
+        {(werewolfTurn && (user.role === "werewolf" || !user.alive)) ||
+          (deathStep && (
+            <div className="text-lg font-semibold min-h-[1.5rem]">
+              votes: {player.numVotes}
+            </div>
+          ))}
+        {showConfirmation && (
+          <div className="flex gap-2">
+            <Button onClick={handleConfirmVote}>
+              <IoMdCheckmark size={20} />
+            </Button>
+            <Button onClick={clearConfirmation}>
+              <IoMdClose size={20} />
+            </Button>
           </div>
         )}
         <div

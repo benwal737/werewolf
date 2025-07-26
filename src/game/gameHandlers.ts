@@ -14,12 +14,12 @@ import {
 } from "./gameManager.ts";
 import { GamePhase, Substep } from "./types/index.ts";
 
-const FORETELLER_TIME = 5;
-const WEREWOLVES_TIME = 5;
-const WITCH_TIME = 60;
-const DEATHS_TIME = 5;
-const VOTE_TIME = 5;
-const RESULTS_TIME = 5;
+const FORETELLER_TIME = 3;
+const WEREWOLVES_TIME = 30;
+const WITCH_TIME = 3;
+const DEATHS_TIME = 3;
+const VOTE_TIME = 30;
+const RESULTS_TIME = 3;
 
 export default function registerGameHandlers(io: Server, socket: Socket) {
   const resolveForetellerPhase = (lobbyId: string) => {

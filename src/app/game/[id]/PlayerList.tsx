@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Player, GameState } from "@/game/types";
 import PlayerCard from "./PlayerCard";
 
@@ -27,6 +29,8 @@ const PlayerList = ({
     return 0;
   });
 
+  const [showingConfirmation, setShowingConfirmation] = useState(false);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
       {sortedPlayers.map((player) => (
@@ -37,8 +41,10 @@ const PlayerList = ({
           user={gameState.players[currentUserId]}
           foretellerRevealed={foretellerRevealed}
           witchSelected={witchSelected}
-          onClick={getClickAction(player)}
+          playerAction={getClickAction(player)}
           className="w-full"
+          showingConfirmation={showingConfirmation}
+          setShowingConfirmation={setShowingConfirmation}
         />
       ))}
     </div>

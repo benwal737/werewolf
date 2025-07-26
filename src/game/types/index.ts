@@ -14,7 +14,7 @@ export type Substep =
 export type Player = {
   id: string;
   name: string;
-  role: string;
+  role: Role;
   alive: boolean;
   vote?: string;
   numVotes?: number;

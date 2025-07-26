@@ -14,8 +14,8 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   const gameOver = phase === "end";
 
   const isLoser =
-    (gameState?.winner === "villagers" && player?.role == "werewolf") ||
-    (gameState?.winner === "werewolves" && player?.role === "werewolf");
+    (gameState?.winner === "villagers" && player?.role === "werewolf") ||
+    (gameState?.winner === "werewolves" && player?.role !== "werewolf");
 
   const isWinner =
     (gameState?.winner === "villagers" && player?.role !== "werewolf") ||
