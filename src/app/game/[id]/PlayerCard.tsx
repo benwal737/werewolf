@@ -102,41 +102,37 @@ export default function PlayerCard({
     return null;
   };
 
-  const disable =
-    (((foretellerTurn && user.role === "foreteller") ||
-      (werewolfTurn && user.role === "werewolf") ||
-      (witchTurn && user.role === "witch" && witchKilling)) &&
-      player.id === user.id) ||
-    (voteStep && player.id === user.id && player.alive && user.alive) ||
-    !player.alive;
   const isForetellerChoosing =
-    !foretellerRevealed &&
-    foretellerTurn &&
-    user.role === "foreteller" &&
-    player.id !== user.id;
+    !foretellerRevealed && foretellerTurn && user.role === "foreteller";
 
-  const isWerewolfChoosing =
-    werewolfTurn && user.role === "werewolf" && player.role !== "werewolf";
+  const isWerewolfChoosing = werewolfTurn && user.role === "werewolf";
 
   const isWitchChoosing =
-    !witchSelected &&
-    witchTurn &&
-    user.role === "witch" &&
-    witchKilling &&
-    player.id !== user.id;
+    !witchSelected && witchTurn && user.role === "witch" && witchKilling;
 
-  const isVoteChoosing =
-    voteStep && player.id !== user.id && !voted && !showConfirmation;
+  const isVoteChoosing = voteStep && !voted && !showConfirmation;
+
+  const disable =
+    ((isForetellerChoosing ||
+      isWerewolfChoosing ||
+      isWitchChoosing ||
+      (voteStep && user.alive && !voted)) &&
+      player.id === user.id) ||
+    !player.alive;
 
   const choosing =
     (isForetellerChoosing ||
       isWerewolfChoosing ||
       isWitchChoosing ||
       isVoteChoosing) &&
-    player.alive &&
     user.alive;
+
   const selected =
     user.vote === player.id || (witchKilling && witchKill?.id === player.id);
+
+  const shouldHighlight =
+    (choosing && !selected && !disable) || showConfirmation;
+
   return (
     <Card
       onClick={
@@ -150,10 +146,9 @@ export default function PlayerCard({
         "bg-card/50 backdrop-blur-sm px-6 py-4 transition-all h-20 justify-center",
         className,
         disable ? "opacity-50" : "",
-        choosing && !selected && "hover:backdrop-brightness-125 cursor-pointer",
+        shouldHighlight ? "hover:backdrop-brightness-125 cursor-pointer" : "",
         selected &&
-          "backdrop-saturate-200" +
-            (werewolfTurn || voteStep ? " cursor-pointer" : "")
+          "backdrop-saturate-200" + (werewolfTurn ? " cursor-pointer" : "")
       )}
     >
       <div className="flex justify-between items-center">
