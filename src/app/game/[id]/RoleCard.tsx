@@ -38,7 +38,7 @@ const roleInfo: Record<
 };
 
 const RoleCard = ({ role }: RoleCardProps) => {
-  if (!role) throw new Error("no role");
+  if (!role) return null;
   const { label, description, icon } = roleInfo[role];
 
   return (

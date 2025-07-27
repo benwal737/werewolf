@@ -31,7 +31,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       const player: Player = {
         id: playerId,
         name: playerName,
-        role: "unassigned",
+        role: "villager",
         alive: true,
       };
       addPlayer(lobbyId, player);
@@ -61,7 +61,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
         const player: Player = {
           id: playerId,
           name: playerName,
-          role: "unassigned",
+          role: "villager",
           alive: true,
         };
         addPlayer(lobbyId, player);

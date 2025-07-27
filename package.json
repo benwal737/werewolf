@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "dev::socket": "NODE_OPTIONS='--loader ts-node/esm --trace-warnings --no-warnings' ts-node server.mts",
+    "dev": "TS_NODE_PROJECT=tsconfig.server.json node --loader ts-node/esm server.ts",
+    "dev::socket": "NODE_OPTIONS='--loader ts-node/esm --trace-warnings --no-warnings' ts-node server.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

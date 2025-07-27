@@ -8,8 +8,10 @@ import { GameState } from "@/game/types";
 import { Button } from "@/components/ui/button";
 import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { IconType } from "react-icons";
-import { GlowEffect } from "@/components/ui/glow-effect";
-import { motion } from "motion/react";
+// import { GlowEffect } from "@/components/ui/glow-effect";
+// import { motion } from "motion/react";
+import { getPlayers } from "@/game/gameManager";
+import { useParams } from "next/navigation";
 
 interface PlayerCardProps {
   player: Player;
@@ -43,6 +45,8 @@ export default function PlayerCard({
   const voted = user.vote !== undefined;
 
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const lobbyId = useParams().id as string;
 
   const handleShowConfirmation = () => {
     if (
@@ -127,9 +131,20 @@ export default function PlayerCard({
 
   const shouldHighlight = choosing && !selected && !disable;
 
+  const playerVoteColors = [];
+  const players = getPlayers(lobbyId);
+  // if (!players) console.log("No players found");
+  for (const person of players) {
+    // console.log(person.vote);
+    // console.log(player.color);
+    if (person.vote === player.id) {
+      playerVoteColors.push(person.color);
+    }
+  }
+
   return (
     <div className="relative w-full h-full">
-      {selected && (
+      {/* {selected && (
         <motion.div
           className="pointer-events-none absolute inset-0"
           animate={{
@@ -148,7 +163,7 @@ export default function PlayerCard({
             duration={4}
           />
         </motion.div>
-      )}
+      )} */}
       <Card
         onClick={
           voteStep
@@ -176,12 +191,15 @@ export default function PlayerCard({
               </span>
             </div>
           </div>
-          {(werewolfTurn && (user.role === "werewolf" || !user.alive)) ||
-            (deathStep && (
-              <div className="text-lg font-semibold min-h-[1.5rem]">
-                votes: {player.numVotes}
-              </div>
-            ))}
+          {((werewolfTurn && (user.role === "werewolf" || !user.alive)) ||
+            deathStep) && (
+            <div className="text-lg font-semibold min-h-[1.5rem]">
+              votes:{" "}
+              {playerVoteColors.map((color) => (
+                <span key={color} className={`w-2 h-2 rounded-full ${color}`} />
+              ))}
+            </div>
+          )}
           {showConfirmation && (
             <div className="flex gap-2">
               <Button onClick={handleConfirmVote}>
