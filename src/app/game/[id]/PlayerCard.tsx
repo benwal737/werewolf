@@ -112,15 +112,8 @@ export default function PlayerCard({
 
   const isVoteChoosing = voteStep && !voted && !showConfirmation;
 
-  // const disable =
-  //   ((isForetellerChoosing ||
-  //     isWerewolfChoosing ||
-  //     isWitchChoosing ||
-  //     (voteStep && user.alive && !voted)) &&
-  //     player.id === user.id) ||
-  //   !player.alive;
-
-  const disable = !player.alive;
+  const disable =
+    !player.alive || (isForetellerChoosing && player.id === user.id);
 
   const choosing =
     (isForetellerChoosing ||

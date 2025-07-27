@@ -23,6 +23,7 @@ const usePlayerAction = (
 
   const foretellerAction = (target: Player) => {
     if (gameState?.foretellerRevealed) return;
+    if (target.id === playerId) return;
     clickSound();
     socket.emit("foretellerSelected", lobbyId, target.id);
   };
