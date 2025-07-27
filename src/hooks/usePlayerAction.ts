@@ -40,7 +40,6 @@ const usePlayerAction = (
   };
 
   if (!player?.alive) return undefined;
-  if (playerId === target.id) return undefined;
   if (target.id == null || !gameState?.players[target.id].alive)
     return undefined;
   if (foretellerTurn && isForeteller) {

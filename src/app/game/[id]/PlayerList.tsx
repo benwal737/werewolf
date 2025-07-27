@@ -42,7 +42,6 @@ const PlayerList = ({
           foretellerRevealed={foretellerRevealed}
           witchSelected={witchSelected}
           playerAction={getClickAction(player)}
-          className="w-full"
           showingConfirmation={showingConfirmation}
           setShowingConfirmation={setShowingConfirmation}
         />

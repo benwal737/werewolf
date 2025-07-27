@@ -18,7 +18,6 @@ interface PlayerCardProps {
   foretellerRevealed: boolean | undefined;
   witchSelected: boolean;
   playerAction?: () => void;
-  className?: string;
   showingConfirmation?: boolean;
   setShowingConfirmation?: (showingConfirmation: boolean) => void;
 }
@@ -30,7 +29,6 @@ export default function PlayerCard({
   foretellerRevealed,
   witchSelected,
   playerAction,
-  className,
   showingConfirmation,
   setShowingConfirmation,
 }: PlayerCardProps) {
@@ -114,13 +112,15 @@ export default function PlayerCard({
 
   const isVoteChoosing = voteStep && !voted && !showConfirmation;
 
-  const disable =
-    ((isForetellerChoosing ||
-      isWerewolfChoosing ||
-      isWitchChoosing ||
-      (voteStep && user.alive && !voted)) &&
-      player.id === user.id) ||
-    !player.alive;
+  // const disable =
+  //   ((isForetellerChoosing ||
+  //     isWerewolfChoosing ||
+  //     isWitchChoosing ||
+  //     (voteStep && user.alive && !voted)) &&
+  //     player.id === user.id) ||
+  //   !player.alive;
+
+  const disable = !player.alive;
 
   const choosing =
     (isForetellerChoosing ||
