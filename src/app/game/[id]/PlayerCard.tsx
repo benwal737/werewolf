@@ -8,6 +8,8 @@ import { GameState } from "@/game/types";
 import { Button } from "@/components/ui/button";
 import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { IconType } from "react-icons";
+import { GlowEffect } from "@/components/ui/glow-effect";
+import { motion } from "motion/react";
 
 interface PlayerCardProps {
   player: Player;
@@ -130,63 +132,84 @@ export default function PlayerCard({
   const selected =
     user.vote === player.id || (witchKilling && witchKill?.id === player.id);
 
-  const shouldHighlight =
-    (choosing && !selected && !disable) || showConfirmation;
+  const shouldHighlight = choosing && !selected && !disable;
 
   return (
-    <Card
-      onClick={
-        voteStep
-          ? showConfirmation
-            ? () => {}
-            : handleShowConfirmation
-          : playerAction
-      }
-      className={cn(
-        "bg-card/50 backdrop-blur-sm px-6 py-4 transition-all h-20 justify-center",
-        className,
-        disable ? "opacity-50" : "",
-        shouldHighlight ? "hover:backdrop-brightness-125 cursor-pointer" : "",
-        selected &&
-          "backdrop-saturate-200" + (werewolfTurn ? " cursor-pointer" : "")
-      )}
-    >
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <div>{renderRoleIcon()}</div>
-          <div className="flex items-center gap-1">
-            <span className="text-lg font-semibold">{player.name}</span>
-            <span className="text-md text-muted-foreground">
-              {user.id === player.id && "(You)"}
-            </span>
-          </div>
-        </div>
-        {(werewolfTurn && (user.role === "werewolf" || !user.alive)) ||
-          (deathStep && (
-            <div className="text-lg font-semibold min-h-[1.5rem]">
-              votes: {player.numVotes}
-            </div>
-          ))}
-        {showConfirmation && (
-          <div className="flex gap-2">
-            <Button onClick={handleConfirmVote}>
-              <IoMdCheckmark size={20} />
-            </Button>
-            <Button onClick={clearConfirmation}>
-              <IoMdClose size={20} />
-            </Button>
-          </div>
-        )}
-        <div
-          className={cn(
-            "text-sm mt-1",
-            player.alive && "text-green-600",
-            !player.alive && "text-red-500"
-          )}
+    <div className="relative w-full h-full">
+      {selected && (
+        <motion.div
+          className="pointer-events-none absolute inset-0"
+          animate={{
+            opacity: selected ? 1 : 0,
+          }}
+          transition={{
+            delay: 0.15,
+            duration: 0.5,
+            ease: "easeOut",
+          }}
         >
-          {player.alive ? "Alive" : "Dead"}
+          <GlowEffect
+            colors={["#0894FF", "#C959DD", "#FF2E54", "#FF9004"]}
+            mode="colorShift"
+            blur="soft"
+            duration={4}
+          />
+        </motion.div>
+      )}
+      <Card
+        onClick={
+          voteStep
+            ? showConfirmation
+              ? () => {}
+              : handleShowConfirmation
+            : playerAction
+        }
+        className={cn(
+          "backdrop-blur-sm px-6 py-4 h-20 justify-center relative z-10",
+          selected ? "bg-card" : "bg-card/50",
+          disable ? "opacity-50" : "",
+          shouldHighlight ? "hover:backdrop-brightness-125 cursor-pointer" : "",
+          showConfirmation ? "backdrop-brightness-125" : "",
+          selected && werewolfTurn ? "cursor-pointer" : ""
+        )}
+      >
+        <div className="flex justify-between items-center relative">
+          <div className="flex items-center gap-4">
+            <div>{renderRoleIcon()}</div>
+            <div className="flex items-center gap-1">
+              <span className="text-lg font-semibold">{player.name}</span>
+              <span className="text-md text-muted-foreground">
+                {user.id === player.id && "(You)"}
+              </span>
+            </div>
+          </div>
+          {(werewolfTurn && (user.role === "werewolf" || !user.alive)) ||
+            (deathStep && (
+              <div className="text-lg font-semibold min-h-[1.5rem]">
+                votes: {player.numVotes}
+              </div>
+            ))}
+          {showConfirmation && (
+            <div className="flex gap-2">
+              <Button onClick={handleConfirmVote}>
+                <IoMdCheckmark size={20} />
+              </Button>
+              <Button onClick={clearConfirmation}>
+                <IoMdClose size={20} />
+              </Button>
+            </div>
+          )}
+          <div
+            className={cn(
+              "text-sm mt-1",
+              player.alive && "text-green-600",
+              !player.alive && "text-red-500"
+            )}
+          >
+            {player.alive ? "Alive" : "Dead"}
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </div>
   );
 }
