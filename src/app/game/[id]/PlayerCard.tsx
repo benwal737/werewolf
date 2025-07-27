@@ -174,27 +174,25 @@ export default function PlayerCard({
         <div className="flex justify-between items-center relative">
           <div className="flex items-center gap-4">
             <div>{renderRoleIcon()}</div>
-            <div className="flex items-center gap-1">
-              <span className="text-lg font-semibold">{player.name}</span>
-              <span className="text-md text-muted-foreground">
-                {user.id === player.id && "(You)"}
-              </span>
-            </div>
-          </div>
-          {((werewolfTurn && (user.role === "werewolf" || !user.alive)) ||
-            resultsStep) && (
-            <div className="text-lg font-semibold min-h-[1.5rem]">
-              votes:{" "}
-              <div className="flex gap-1">
-                {playerVoteColors.map((color, i) => (
-                  <span
-                    key={`${color}-${i}`}
-                    className={`inline-block w-2 h-2 rounded-full ${color}`}
-                  />
-                ))}
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1">
+                <span className="text-lg font-semibold">{player.name}</span>
+                <span className="text-md text-muted-foreground">
+                  {user.id === player.id && "(You)"}
+                </span>
+              </div>
+              <div className="flex gap-1 min-h-[1rem]">
+                {((werewolfTurn && (user.role === "werewolf" || !user.alive)) ||
+                  resultsStep) &&
+                  playerVoteColors.map((color, i) => (
+                    <span
+                      key={`${color}-${i}`}
+                      className={`inline-block w-2 h-2 rounded-full ${color}`}
+                    />
+                  ))}
               </div>
             </div>
-          )}
+          </div>
           {showConfirmation && (
             <div className="flex gap-2">
               <Button onClick={handleConfirmVote}>
