@@ -8,8 +8,8 @@ import { GameState } from "@/game/types";
 import { Button } from "@/components/ui/button";
 import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { IconType } from "react-icons";
-// import { GlowEffect } from "@/components/ui/glow-effect";
-// import { motion } from "motion/react";
+import { GlowEffect } from "@/components/ui/glow-effect";
+import { motion } from "motion/react";
 import { getPlayers } from "@/game/gameManager";
 import { useParams } from "next/navigation";
 
@@ -133,10 +133,10 @@ export default function PlayerCard({
 
   const playerVoteColors = [];
   const players = getPlayers(lobbyId);
-  // if (!players) console.log("No players found");
+  if (!players) console.log("No players found");
   for (const person of players) {
-    // console.log(person.vote);
-    // console.log(player.color);
+    console.log(person.vote);
+    console.log(player.color);
     if (person.vote === player.id) {
       playerVoteColors.push(person.color);
     }
@@ -144,13 +144,13 @@ export default function PlayerCard({
 
   return (
     <div className="relative w-full h-full">
-      {/* {selected && (
+      {selected && (
         <motion.div
           className="pointer-events-none absolute inset-0"
           animate={{
             opacity: selected ? 1 : 0,
           }}
-          transition={{
+          transition={{ 
             delay: 0.15,
             duration: 0.5,
             ease: "easeOut",
@@ -163,7 +163,7 @@ export default function PlayerCard({
             duration={4}
           />
         </motion.div>
-      )} */}
+      )}
       <Card
         onClick={
           voteStep
