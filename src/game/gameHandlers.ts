@@ -106,11 +106,6 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     const candidates = countVotes(lobbyId);
     game.villageKill = candidates.length === 1 ? candidates[0] : undefined;
 
-    // reset votes
-    for (const player of getPlayers(lobbyId)) {
-      player.vote = undefined;
-      player.numVotes = 0;
-    }
     setDayDeaths(lobbyId);
     const winner = isWinner(lobbyId, io);
     if (!winner) {
@@ -126,6 +121,11 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
   const resolveResultsPhase = (lobbyId: string) => {
     const game = getGame(lobbyId);
     if (!game) return;
+    // reset votes
+    for (const player of getPlayers(lobbyId)) {
+      player.vote = undefined;
+      player.numVotes = 0;
+    }
     game.villageKill = undefined;
     let step: Substep = "werewolves";
     let phase: GamePhase = "night";

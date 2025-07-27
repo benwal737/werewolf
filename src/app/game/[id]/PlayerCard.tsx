@@ -10,8 +10,6 @@ import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { IconType } from "react-icons";
 import { GlowEffect } from "@/components/ui/glow-effect";
 import { motion } from "motion/react";
-import { getPlayers } from "@/game/gameManager";
-import { useParams } from "next/navigation";
 
 interface PlayerCardProps {
   player: Player;
@@ -40,13 +38,11 @@ export default function PlayerCard({
   const witchKilling = gameState.witchKilling;
   const witchKill = gameState.witchKill;
   const voteStep = gameState.substep === "vote";
-  const deathStep = gameState.substep === "results";
+  const resultsStep = gameState.substep === "results";
   const gameOver = gameState.phase === "end";
   const voted = user.vote !== undefined;
 
   const [showConfirmation, setShowConfirmation] = useState(false);
-
-  const lobbyId = useParams().id as string;
 
   const handleShowConfirmation = () => {
     if (
@@ -131,16 +127,10 @@ export default function PlayerCard({
 
   const shouldHighlight = choosing && !selected && !disable;
 
-  const playerVoteColors = [];
-  const players = getPlayers(lobbyId);
-  if (!players) console.log("No players found");
-  for (const person of players) {
-    console.log(person.vote);
-    console.log(player.color);
-    if (person.vote === player.id) {
-      playerVoteColors.push(person.color);
-    }
-  }
+  const players = Object.values(gameState.players);
+  const playerVoteColors = players
+    .filter((person) => person.vote === player.id)
+    .map((person) => person.color);
 
   return (
     <div className="relative w-full h-full">
@@ -150,7 +140,7 @@ export default function PlayerCard({
           animate={{
             opacity: selected ? 1 : 0,
           }}
-          transition={{ 
+          transition={{
             delay: 0.15,
             duration: 0.5,
             ease: "easeOut",
@@ -192,12 +182,17 @@ export default function PlayerCard({
             </div>
           </div>
           {((werewolfTurn && (user.role === "werewolf" || !user.alive)) ||
-            deathStep) && (
+            resultsStep) && (
             <div className="text-lg font-semibold min-h-[1.5rem]">
               votes:{" "}
-              {playerVoteColors.map((color) => (
-                <span key={color} className={`w-2 h-2 rounded-full ${color}`} />
-              ))}
+              <div className="flex gap-1">
+                {playerVoteColors.map((color, i) => (
+                  <span
+                    key={`${color}-${i}`}
+                    className={`inline-block w-2 h-2 rounded-full ${color}`}
+                  />
+                ))}
+              </div>
             </div>
           )}
           {showConfirmation && (
