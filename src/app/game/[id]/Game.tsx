@@ -20,32 +20,32 @@ const messages: Message[] = [
   {
     id: "1",
     text: "Hello",
-    sender: "Player 1",
+    sender: { id: "1", name: "Player 1", role: "werewolf", alive: true },
   },
   {
     id: "2",
     text: "Whats up",
-    sender: "Player 2",
+    sender: { id: "2", name: "Player 2", role: "villager", alive: true },
   },
   {
     id: "3",
     text: "Whats up",
-    sender: "Player 3",
+    sender: { id: "3", name: "Player 3", role: "witch", alive: true },
   },
   {
     id: "4",
     text: "Whats up",
-    sender: "Player 4",
+    sender: { id: "4", name: "Player 4", role: "foreteller", alive: true },
   },
   {
     id: "5",
     text: "Whats up",
-    sender: "Player 5",
+    sender: { id: "5", name: "Player 5", role: "villager", alive: true },
   },
   {
     id: "6",
     text: "Whats up",
-    sender: "Player 6",
+    sender: { id: "6", name: "Player 6", role: "villager", alive: true },
   },
 ];
 
@@ -197,7 +197,9 @@ const Game = () => {
                   <ActionPanel gameState={gameState} />
                 </div>
               )}
-              <GameChat messages={messages} />
+              <div className="h-[66vh]">
+                <GameChat messages={messages} />
+              </div>
             </div>
           </div>
         </div>

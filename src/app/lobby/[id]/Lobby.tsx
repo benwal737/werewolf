@@ -3,19 +3,66 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
-import { Player } from "@/game/types";
+import { Player, Message } from "@/game/types";
 import PlayerList from "./PlayerList";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TypographyH1, TypographyH4 } from "@/components/ui/typography";
 import { usePlayer } from "@/hooks/usePlayer";
 import PageTheme from "@/components/PageTheme";
-import { Badge, Loader2Icon, Users } from "lucide-react";
+import { Loader2Icon, Users } from "lucide-react";
 import { clickSound } from "@/utils/sounds";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import dynamic from "next/dynamic";
 import GameChat from "@/app/game/[id]/GameChat";
 import { GiSandsOfTime } from "react-icons/gi";
+
+const messages: Message[] = [
+  {
+    id: "1",
+    text: "Hello",
+    sender: { id: "1", name: "Player 1", role: "werewolf", alive: true },
+  },
+  {
+    id: "2",
+    text: "Whats up",
+    sender: { id: "2", name: "Player 2", role: "villager", alive: true },
+  },
+  {
+    id: "3",
+    text: "Whats up",
+    sender: { id: "3", name: "Player 3", role: "witch", alive: true },
+  },
+  {
+    id: "4",
+    text: "Whats up",
+    sender: { id: "4", name: "Player 4", role: "foreteller", alive: true },
+  },
+  {
+    id: "5",
+    text: "Whats up",
+    sender: { id: "5", name: "Player 5", role: "villager", alive: true },
+  },
+  {
+    id: "6",
+    text: "Whats up",
+    sender: { id: "6", name: "Player 6", role: "villager", alive: true },
+  },
+  {
+    id: "7",
+    text: "Whats up",
+    sender: { id: "7", name: "Player 7", role: "villager", alive: true },
+  },
+  {
+    id: "8",
+    text: "Whats up",
+    sender: { id: "8", name: "Player 8", role: "villager", alive: true },
+  },
+  {
+    id: "9",
+    text: "Whats up",
+    sender: { id: "9", name: "Player 9", role: "villager", alive: true },
+  },
+];
 
 interface ClipboardProps {
   copied: boolean;
@@ -128,15 +175,19 @@ export default function Lobby() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Lobby ID</p>
-                      <p className="text-2xl font-mono font-bold">{lobbyId}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-2xl font-mono font-bold">
+                          {lobbyId}
+                        </p>
+                        <Clipboard
+                          copied={copied}
+                          setCopied={setCopied}
+                          text={lobbyId}
+                          color="white"
+                          size={24}
+                        />
+                      </div>
                     </div>
-                    <Clipboard
-                      copied={copied}
-                      setCopied={setCopied}
-                      text={lobbyId}
-                      color="white"
-                      size={24}
-                    />
                   </div>
                   <div className="flex flex-wrap gap-2 sm:gap-4 w-full justify-end">
                     <Button
@@ -198,9 +249,7 @@ export default function Lobby() {
             </div>
             {/* Right: Game Chat */}
             <div className="order-3 lg:order-3 w-full flex flex-col">
-              <GameChat
-                messages={[{ id: "1", sender: "Player 1", text: "Hello" }]}
-              />
+              <GameChat messages={messages} />
             </div>
           </div>
         ) : (

@@ -24,7 +24,7 @@ export type Player = {
 export type Message = {
   id: string;
   text: string;
-  sender: string;
+  sender: Player;
 };
 
 export type GameState = {
