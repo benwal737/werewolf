@@ -11,6 +11,34 @@ import { Server } from "socket.io";
 
 const gameStates = new Map<string, GameState>();
 
+const earlyProceed = (io: Server, lobbyId: string): boolean => {
+  const game = getGame(lobbyId);
+  if (!game) return false;
+
+  const phase = game.phase;
+  const step = game.substep;
+
+  let expectedVoters: string[] = [];
+
+  // if (phase === "night" && step === "werewolves") {
+  //   expectedVoters = getPlayers(lobbyId)
+  //     .filter((p) => p.alive && p.role === "werewolf")
+  //     .map((p) => p.id);
+  // } else
+  if (phase === "day" && step === "vote") {
+    expectedVoters = getPlayers(lobbyId)
+      .filter((p) => p.alive)
+      .map((p) => p.id);
+  } else {
+    return false;
+  }
+
+  const allVoted = expectedVoters.every((id) => !!game.players[id]?.vote);
+  if (!allVoted) return false;
+
+  return true;
+};
+
 export const startCountdown = (
   io: Server,
   lobbyId: string,
@@ -28,6 +56,9 @@ export const startCountdown = (
     timeLeft--;
     game.countdown = timeLeft;
     io.to(lobbyId).emit("countdownTick", timeLeft);
+    if (earlyProceed(io, lobbyId)) {
+      timeLeft = 0;
+    }
     if (timeLeft < 1) {
       clearInterval(interval);
       game.interval = undefined;
@@ -264,4 +295,20 @@ export const countVotes = (lobbyId: string) => {
     }
   }
   return candidates;
+};
+
+export const allVotesIn = (lobbyId: string) => {
+  const game = getGame(lobbyId);
+  if (!game) return false;
+
+  const { substep } = game;
+  return getPlayers(lobbyId).every((player) => {
+    if (!player.alive) return true;
+
+    if (substep === "werewolves" && player.role !== "werewolf") return true;
+    if (substep === "vote" || substep === "werewolves")
+      return player.vote !== undefined;
+
+    return true;
+  });
 };

@@ -14,12 +14,12 @@ import {
 } from "./gameManager.ts";
 import { GamePhase, Substep } from "./types/index.ts";
 
-const FORETELLER_TIME = 3;
-const WEREWOLVES_TIME = 30;
-const WITCH_TIME = 3;
-const DEATHS_TIME = 3;
-const VOTE_TIME = 30;
-const RESULTS_TIME = 3;
+const FORETELLER_TIME = 20;
+const WEREWOLVES_TIME = 20;
+const WITCH_TIME = 20;
+const DEATHS_TIME = 10;
+const VOTE_TIME = 20;
+const RESULTS_TIME = 10;
 
 export default function registerGameHandlers(io: Server, socket: Socket) {
   const resolveForetellerPhase = (lobbyId: string) => {
@@ -108,8 +108,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
 
     setDayDeaths(lobbyId);
     for (const player of getPlayers(lobbyId)) {
-      player.vote = undefined;
-      player.numVotes = 0;
+      if (player.vote !== "skip") player.vote = undefined;
     }
 
     const winner = isWinner(lobbyId, io);
@@ -128,6 +127,10 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     if (!game) return;
 
     game.villageKill = undefined;
+    for (const player of getPlayers(lobbyId)) {
+      player.vote = undefined;
+      player.numVotes = 0;
+    }
     let step: Substep = "werewolves";
     let phase: GamePhase = "night";
     let time = WEREWOLVES_TIME;
