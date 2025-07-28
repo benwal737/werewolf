@@ -7,14 +7,26 @@ import { useState } from "react";
 import { socket } from "@/lib/socketClient";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { GameState } from "@/game/types";
+import { Player } from "@/game/types";
 
 interface GameChatProps {
-  messages: Message[];
+  gameState: GameState;
+  player: Player;
 }
 
-const GameChat = ({ messages }: GameChatProps) => {
+const GameChat = ({ gameState, player }: GameChatProps) => {
   const lobbyId = useParams().id as string;
   const [newMessage, setNewMessage] = useState("");
+
+  let messages: Message[] = [];
+  if (!player.alive) {
+    messages = gameState.deadChat;
+  } else if (player.role === "werewolf") {
+    messages = gameState.werewolfChat;
+  } else {
+    messages = gameState.gameChat;
+  }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {

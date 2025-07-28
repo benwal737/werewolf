@@ -5,6 +5,7 @@ import {
   removePlayer,
   getGame,
   getPlayers,
+  getSafeGameState,
 } from "./gameManager.ts";
 import { Player, RoleCounts } from "./types";
 
@@ -27,7 +28,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       ) {
         return;
       }
-      const game = createGame(lobbyId, playerId, roleCounts, totalPlayers);
+      createGame(lobbyId, playerId, roleCounts, totalPlayers);
       const player: Player = {
         id: playerId,
         name: playerName,
@@ -38,16 +39,22 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       socket.join(lobbyId);
       socket.join(playerId);
       callback();
-      io.to(lobbyId).emit("playerJoined", {
-        players: getGame(lobbyId)?.players,
-        host: game.host,
+      const updatedGame = getSafeGameState(lobbyId);
+      console.log("lobby created:", updatedGame);
+      io.to(lobbyId).emit("lobbyUpdated", {
+        gameState: updatedGame,
       });
     }
   );
 
   socket.on(
     "joinLobby",
-    (lobbyId: string, playerId: string, playerName: string) => {
+    (
+      lobbyId: string,
+      playerId: string,
+      playerName: string,
+      callback: (gameState: ReturnType<typeof getSafeGameState>) => void
+    ) => {
       const game = getGame(lobbyId);
       if (
         !game ||
@@ -69,10 +76,11 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
 
       socket.join(lobbyId);
       socket.join(playerId);
-      io.to(lobbyId).emit("playerJoined", {
-        players: game.players,
-        host: game.host,
-        totalPlayers: game.totalPlayers,
+      const updatedGame = getSafeGameState(lobbyId);
+      console.log("lobby joined:", updatedGame);
+      callback(updatedGame);
+      io.to(lobbyId).emit("lobbyUpdated", {
+        gameState: updatedGame,
       });
     }
   );
@@ -80,19 +88,15 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
   socket.on("leaveLobby", (lobbyId: string, playerId: string) => {
     removePlayer(lobbyId, playerId);
     socket.leave(lobbyId);
-    io.to(lobbyId).emit("playerJoined", {
-      players: getGame(lobbyId)?.players,
-      host: getGame(lobbyId)?.host,
-      totalPlayers: getGame(lobbyId)?.totalPlayers,
+    io.to(lobbyId).emit("lobbyUpdated", {
+      gameState: getSafeGameState(lobbyId),
     });
   });
 
   socket.on("kickPlayer", (lobbyId: string, playerId: string) => {
     removePlayer(lobbyId, playerId);
-    io.to(lobbyId).emit("playerJoined", {
-      players: getGame(lobbyId)?.players,
-      host: getGame(lobbyId)?.host,
-      totalPlayers: getGame(lobbyId)?.totalPlayers,
+    io.to(lobbyId).emit("lobbyUpdated", {
+      gameState: getSafeGameState(lobbyId),
     });
     io.to(playerId).emit("kicked");
   });
