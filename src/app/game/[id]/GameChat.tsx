@@ -20,7 +20,9 @@ const GameChat = ({ gameState, player }: GameChatProps) => {
   const [newMessage, setNewMessage] = useState("");
 
   const { chat, messages, canChat } = useMemo(() => {
-    if (!player.alive)
+    if (gameState.phase === "end")
+      return { chat: "gameChat", messages: gameState.gameChat, canChat: true };
+    else if (!player.alive)
       return { chat: "deadChat", messages: gameState.deadChat, canChat: true };
     else if (player.role === "werewolf" && gameState.substep === "werewolves")
       return {
