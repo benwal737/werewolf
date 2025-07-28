@@ -34,9 +34,7 @@ const Narration = ({ gameState, player }: NarrationProps) => {
 
   function getWerewolfNarration() {
     if (isWerewolf && player.alive)
-      return (
-        <p>{`Choose a player to kill. (${skipCount} werewolves skipped)`} </p>
-      );
+      return <p>{`Choose a player to kill. (${skipCount} skipped)`} </p>;
     return <p>Werewolves are hunting</p>;
   }
 
@@ -102,12 +100,11 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     return gameState.villageKill ? (
       <p>
         <b className="text-red-500">{gameState.villageKill.name}</b> was killed
-        by the village. ({skipCount} players skipped)
+        by the village. ({skipCount} skipped)
       </p>
     ) : (
       <p>
-        The village could not agree on a player to kill. ({skipCount} players
-        skipped)
+        The village could not agree on a player to kill. ({skipCount} skipped)
       </p>
     );
   }
