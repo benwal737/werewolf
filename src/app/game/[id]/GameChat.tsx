@@ -12,26 +12,26 @@ import { Player } from "@/game/types";
 
 interface GameChatProps {
   gameState: GameState;
-  playerId: string;
+  player: Player;
 }
 
-const GameChat = ({ gameState, playerId }: GameChatProps) => {
+const GameChat = ({ gameState, player }: GameChatProps) => {
   const lobbyId = useParams().id as string;
   const [newMessage, setNewMessage] = useState("");
 
-  const { chat, messages } = useMemo(() => {
-    if (gameState.phase === "lobby") {
-      return { chat: "gameChat", messages: gameState.gameChat };
-    } else {
-      const player = gameState.players[playerId];
-      const chat = !player.alive
-        ? "deadChat"
-        : player.role === "werewolf"
-        ? "werewolfChat"
-        : "gameChat";
-      return { chat, messages: gameState[chat] };
-    }
-  }, [playerId, gameState]);
+  const { chat, messages, canChat } = useMemo(() => {
+    if (!player.alive)
+      return { chat: "deadChat", messages: gameState.deadChat, canChat: true };
+    else if (player.role === "werewolf" && gameState.substep === "werewolves")
+      return {
+        chat: "werewolfChat",
+        messages: gameState.werewolfChat,
+        canChat: true,
+      };
+    else if (gameState.phase === "day")
+      return { chat: "gameChat", messages: gameState.gameChat, canChat: true };
+    return { chat: "gameChat", messages: gameState.gameChat, canChat: false };
+  }, [player, gameState]);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -41,8 +41,9 @@ const GameChat = ({ gameState, playerId }: GameChatProps) => {
   };
 
   const handleSendMessage = () => {
+    if (!canChat) return;
     if (!newMessage.trim()) return;
-    socket.emit("sendMessage", lobbyId, newMessage, playerId, chat);
+    socket.emit("sendMessage", lobbyId, newMessage, player, chat);
     setNewMessage("");
   };
 
@@ -50,7 +51,13 @@ const GameChat = ({ gameState, playerId }: GameChatProps) => {
     <Card className="flex flex-col h-full max-h-[89vh] bg-card/50 backdrop-blur-sm">
       <CardHeader className="border-b border-border flex items-center gap-2">
         <MessageCircle className="h-5 w-5" />
-        <CardTitle className="text-2xl">Game Chat</CardTitle>
+        <CardTitle className="text-2xl">
+          {chat === "gameChat"
+            ? "Game Chat"
+            : chat === "werewolfChat"
+            ? "Werewolf Chat"
+            : "Dead Chat"}
+        </CardTitle>
       </CardHeader>
 
       <div className="flex-1 overflow-y-scroll px-6">
@@ -73,15 +80,16 @@ const GameChat = ({ gameState, playerId }: GameChatProps) => {
       <div className="px-6 pt-6 border-t border-border">
         <div className="flex gap-2">
           <Input
-            placeholder="Type your message..."
+            placeholder={canChat ? "Type your message..." : "Chat disabled"}
+            disabled={!canChat}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             className="flex-1"
           />
           <Button
             onClick={handleSendMessage}
-            disabled={!newMessage.trim()}
+            disabled={!newMessage.trim() || !canChat}
             size="icon"
           >
             <Send className="h-4 w-4" />

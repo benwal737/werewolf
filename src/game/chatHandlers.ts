@@ -9,21 +9,19 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     (
       lobbyId: string,
       message: string,
-      playerId: string,
+      player: Player,
       chat: "gameChat" | "werewolfChat" | "deadChat"
     ) => {
       const game = getGame(lobbyId);
       if (!game) return;
-      const player = game.players[playerId];
-      if (!player) return;
       const newMessage: Message = {
         id: uuidv4(),
         sender: player,
         text: message,
       };
       game[chat].push(newMessage);
-      const updatedGame = getSafeGameState(lobbyId);
-      io.to(lobbyId).emit("gameUpdated", { gameState: updatedGame });
+      const updated = getSafeGameState(lobbyId);
+      io.to(lobbyId).emit("gameUpdated", updated);
     }
   );
 }

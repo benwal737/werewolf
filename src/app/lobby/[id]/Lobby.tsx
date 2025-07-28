@@ -39,6 +39,8 @@ export default function Lobby() {
   const [validLobby, setValidLobby] = useState(false);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
+  const player: Player | null =
+    playerId && gameState ? gameState.players[playerId] : null;
 
   const handleStartGame = () => {
     clickSound();
@@ -77,7 +79,7 @@ export default function Lobby() {
       );
     });
 
-    const handleLobbyUpdated = ({ gameState }: { gameState: GameState }) => {
+    const handleLobbyUpdated = (gameState: GameState) => {
       setGameState(gameState);
       setValidLobby(true);
     };
@@ -208,7 +210,7 @@ export default function Lobby() {
             </div>
             {/* Right: Game Chat */}
             <div className="order-3 lg:order-3 w-full flex flex-col">
-              <GameChat gameState={gameState} playerId={playerId} />
+              {player && <GameChat gameState={gameState} player={player} />}
             </div>
           </div>
         ) : (

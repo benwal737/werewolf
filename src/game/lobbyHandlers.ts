@@ -39,11 +39,9 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       socket.join(lobbyId);
       socket.join(playerId);
       callback();
-      const updatedGame = getSafeGameState(lobbyId);
-      console.log("lobby created:", updatedGame);
-      io.to(lobbyId).emit("gameUpdated", {
-        gameState: updatedGame,
-      });
+      const updated = getSafeGameState(lobbyId);
+      console.log("lobby created:", updated);
+      io.to(lobbyId).emit("gameUpdated", updated);
     }
   );
 
@@ -76,28 +74,24 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
 
       socket.join(lobbyId);
       socket.join(playerId);
-      const updatedGame = getSafeGameState(lobbyId);
-      console.log("lobby joined:", updatedGame);
-      callback(updatedGame);
-      io.to(lobbyId).emit("gameUpdated", {
-        gameState: updatedGame,
-      });
+      const updated = getSafeGameState(lobbyId);
+      console.log("lobby joined:", updated);
+      callback(updated);
+      io.to(lobbyId).emit("gameUpdated", updated);
     }
   );
 
   socket.on("leaveLobby", (lobbyId: string, playerId: string) => {
     removePlayer(lobbyId, playerId);
     socket.leave(lobbyId);
-    io.to(lobbyId).emit("gameUpdated", {
-      gameState: getSafeGameState(lobbyId),
-    });
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
   });
 
   socket.on("kickPlayer", (lobbyId: string, playerId: string) => {
     removePlayer(lobbyId, playerId);
-    io.to(lobbyId).emit("gameUpdated", {
-      gameState: getSafeGameState(lobbyId),
-    });
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
     io.to(playerId).emit("kicked");
   });
 
