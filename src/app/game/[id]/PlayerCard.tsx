@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Player, Role } from "@/game/types";
 import { GiCauldron, GiVillage, GiWolfHead, GiThirdEye } from "react-icons/gi";
-import { FaQuestion } from "react-icons/fa";
+import { FaQuestion, FaVoteYea } from "react-icons/fa";
 import { useState } from "react";
 import { GameState } from "@/game/types";
 import { Button } from "@/components/ui/button";
@@ -178,14 +178,14 @@ export default function PlayerCard({
           <div className="flex items-center gap-4">
             <div>{renderRoleIcon()}</div>
             <div className="flex flex-col">
-              <div className="min-h-[1rem] text-xs">
+              <div className="min-h-[1rem]">
                 {((displayWerewolfVote && player.role === "werewolf") ||
                   voteStep) &&
                   player.alive &&
                   (player.vote ? (
-                    <span className="text-green-600">Voted</span>
+                    <FaVoteYea size={16} className="text-green-600" />
                   ) : (
-                    <span className="text-red-500">Waiting</span>
+                    ""
                   ))}
               </div>
               <div className="flex items-center gap-1">
