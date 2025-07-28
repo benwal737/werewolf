@@ -126,6 +126,8 @@ export default function PlayerCard({
     user.vote === player.id || (witchKilling && witchKill?.id === player.id);
 
   const shouldHighlight = choosing && !selected && !disable;
+  const displayWerewolfVote =
+    werewolfTurn && (user.role === "werewolf" || !user.alive);
 
   const players = Object.values(gameState.players);
   const playerVoteColors = players
@@ -175,15 +177,23 @@ export default function PlayerCard({
           <div className="flex items-center gap-4">
             <div>{renderRoleIcon()}</div>
             <div className="flex flex-col">
+              <div className="min-h-[1rem] text-xs">
+                {(displayWerewolfVote || voteStep) &&
+                  player.alive &&
+                  (player.vote ? (
+                    <span className="text-green-600">Voted</span>
+                  ) : (
+                    <span className="text-red-500">Waiting</span>
+                  ))}
+              </div>
               <div className="flex items-center gap-1">
                 <span className="text-lg font-semibold">{player.name}</span>
                 <span className="text-md text-muted-foreground">
                   {user.id === player.id && "(You)"}
                 </span>
               </div>
-              <div className="flex gap-1 min-h-[1rem]">
-                {((werewolfTurn && (user.role === "werewolf" || !user.alive)) ||
-                  resultsStep) &&
+              <div className="flex gap-1 min-h-[1rem] items-center">
+                {(displayWerewolfVote || resultsStep) &&
                   playerVoteColors.map((color, i) => (
                     <span
                       key={`${color}-${i}`}
