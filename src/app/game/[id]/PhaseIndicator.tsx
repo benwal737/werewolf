@@ -37,7 +37,7 @@ const PhaseIndicator = ({
         <div className="flex items-center gap-4">
           <div>
             {phase === "night" ? (
-              <Moon className="h-12 w-12 fill-primary" />
+              <Moon className="h-12 w-12 fill-amber-300 stroke-border" />
             ) : (
               <Sun className="h-12 w-12 fill-amber-300" />
             )}

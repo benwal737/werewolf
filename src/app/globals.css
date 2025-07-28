@@ -210,6 +210,7 @@ body {
   --shadow-2xl: 1px 2px 5px 1px hsl(0 0% 0% / 0.15);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+  --darker: oklch(0.3651 0.0325 287.0807);
 }
 
 .dark {
