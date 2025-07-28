@@ -30,7 +30,7 @@ const GameChat = ({ gameState, player }: GameChatProps) => {
         messages: gameState.werewolfChat,
         canChat: true,
       };
-    else if (gameState.phase === "day")
+    else if (gameState.phase === "day" || gameState.phase === "lobby")
       return { chat: "gameChat", messages: gameState.gameChat, canChat: true };
     return { chat: "gameChat", messages: gameState.gameChat, canChat: false };
   }, [player, gameState]);
