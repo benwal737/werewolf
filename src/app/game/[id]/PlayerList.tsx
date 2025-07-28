@@ -22,8 +22,8 @@ const PlayerList = ({
   getClickAction,
 }: PlayerListProps) => {
   const sortedPlayers = [...players].sort((a, b) => {
-    if (a.id === currentUserId) return -1;
-    if (b.id === currentUserId) return 1;
+    if (a.id === currentUserId && a.alive) return -1;
+    if (b.id === currentUserId && b.alive) return 1;
     if (a.alive && !b.alive) return -1;
     if (!a.alive && b.alive) return 1;
     return 0;
