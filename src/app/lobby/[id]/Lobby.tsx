@@ -6,14 +6,16 @@ import { socket } from "@/lib/socketClient";
 import { Player } from "@/game/types";
 import PlayerList from "./PlayerList";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TypographyH1, TypographyH4 } from "@/components/ui/typography";
 import { usePlayer } from "@/hooks/usePlayer";
 import PageTheme from "@/components/PageTheme";
-import { Loader2Icon } from "lucide-react";
+import { Badge, Loader2Icon, Users } from "lucide-react";
 import { clickSound } from "@/utils/sounds";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import dynamic from "next/dynamic";
+import GameChat from "@/app/game/[id]/GameChat";
+import { GiSandsOfTime } from "react-icons/gi";
 
 interface ClipboardProps {
   copied: boolean;
@@ -109,77 +111,98 @@ export default function Lobby() {
   return (
     <PageTheme forcedTheme="dark">
       <div
-        className={`transition-opacity duration-300 flex flex-col items-center gap-8 px-4 py-30 justify-start min-h-screen overflow-y-auto`}
+        className={
+          "transition-opacity duration-300 min-h-screen overflow-y-auto flex justify-center"
+        }
       >
         {validLobby ? (
-          <>
-            <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm p-8">
-              <CardContent className="flex flex-col items-center gap-2">
-                <div className="pl-5 flex items-center gap-2">
-                  <TypographyH1 className="w-full text-center">
-                    {"Lobby ID: " + lobbyId}
-                  </TypographyH1>
-                  <Clipboard
-                    copied={copied}
-                    setCopied={setCopied}
-                    text={lobbyId}
-                    color="white"
-                    size={24}
-                  />
-                </div>
-                <TypographyH4 className="mb-4">
-                  Share this code to play with friends!
-                </TypographyH4>
-
-                <div className="flex justify-center gap-4">
-                  <Button
-                    variant="destructive"
-                    onClick={() => {
-                      clickSound();
-                      socket.emit("leaveLobby", lobbyId, playerId);
-                      localStorage.removeItem("playerName");
-                      router.push("/");
-                    }}
-                    className="w-17"
-                  >
-                    Leave
-                  </Button>
-
-                  {playerId === host && (
+          <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 my-10 mx-10">
+            {/* Left: Lobby Card */}
+            <div className="order-1 lg:order-1 flex flex-col">
+              <Card className="bg-card/50 backdrop-blur-sm">
+                <CardHeader className="flex items-center gap-2">
+                  <GiSandsOfTime className="h-5 w-5" />
+                  <CardTitle className="text-2xl">Lobby</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Lobby ID</p>
+                      <p className="text-2xl font-mono font-bold">{lobbyId}</p>
+                    </div>
+                    <Clipboard
+                      copied={copied}
+                      setCopied={setCopied}
+                      text={lobbyId}
+                      color="white"
+                      size={24}
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-2 sm:gap-4 w-full justify-end">
                     <Button
-                      onClick={handleStartGame}
-                      disabled={players.length !== totalPlayers || started}
-                      className="w-17"
+                      variant="destructive"
+                      onClick={() => {
+                        clickSound();
+                        socket.emit("leaveLobby", lobbyId, playerId);
+                        localStorage.removeItem("playerName");
+                        router.push("/");
+                      }}
+                      className="min-w-[80px]"
                     >
-                      {loading ? (
-                        <Loader2Icon className="animate-spin" />
-                      ) : (
-                        "Start"
-                      )}
+                      Leave
                     </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="w-full max-w-2xl bg-card/50 backdrop-blur-sm p-8">
-              <CardContent className="flex flex-col items-center gap-2">
-                <TypographyH1 className="mb-4">Players</TypographyH1>
-                {started ? (
-                  <TextShimmer>Game starting...</TextShimmer>
-                ) : players.length !== totalPlayers ? (
-                  <TypographyH4 className="mb-4">{`Waiting (${players.length}/${totalPlayers})`}</TypographyH4>
-                ) : (
-                  <TypographyH4 className="mb-4">{`Ready (${players.length}/${totalPlayers})`}</TypographyH4>
-                )}
-                <PlayerList
-                  players={players}
-                  host={host}
-                  playerId={playerId}
-                  lobbyId={lobbyId}
-                />
-              </CardContent>
-            </Card>
-          </>
+                    {playerId === host && (
+                      <Button
+                        onClick={handleStartGame}
+                        disabled={players.length !== totalPlayers || started}
+                        className="min-w-[80px]"
+                      >
+                        {loading ? (
+                          <Loader2Icon className="animate-spin" />
+                        ) : (
+                          "Start"
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            {/* Center: Player List */}
+            <div className="order-2 lg:order-2 w-full flex flex-col">
+              <Card className="bg-card/50 backdrop-blur-sm">
+                <CardHeader className="flex items-center gap-2 justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    <CardTitle className="text-2xl">Players</CardTitle>
+                  </div>
+                  <CardTitle className="align-bottom">
+                    {started ? (
+                      <TextShimmer>Game starting...</TextShimmer>
+                    ) : players.length !== totalPlayers ? (
+                      <span>{`Waiting (${players.length}/${totalPlayers})`}</span>
+                    ) : (
+                      <span>{`Ready (${players.length}/${totalPlayers})`}</span>
+                    )}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <PlayerList
+                    players={players}
+                    host={host}
+                    playerId={playerId}
+                    lobbyId={lobbyId}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+            {/* Right: Game Chat */}
+            <div className="order-3 lg:order-3 w-full flex flex-col">
+              <GameChat
+                messages={[{ id: "1", sender: "Player 1", text: "Hello" }]}
+              />
+            </div>
+          </div>
         ) : (
           <TextShimmer className="mx-auto text-2xl">
             Validating lobby...
