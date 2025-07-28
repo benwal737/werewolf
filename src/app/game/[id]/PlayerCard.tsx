@@ -126,6 +126,7 @@ export default function PlayerCard({
     user.vote === player.id || (witchKilling && witchKill?.id === player.id);
 
   const shouldHighlight = choosing && !selected && !disable;
+
   const displayWerewolfVote =
     werewolfTurn && (user.role === "werewolf" || !user.alive);
 
@@ -178,7 +179,8 @@ export default function PlayerCard({
             <div>{renderRoleIcon()}</div>
             <div className="flex flex-col">
               <div className="min-h-[1rem] text-xs">
-                {(displayWerewolfVote || voteStep) &&
+                {((displayWerewolfVote && player.role === "werewolf") ||
+                  voteStep) &&
                   player.alive &&
                   (player.vote ? (
                     <span className="text-green-600">Voted</span>
@@ -203,24 +205,26 @@ export default function PlayerCard({
               </div>
             </div>
           </div>
-          {showConfirmation && (
-            <div className="flex gap-2">
-              <Button onClick={handleConfirmVote}>
-                <IoMdCheckmark size={20} />
-              </Button>
-              <Button onClick={clearConfirmation}>
-                <IoMdClose size={20} />
-              </Button>
-            </div>
-          )}
-          <div
-            className={cn(
-              "text-sm mt-1",
-              player.alive && "text-green-600",
-              !player.alive && "text-red-500"
+          <div className="flex items-center gap-2">
+            {showConfirmation && (
+              <div className="flex gap-2">
+                <Button onClick={handleConfirmVote}>
+                  <IoMdCheckmark size={20} />
+                </Button>
+                <Button onClick={clearConfirmation}>
+                  <IoMdClose size={20} />
+                </Button>
+              </div>
             )}
-          >
-            {player.alive ? "Alive" : "Dead"}
+            <div
+              className={cn(
+                "text-sm mt-1",
+                player.alive && "text-green-600",
+                !player.alive && "text-red-500"
+              )}
+            >
+              {player.alive ? "Alive" : "Dead"}
+            </div>
           </div>
         </div>
       </Card>

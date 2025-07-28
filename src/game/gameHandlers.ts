@@ -121,11 +121,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
   const resolveResultsPhase = (lobbyId: string) => {
     const game = getGame(lobbyId);
     if (!game) return;
-    // reset votes
-    for (const player of getPlayers(lobbyId)) {
-      player.vote = undefined;
-      player.numVotes = 0;
-    }
+
     game.villageKill = undefined;
     let step: Substep = "werewolves";
     let phase: GamePhase = "night";

@@ -225,6 +225,10 @@ export const isWinner = (lobbyId: string, io: Server): boolean => {
   }
 
   if (game.winner) {
+    for (const player of getPlayers(lobbyId)) {
+      player.vote = undefined;
+      player.numVotes = 0;
+    }
     setPhase(lobbyId, "end", "none");
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
