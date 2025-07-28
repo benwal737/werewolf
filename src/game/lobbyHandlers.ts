@@ -41,7 +41,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       callback();
       const updatedGame = getSafeGameState(lobbyId);
       console.log("lobby created:", updatedGame);
-      io.to(lobbyId).emit("lobbyUpdated", {
+      io.to(lobbyId).emit("gameUpdated", {
         gameState: updatedGame,
       });
     }
@@ -79,7 +79,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       const updatedGame = getSafeGameState(lobbyId);
       console.log("lobby joined:", updatedGame);
       callback(updatedGame);
-      io.to(lobbyId).emit("lobbyUpdated", {
+      io.to(lobbyId).emit("gameUpdated", {
         gameState: updatedGame,
       });
     }
@@ -88,14 +88,14 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
   socket.on("leaveLobby", (lobbyId: string, playerId: string) => {
     removePlayer(lobbyId, playerId);
     socket.leave(lobbyId);
-    io.to(lobbyId).emit("lobbyUpdated", {
+    io.to(lobbyId).emit("gameUpdated", {
       gameState: getSafeGameState(lobbyId),
     });
   });
 
   socket.on("kickPlayer", (lobbyId: string, playerId: string) => {
     removePlayer(lobbyId, playerId);
-    io.to(lobbyId).emit("lobbyUpdated", {
+    io.to(lobbyId).emit("gameUpdated", {
       gameState: getSafeGameState(lobbyId),
     });
     io.to(playerId).emit("kicked");

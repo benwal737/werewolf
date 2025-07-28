@@ -39,10 +39,6 @@ export default function Lobby() {
   const [validLobby, setValidLobby] = useState(false);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
-  const player: Player | null =
-    playerId && gameState && gameState.players && gameState.players[playerId]
-      ? gameState.players[playerId]
-      : null;
 
   const handleStartGame = () => {
     clickSound();
@@ -91,7 +87,7 @@ export default function Lobby() {
     };
 
     socket.on("joinError", handleJoinError);
-    socket.on("lobbyUpdated", handleLobbyUpdated);
+    socket.on("gameUpdated", handleLobbyUpdated);
     socket.on("kicked", handleKicked);
     socket.on("startCountdown", () => {
       setStarted(true);
@@ -102,7 +98,7 @@ export default function Lobby() {
     });
 
     return () => {
-      socket.off("lobbyUpdated", handleLobbyUpdated);
+      socket.off("gameUpdated", handleLobbyUpdated);
       socket.off("joinError", handleJoinError);
       socket.off("kicked", handleKicked);
       socket.off("startCountdown");
@@ -113,11 +109,11 @@ export default function Lobby() {
   return (
     <PageTheme forcedTheme="dark">
       <div
-        className={
-          "transition-opacity duration-300 min-h-screen overflow-y-auto flex justify-center"
-        }
+        className={`transition-opacity duration-300 min-h-screen overflow-y-auto flex justify-center ${
+          validLobby && gameState && playerId ? "" : "items-center"
+        }`}
       >
-        {validLobby && player && gameState ? (
+        {validLobby && gameState && playerId ? (
           <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 my-10 mx-10">
             {/* Left: Lobby Card */}
             <div className="order-1 lg:order-1 flex flex-col">
@@ -212,15 +208,11 @@ export default function Lobby() {
             </div>
             {/* Right: Game Chat */}
             <div className="order-3 lg:order-3 w-full flex flex-col">
-              <GameChat gameState={gameState} player={player} />
+              <GameChat gameState={gameState} playerId={playerId} />
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full">
-            <TextShimmer className="mx-auto text-2xl">
-              Validating lobby...
-            </TextShimmer>
-          </div>
+          <TextShimmer className="text-2xl">Validating lobby...</TextShimmer>
         )}
       </div>
     </PageTheme>

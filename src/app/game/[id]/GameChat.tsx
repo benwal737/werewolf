@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Message } from "@/game/types";
 import { Input } from "@/components/ui/input";
@@ -12,21 +12,26 @@ import { Player } from "@/game/types";
 
 interface GameChatProps {
   gameState: GameState;
-  player: Player;
+  playerId: string;
 }
 
-const GameChat = ({ gameState, player }: GameChatProps) => {
+const GameChat = ({ gameState, playerId }: GameChatProps) => {
   const lobbyId = useParams().id as string;
   const [newMessage, setNewMessage] = useState("");
 
-  let messages: Message[] = [];
-  if (!player.alive) {
-    messages = gameState.deadChat;
-  } else if (player.role === "werewolf") {
-    messages = gameState.werewolfChat;
-  } else {
-    messages = gameState.gameChat;
-  }
+  const { chat, messages } = useMemo(() => {
+    if (gameState.phase === "lobby") {
+      return { chat: "gameChat", messages: gameState.gameChat };
+    } else {
+      const player = gameState.players[playerId];
+      const chat = !player.alive
+        ? "deadChat"
+        : player.role === "werewolf"
+        ? "werewolfChat"
+        : "gameChat";
+      return { chat, messages: gameState[chat] };
+    }
+  }, [playerId, gameState]);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -37,7 +42,7 @@ const GameChat = ({ gameState, player }: GameChatProps) => {
 
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
-    socket.emit("sendMessage", lobbyId, newMessage);
+    socket.emit("sendMessage", lobbyId, newMessage, playerId, chat);
     setNewMessage("");
   };
 
