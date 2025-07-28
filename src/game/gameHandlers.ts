@@ -107,6 +107,11 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     game.villageKill = candidates.length === 1 ? candidates[0] : undefined;
 
     setDayDeaths(lobbyId);
+    for (const player of getPlayers(lobbyId)) {
+      player.vote = undefined;
+      player.numVotes = 0;
+    }
+
     const winner = isWinner(lobbyId, io);
     if (!winner) {
       setPhase(lobbyId, phase, step);
@@ -219,6 +224,12 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     (lobbyId: string, playerId: string, targetId: string) => {
       const game = getGame(lobbyId);
       if (!game) return;
+      if (targetId === "skip") {
+        game.players[playerId].vote = "skip";
+        const updated = getSafeGameState(lobbyId);
+        io.to(lobbyId).emit("gameUpdated", updated);
+        return;
+      }
       const prev = game.players[playerId].vote;
       if (prev) {
         if (!game.players[prev].numVotes) return;

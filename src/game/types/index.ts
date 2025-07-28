@@ -16,7 +16,7 @@ export type Player = {
   name: string;
   role: Role;
   alive: boolean;
-  vote?: string;
+  vote?: string | "skip";
   numVotes?: number;
   color?: string;
 };

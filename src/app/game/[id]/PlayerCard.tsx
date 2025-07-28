@@ -10,6 +10,7 @@ import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { IconType } from "react-icons";
 import { GlowEffect } from "@/components/ui/glow-effect";
 import { motion } from "motion/react";
+import { socket } from "@/lib/socketClient";
 
 interface PlayerCardProps {
   player: Player;
@@ -20,6 +21,8 @@ interface PlayerCardProps {
   playerAction?: () => void;
   showingConfirmation?: boolean;
   setShowingConfirmation?: (showingConfirmation: boolean) => void;
+  lobbyId: string;
+  playerId: string;
 }
 
 export default function PlayerCard({
@@ -31,6 +34,8 @@ export default function PlayerCard({
   playerAction,
   showingConfirmation,
   setShowingConfirmation,
+  lobbyId,
+  playerId,
 }: PlayerCardProps) {
   const foretellerTurn = gameState.substep === "foreteller";
   const werewolfTurn = gameState.substep === "werewolves";
@@ -65,6 +70,10 @@ export default function PlayerCard({
   const clearConfirmation = () => {
     setShowConfirmation(false);
     setShowingConfirmation?.(false);
+  };
+
+  const handleSkipVote = () => {
+    socket.emit("playerVoted", lobbyId, playerId, "skip");
   };
 
   const roleIcons: Record<Role, IconType> = {
@@ -105,12 +114,18 @@ export default function PlayerCard({
   const isForetellerChoosing =
     !foretellerRevealed && foretellerTurn && user.role === "foreteller";
 
-  const isWerewolfChoosing = werewolfTurn && user.role === "werewolf";
+  const isWerewolfChoosing =
+    werewolfTurn &&
+    user.role === "werewolf" &&
+    !voted &&
+    !showConfirmation &&
+    player !== user;
 
   const isWitchChoosing =
     !witchSelected && witchTurn && user.role === "witch" && witchKilling;
 
-  const isVoteChoosing = voteStep && !voted && !showConfirmation;
+  const isVoteChoosing =
+    voteStep && !voted && !showConfirmation && player !== user;
 
   const disable =
     !player.alive || (isForetellerChoosing && player.id === user.id);
@@ -125,7 +140,8 @@ export default function PlayerCard({
   const selected =
     user.vote === player.id || (witchKilling && witchKill?.id === player.id);
 
-  const shouldHighlight = choosing && !selected && !disable;
+  const shouldHighlight =
+    choosing && !selected && !disable && !showingConfirmation;
 
   const displayWerewolfVote =
     werewolfTurn && (user.role === "werewolf" || !user.alive);
@@ -159,7 +175,7 @@ export default function PlayerCard({
       )}
       <Card
         onClick={
-          voteStep
+          voteStep || werewolfTurn
             ? showConfirmation
               ? () => {}
               : handleShowConfirmation
@@ -205,7 +221,7 @@ export default function PlayerCard({
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             {showConfirmation && (
               <div className="flex gap-2">
                 <Button onClick={handleConfirmVote}>
@@ -215,6 +231,18 @@ export default function PlayerCard({
                   <IoMdClose size={20} />
                 </Button>
               </div>
+            )}
+            {((voteStep && user.alive && player === user) ||
+              (werewolfTurn &&
+                player.role === "werewolf" &&
+                player.alive &&
+                player === user)) && (
+              <Button
+                onClick={handleSkipVote}
+                disabled={showingConfirmation || voted}
+              >
+                Skip
+              </Button>
             )}
             <div
               className={cn(

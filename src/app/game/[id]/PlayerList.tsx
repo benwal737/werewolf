@@ -11,6 +11,7 @@ interface PlayerListProps {
   foretellerRevealed: boolean | undefined;
   witchSelected: boolean;
   getClickAction: (player: Player) => (() => void) | undefined;
+  lobbyId: string;
 }
 
 const PlayerList = ({
@@ -20,6 +21,7 @@ const PlayerList = ({
   foretellerRevealed,
   witchSelected,
   getClickAction,
+  lobbyId,
 }: PlayerListProps) => {
   const sortedPlayers = [...players].sort((a, b) => {
     if (a.id === currentUserId && a.alive) return -1;
@@ -44,6 +46,8 @@ const PlayerList = ({
           playerAction={getClickAction(player)}
           showingConfirmation={showingConfirmation}
           setShowingConfirmation={setShowingConfirmation}
+          lobbyId={lobbyId}
+          playerId={player.id}
         />
       ))}
     </div>

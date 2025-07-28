@@ -12,6 +12,9 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   const isWitch = player.role === "witch";
   const { substep: nightStep, phase, witchSave, witchKill } = gameState;
   const gameOver = phase === "end";
+  const skipCount = Object.values(gameState.players).filter(
+    (p) => p.vote === "skip"
+  ).length;
 
   const isLoser =
     (gameState?.winner === "villagers" && player?.role === "werewolf") ||
@@ -30,7 +33,10 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   }
 
   function getWerewolfNarration() {
-    if (isWerewolf && player.alive) return <p>Choose a player to kill</p>;
+    if (isWerewolf && player.alive)
+      return (
+        <p>{`Choose a player to kill. (${skipCount} werewolves skipped)`} </p>
+      );
     return <p>Werewolves are hunting</p>;
   }
 
@@ -96,10 +102,13 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     return gameState.villageKill ? (
       <p>
         <b className="text-red-500">{gameState.villageKill.name}</b> was killed
-        by the village.
+        by the village. ({skipCount} players skipped)
       </p>
     ) : (
-      <p>The village could not agree on a player to kill.</p>
+      <p>
+        The village could not agree on a player to kill. ({skipCount} players
+        skipped)
+      </p>
     );
   }
 

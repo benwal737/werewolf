@@ -154,6 +154,7 @@ const Game = () => {
                 foretellerRevealed={foretellerRevealed}
                 witchSelected={witchSelected}
                 getClickAction={getClickAction}
+                lobbyId={lobbyId as string}
               />
             </div>
             {/* Right Container */}

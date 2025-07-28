@@ -239,15 +239,27 @@ export const isWinner = (lobbyId: string, io: Server): boolean => {
 };
 
 export const countVotes = (lobbyId: string) => {
-  let maxVotes = 0;
+  let skipVotes = 0;
+  for (const player of getPlayers(lobbyId)) {
+    if (!player.alive) continue;
+    if (player.vote === "skip") {
+      skipVotes++;
+    }
+  }
+
   let candidates: Player[] = [];
+  let maxVotes = skipVotes;
 
   for (const player of getPlayers(lobbyId)) {
     if (!player.alive || !player.numVotes) continue;
     if (player.numVotes > maxVotes) {
       maxVotes = player.numVotes;
       candidates = [player];
-    } else if (player.numVotes === maxVotes && maxVotes > 0) {
+    } else if (
+      player.numVotes === maxVotes &&
+      maxVotes > 0 &&
+      maxVotes !== skipVotes
+    ) {
       candidates.push(player);
     }
   }
