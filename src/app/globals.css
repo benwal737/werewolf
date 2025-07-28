@@ -174,7 +174,8 @@ body {
   --accent-foreground: oklch(0.3394 0.0441 1.7583);
   --destructive: oklch(0.6332 0.1578 22.6734);
   --destructive-foreground: oklch(0.9777 0.0041 301.4256);
-  --border: oklch(0.8447 0.0226 300.1421);
+  /* --border: oklch(0.8447 0.0226 300.1421); */
+  --border: oklch(0.3651 0.0325 287.0807);
   --input: oklch(0.9329 0.0124 301.2783);
   --ring: oklch(0.6104 0.0767 299.7335);
   --chart-1: oklch(0.6104 0.0767 299.7335);

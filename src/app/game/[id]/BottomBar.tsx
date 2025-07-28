@@ -17,7 +17,7 @@ const BottomBar = ({ role }: BottomBarProps) => {
           {role && (
             <Button
               type="button"
-              className="text-2xl py-6 bg-card-foreground hover:bg-card-foreground/80"
+              className="text-2xl py-6 bg-primary hover:bg-primary/80"
               onClick={clickSound}
             >
               {role[0].toUpperCase() + role.slice(1)}

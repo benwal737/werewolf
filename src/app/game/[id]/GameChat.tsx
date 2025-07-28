@@ -52,7 +52,7 @@ const GameChat = ({ gameState, player }: GameChatProps) => {
   return (
     <Card className="flex flex-col h-full max-h-[89vh] bg-card/50 backdrop-blur-sm">
       <CardHeader className="border-b border-border flex items-center gap-2">
-        <MessageCircle className="h-5 w-5" />
+        <MessageCircle className="h-5 w-5 fill-primary" />
         <CardTitle className="text-2xl">
           {chat === "gameChat"
             ? "Game Chat"
