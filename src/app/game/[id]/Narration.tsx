@@ -12,9 +12,6 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   const isWitch = player.role === "witch";
   const { substep: nightStep, phase, witchSave, witchKill } = gameState;
   const gameOver = phase === "end";
-  const skipCount = Object.values(gameState.players).filter(
-    (p) => p.vote === "skip"
-  ).length;
 
   const isLoser =
     (gameState?.winner === "villagers" && player?.role === "werewolf") ||
@@ -28,18 +25,17 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     return isForeteller ? (
       <p>Select a player to reveal their role</p>
     ) : (
-      <p>Foreteller is revealing a role</p>
+      <p>Foreteller is revealing a role...</p>
     );
   }
 
   function getWerewolfNarration() {
-    if (isWerewolf && player.alive)
-      return <p>{`Choose a player to kill. (${skipCount} skipped)`} </p>;
-    return <p>Werewolves are hunting</p>;
+    if (isWerewolf && player.alive) return <p>Choose a player to kill.</p>;
+    return <p>Werewolves are hunting...</p>;
   }
 
   function getWitchNarration() {
-    if (!isWitch) return <p>The witch is casting spells</p>;
+    if (!isWitch) return <p>The witch is casting spells...</p>;
     if (gameState.witchKilling && !witchKill) {
       return <p>Choose a player to kill</p>;
     } else if (gameState.witchKilling && witchKill) {
@@ -92,7 +88,7 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     return player?.alive ? (
       <p>Vote on a player to kill</p>
     ) : (
-      <p>The village is voting</p>
+      <p>The village is voting...</p>
     );
   }
 
@@ -100,12 +96,10 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     return gameState.villageKill ? (
       <p>
         <b className="text-red-500">{gameState.villageKill.name}</b> was killed
-        by the village. ({skipCount} skipped)
+        by the village.
       </p>
     ) : (
-      <p>
-        The village could not agree on a player to kill. ({skipCount} skipped)
-      </p>
+      <p>The village could not agree on a player to kill.</p>
     );
   }
 

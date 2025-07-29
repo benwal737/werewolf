@@ -10,7 +10,6 @@ import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { IconType } from "react-icons";
 import { GlowEffect } from "@/components/ui/glow-effect";
 import { motion } from "motion/react";
-import { socket } from "@/lib/socketClient";
 
 interface PlayerCardProps {
   player: Player;
@@ -70,10 +69,6 @@ export default function PlayerCard({
   const clearConfirmation = () => {
     setShowConfirmation(false);
     setShowingConfirmation?.(false);
-  };
-
-  const handleSkipVote = () => {
-    socket.emit("playerVoted", lobbyId, playerId, "skip");
   };
 
   const roleIcons: Record<Role, IconType> = {
@@ -148,12 +143,12 @@ export default function PlayerCard({
 
   const players = Object.values(gameState.players);
   const playerVoteColors = players
-    .filter((person) => person.vote === player.id)
-    .map((person) => person.color);
+    .filter((p) => p.vote === player.id)
+    .map((p) => p.color);
 
   return (
     <div className="relative w-full h-full">
-      {selected && (
+      {selected && !resultsStep && (
         <motion.div
           className="pointer-events-none absolute inset-0"
           animate={{
@@ -221,7 +216,7 @@ export default function PlayerCard({
                   playerVoteColors.map((color, i) => (
                     <span
                       key={`${color}-${i}`}
-                      className={`inline-block w-2 h-2 rounded-full ${color}`}
+                      className={`inline-block w-2 h-2 rounded-full ${color} border-1`}
                     />
                   ))}
               </div>
@@ -237,18 +232,6 @@ export default function PlayerCard({
                   <IoMdClose size={20} />
                 </Button>
               </div>
-            )}
-            {((voteStep && user.alive && player === user) ||
-              (werewolfTurn &&
-                player.role === "werewolf" &&
-                player.alive &&
-                player === user)) && (
-              <Button
-                onClick={handleSkipVote}
-                disabled={showingConfirmation || voted}
-              >
-                Skip
-              </Button>
             )}
             <div
               className={cn(

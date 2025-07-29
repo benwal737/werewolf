@@ -107,9 +107,6 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     game.villageKill = candidates.length === 1 ? candidates[0] : undefined;
 
     setDayDeaths(lobbyId);
-    for (const player of getPlayers(lobbyId)) {
-      if (player.vote !== "skip") player.vote = undefined;
-    }
 
     const winner = isWinner(lobbyId, io);
     if (!winner) {
