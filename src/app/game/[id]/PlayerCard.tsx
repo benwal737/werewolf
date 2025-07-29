@@ -182,8 +182,8 @@ export default function PlayerCard({
             : playerAction
         }
         className={cn(
-          "backdrop-blur-sm px-6 py-4 h-20 justify-center relative z-10",
-          selected ? "bg-card" : "bg-card/50",
+          "px-6 py-4 h-20 justify-center relative z-10",
+          selected ? "bg-card" : "bg-card/30",
           disable ? "opacity-50" : "",
           shouldHighlight ? "hover:backdrop-brightness-125 cursor-pointer" : "",
           showConfirmation ? "backdrop-brightness-125" : "",
@@ -205,8 +205,14 @@ export default function PlayerCard({
                   ))}
               </div>
               <div className="flex items-center gap-1">
-                <span className="text-lg font-semibold">{player.name}</span>
-                <span className="text-md text-muted-foreground">
+                <span
+                  className={`text-lg font-semibold ${
+                    !player.alive ? "line-through" : ""
+                  }`}
+                >
+                  {player.name}
+                </span>
+                <span className="text-md text-primary">
                   {user.id === player.id && "(You)"}
                 </span>
               </div>
