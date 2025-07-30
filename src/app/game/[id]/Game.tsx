@@ -14,7 +14,7 @@ import PageTheme from "@/components/PageTheme";
 import usePhaseTheme from "@/hooks/usePhaseTheme";
 import GameChat from "./GameChat";
 import Confetti from "react-confetti";
-import { mystery, endGame } from "@/utils/sounds";
+import { mystery, endGame, turnSound } from "@/utils/sounds";
 import { isWinner } from "@/utils/winConditions";
 
 const Game = () => {
@@ -22,6 +22,7 @@ const Game = () => {
   const lobbyId = useParams().id;
 
   const [gameState, setGameState] = useState<GameState | null>(null);
+  const prevGameStateRef = useRef<GameState | null>(null);
   const phaseTheme = usePhaseTheme(gameState);
   const hasJoinedRef = useRef(false);
 
@@ -81,14 +82,19 @@ const Game = () => {
     socket.on("countdownTick", handleCountdownTick);
     socket.on("joinError", handleJoinError);
     socket.on("gameUpdated", (updated: GameState) => {
-      setGameState(updated);
+      const prevSubstep = prevGameStateRef.current?.substep;
+      console.log("prevSubstep", prevSubstep);
       if (updated.substep === "deaths") {
         mystery();
       } else if (updated.phase === "end") {
         const updatedPlayer = playerId ? updated.players[playerId] : null;
         if (!updatedPlayer) return;
         endGame(updated, updatedPlayer);
+      } else {
+        turnSound(prevSubstep || "none", updated.substep);
       }
+      setGameState(updated);
+      prevGameStateRef.current = updated;
     });
 
     return () => {

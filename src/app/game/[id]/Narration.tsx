@@ -44,7 +44,7 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   }
 
   function getWitchNarration() {
-    if (!isWitch) return <p>The witch is casting spells...</p>;
+    if (!isWitch) return <p>The witch is brewing...</p>;
     if (gameState.witchKilling && !witchKill) {
       return <p>Choose a player to kill</p>;
     } else if (gameState.witchKilling && witchKill) {

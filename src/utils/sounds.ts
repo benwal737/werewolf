@@ -1,4 +1,4 @@
-import { GameState, Player } from "../game/types";
+import { GameState, Player, Substep } from "../game/types";
 import { isWinner } from "./winConditions";
 
 export const clickSound = () => {
@@ -40,5 +40,15 @@ export const endGame = (game: GameState, player: Player) => {
     victory();
   } else {
     defeat();
+  }
+};
+
+export const turnSound = (prev: Substep, current: Substep) => {
+  if (current === "werewolves" && prev !== "werewolves") {
+    new Audio("/werewolf.mp3").play();
+  } else if (current === "foreteller" && prev !== "foreteller") {
+    new Audio("/foreteller.mp3").play();
+  } else if (current === "witch" && prev !== "witch") {
+    new Audio("/witch.wav").play();
   }
 };

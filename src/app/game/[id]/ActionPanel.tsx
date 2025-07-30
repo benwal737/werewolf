@@ -29,7 +29,7 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
   };
   return (
     <Card className="p-5 bg-card/50 backdrop-blur-sm sm:w-full lg:w-full h-45 mb-5 transition-all duration-500">
-      <div className="flex items-center justify-around gap-4 w-full h-full">
+      <div className="flex items-center justify-center gap-4 w-full h-full">
         <GiSpellBook size={80} />
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
