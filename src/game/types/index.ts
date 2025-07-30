@@ -43,6 +43,7 @@ export type GameState = {
   witchKill?: Player;
   witchKilling?: boolean;
   witchKilled?: boolean;
+  witchSkipped?: boolean;
   nightDeaths?: Player[];
   villageKill?: Player;
   winner?: "werewolves" | "villagers" | "draw";

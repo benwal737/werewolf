@@ -75,6 +75,7 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     setNightDeaths(lobbyId);
     game.witchSave = undefined;
     game.witchKill = undefined;
+    game.witchSkipped = false;
     const winner = isWinner(lobbyId, io);
     if (winner) return;
     setPhase(lobbyId, phase, step);
@@ -273,6 +274,14 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
   });
+
+  socket.on("witchSkip", (lobbyId: string) => {
+    const game = getGame(lobbyId);
+    if (!game) return;
+    game.witchSkipped = true;
+    const updated = getSafeGameState(lobbyId);
+    io.to(lobbyId).emit("gameUpdated", updated);
+  }); 
 
   socket.onAny((event, ...args) => {
     console.log("[Server socket event]:", event, args);

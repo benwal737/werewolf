@@ -23,8 +23,12 @@ const earlyProceed = (io: Server, lobbyId: string): EarlyProceedResult => {
   const phase = game.phase;
   const step = game.substep;
 
-  if (step === "witch" && (game.witchKill || game.witchSave)) {
-    return { proceed: true, newTimeLeft: 6 };
+  if (step === "witch") {
+    if (game.witchKill || game.witchSave) {
+      return { proceed: true, newTimeLeft: 6 };
+    } else if (game.witchSkipped) {
+      return { proceed: true, newTimeLeft: 1 };
+    }
   }
 
   if (step === "foreteller" && game.foretellerRevealed) {
@@ -236,7 +240,6 @@ export const assignRolesAndColors = (lobbyId: string) => {
     }
   }
 
-  // shuffffle
   for (let i = rolesToAssign.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [rolesToAssign[i], rolesToAssign[j]] = [rolesToAssign[j], rolesToAssign[i]];
