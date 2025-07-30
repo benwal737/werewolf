@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { GameState } from "@/game/types";
 import Button from "@/components/ui/sound-button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { socket } from "@/lib/socketClient";
 import { useParams } from "next/navigation";
-import { GiSpellBook } from "react-icons/gi";
+import {
+  GiSpellBook,
+  GiHealthPotion,
+  GiPotionOfMadness,
+  GiNightSleep,
+} from "react-icons/gi";
 
 interface ActionPanelProps {
   gameState: GameState;
@@ -28,50 +33,61 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
     socket.emit("witchSkip", lobbyId);
   };
   return (
-    <Card className="p-5 bg-card/50 backdrop-blur-sm sm:w-full lg:w-full h-45 mb-5 transition-all duration-500">
-      <div className="flex items-center justify-center gap-4 w-full h-full">
-        <GiSpellBook size={80} />
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
+    <Card className="bg-card/50 backdrop-blur-sm sm:w-full lg:w-full h-45 mb-5 transition-all duration-500">
+      <CardContent>
+        <div className="flex items-center justify-between w-full h-full px-5">
+          <div className="flex flex-col gap-2">
             <Button
               className="w-40"
               onClick={handleSave}
               disabled={gameState.witchSaved || chosen || !willDie}
             >
-              Save
+              <div className="flex justify-between w-full px-2">
+                <div className="flex gap-1 items-center">
+                  <GiHealthPotion />
+                  Save
+                </div>
+                <span
+                  className={`${
+                    gameState.witchSaved ? "text-destructive" : ""
+                  }`}
+                >
+                  ({gameState.witchSaved ? 0 : 1})
+                </span>
+              </div>
             </Button>
-            <p
-              className={
-                gameState.witchSaved ? "text-muted" : "text-muted-foreground"
-              }
-            >
-              ({gameState.witchSaved ? 0 : 1})
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
             <Button
               className="w-40"
               onClick={handleKill}
               disabled={gameState.witchKilled || chosen}
             >
-              Kill
+              <div className="flex justify-between w-full px-2">
+                <div className="flex gap-1 items-center">
+                  <GiPotionOfMadness />
+                  Kill
+                </div>
+                <span
+                  className={`${
+                    gameState.witchKilled ? "text-destructive" : ""
+                  }`}
+                >
+                  ({gameState.witchKilled ? 0 : 1})
+                </span>
+              </div>
             </Button>
-            <p
-              className={
-                gameState.witchKilled ? "text-muted" : "text-muted-foreground"
-              }
-            >
-              ({gameState.witchKilled ? 0 : 1})
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
             <Button className="w-40" onClick={handleSkip} disabled={chosen}>
-              Skip
+              <div className="flex justify-between w-full px-2">
+                <div className="flex gap-1 items-center">
+                  <GiNightSleep />
+                  Skip
+                </div>
+                <span className="">(∞)</span>
+              </div>
             </Button>
-            <p className="text-muted-foreground">(∞)</p>
           </div>
+          <GiSpellBook size={120} />
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 };
