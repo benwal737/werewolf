@@ -22,8 +22,22 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     (gameState?.winner === "werewolves" && player?.role === "werewolf");
 
   function getForetellerNarration() {
+    const revealed = gameState.foretellerRevealed;
     return isForeteller ? (
-      <p>Select a player to reveal their role</p>
+      revealed ? (
+        <p>
+          You saw a vision of <b>{revealed.name}</b> - they are a{" "}
+          <b
+            className={
+              revealed.role === "werewolf" ? "text-destructive" : "text-emerald-600"
+            }
+          >
+            {revealed.role}
+          </b>
+        </p>
+      ) : (
+        <p>Select a player to reveal their role</p>
+      )
     ) : (
       <p>Foreteller is revealing a role...</p>
     );
@@ -41,14 +55,14 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     } else if (gameState.witchKilling && witchKill) {
       return (
         <p>
-          You chose to kill <b className="text-red-500">{witchKill.name}</b>
+          You chose to kill <b className="text-destructive">{witchKill.name}</b>
         </p>
       );
     } else if (gameState.werewolfKill && !witchSave) {
       return (
         <>
           <p>
-            <b className="text-red-500">{gameState.werewolfKill.name}</b> will
+            <b className="text-destructive">{gameState.werewolfKill.name}</b> will
             die tonight. Choose an available action, or do nothing.
           </p>
         </>
@@ -57,7 +71,7 @@ const Narration = ({ gameState, player }: NarrationProps) => {
       return (
         <p>
           You saved{" "}
-          <b className="text-green-500">{gameState.werewolfKill.name}</b>
+          <b className="text-emerald-600">{gameState.werewolfKill.name}</b>
         </p>
       );
     } else {
@@ -75,7 +89,7 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     return gameState.nightDeaths?.length ? (
       <p>
         These players died last night:{" "}
-        <b className="text-red-500">
+        <b className="text-destructive">
           {gameState.nightDeaths.map((player) => player.name).join(", ")}
         </b>
       </p>
@@ -95,7 +109,7 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   function getResultsStepNarration() {
     return gameState.villageKill ? (
       <p>
-        <b className="text-red-500">{gameState.villageKill.name}</b> was killed
+        <b className="text-destructive">{gameState.villageKill.name}</b> was killed
         by the village.
       </p>
     ) : (
@@ -144,9 +158,9 @@ const Narration = ({ gameState, player }: NarrationProps) => {
     <div
       className={
         isLoser
-          ? "text-red-500 text-lg"
+          ? "text-destructive text-lg"
           : isWinner
-          ? "text-green-600 text-lg"
+          ? "text-emerald-600 text-lg"
           : "text-muted-foreground text-lg"
       }
     >

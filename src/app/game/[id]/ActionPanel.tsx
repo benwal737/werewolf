@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { GameState } from "@/game/types";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/sound-button";
 import { Card } from "@/components/ui/card";
 import { socket } from "@/lib/socketClient";
 import { useParams } from "next/navigation";
-import { clickSound } from "@/utils/sounds";
 import { GiSpellBook } from "react-icons/gi";
 
 interface ActionPanelProps {
@@ -17,12 +16,10 @@ const ActionPanel = ({ gameState }: ActionPanelProps) => {
   const willDie = gameState.werewolfKill;
   const [chosen, setChosen] = useState<boolean>(false);
   const handleSave = () => {
-    clickSound();
     setChosen(true);
     socket.emit("witchSave", lobbyId, willDie?.id);
   };
   const handleKill = () => {
-    clickSound();
     setChosen(true);
     socket.emit("witchKilling", lobbyId);
   };

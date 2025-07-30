@@ -29,7 +29,6 @@ const usePlayerAction = (
   };
 
   const voteAction = (target: Player) => {
-    clickSound();
     socket.emit("playerVoted", lobbyId, playerId, target.id);
   };
 

@@ -6,7 +6,7 @@ import { MessageCircle, Send } from "lucide-react";
 import { useState } from "react";
 import { socket } from "@/lib/socketClient";
 import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/sound-button";
 import { GameState } from "@/game/types";
 import { Player } from "@/game/types";
 

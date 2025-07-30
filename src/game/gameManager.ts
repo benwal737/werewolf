@@ -11,32 +11,44 @@ import { Server } from "socket.io";
 
 const gameStates = new Map<string, GameState>();
 
-const earlyProceed = (io: Server, lobbyId: string): boolean => {
+interface EarlyProceedResult {
+  proceed: boolean;
+  newTimeLeft: number | null;
+}
+
+const earlyProceed = (io: Server, lobbyId: string): EarlyProceedResult => {
   const game = getGame(lobbyId);
-  if (!game) return false;
+  if (!game) return { proceed: false, newTimeLeft: null };
 
   const phase = game.phase;
   const step = game.substep;
 
+  if (step === "witch" && (game.witchKill || game.witchSave)) {
+    return { proceed: true, newTimeLeft: 6 };
+  }
+
+  if (step === "foreteller" && game.foretellerRevealed) {
+    return { proceed: true, newTimeLeft: 11 };
+  }
+
   let expectedVoters: string[] = [];
 
-  // if (phase === "night" && step === "werewolves") {
-  //   expectedVoters = getPlayers(lobbyId)
-  //     .filter((p) => p.alive && p.role === "werewolf")
-  //     .map((p) => p.id);
-  // } else
-  if (phase === "day" && step === "vote") {
+  if (phase === "night" && step === "werewolves") {
+    expectedVoters = getPlayers(lobbyId)
+      .filter((p) => p.alive && p.role === "werewolf")
+      .map((p) => p.id);
+  } else if (phase === "day" && step === "vote") {
     expectedVoters = getPlayers(lobbyId)
       .filter((p) => p.alive)
       .map((p) => p.id);
   } else {
-    return false;
+    return { proceed: false, newTimeLeft: null };
   }
 
   const allVoted = expectedVoters.every((id) => !!game.players[id]?.vote);
-  if (!allVoted) return false;
+  if (!allVoted) return { proceed: false, newTimeLeft: null };
 
-  return true;
+  return { proceed: true, newTimeLeft: 1 };
 };
 
 export const startCountdown = (
@@ -52,13 +64,21 @@ export const startCountdown = (
   game.countdown = timeLeft;
   io.to(lobbyId).emit("countdownTick", timeLeft);
 
+  let earlyProceedTriggered = false;
+
   const interval = setInterval(() => {
+    if (!earlyProceedTriggered) {
+      const { proceed, newTimeLeft } = earlyProceed(io, lobbyId);
+      if (proceed && newTimeLeft !== null) {
+        timeLeft = newTimeLeft;
+        earlyProceedTriggered = true;
+      }
+    }
+
     timeLeft--;
     game.countdown = timeLeft;
     io.to(lobbyId).emit("countdownTick", timeLeft);
-    if (earlyProceed(io, lobbyId)) {
-      timeLeft = 0;
-    }
+
     if (timeLeft < 1) {
       clearInterval(interval);
       game.interval = undefined;

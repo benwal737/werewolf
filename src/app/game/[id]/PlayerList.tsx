@@ -5,14 +5,14 @@ import { Player, GameState } from "@/game/types";
 import PlayerCard from "./PlayerCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/sound-button";
 import { socket } from "@/lib/socketClient";
 
 interface PlayerListProps {
   players: Player[];
   currentUserId: string;
   gameState: GameState;
-  foretellerRevealed: boolean | undefined;
+  foretellerRevealed: Player | undefined;
   witchSelected: boolean;
   getClickAction: (player: Player) => (() => void) | undefined;
   lobbyId: string;

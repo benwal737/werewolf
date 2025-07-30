@@ -10,11 +10,11 @@ import ActionPanel from "./ActionPanel";
 import PlayerList from "./PlayerList";
 import { usePlayer } from "@/hooks/usePlayer";
 import usePlayerAction from "@/hooks/usePlayerAction";
-import { toast } from "sonner";
 import PageTheme from "@/components/PageTheme";
 import usePhaseTheme from "@/hooks/usePhaseTheme";
 import GameChat from "./GameChat";
 import Confetti from "react-confetti";
+import { mystery } from "@/utils/sounds";
 
 const Game = () => {
   const router = useRouter();
@@ -53,19 +53,6 @@ const Game = () => {
     router.push("/not-found");
   }, [router]);
 
-  const handleForetellerReveal = useCallback(
-    (target: Player) => {
-      if (isForeteller) {
-        toast(`You saw ${target.name} - they are a ${target.role}.`, {
-          description: "Foreteller Vision",
-          duration: 10000,
-          position: "top-left",
-        });
-      }
-    },
-    [isForeteller]
-  );
-
   const handleCountdownTick = useCallback(
     (timeLeft: number) => {
       setCountdown(timeLeft);
@@ -91,25 +78,20 @@ const Game = () => {
     });
 
     socket.on("countdownTick", handleCountdownTick);
-    socket.on("foretellerReveal", handleForetellerReveal);
     socket.on("joinError", handleJoinError);
     socket.on("gameUpdated", (updated: GameState) => {
       setGameState(updated);
+      if (updated.substep === "deaths") {
+        mystery();
+      }
     });
 
     return () => {
       socket.off("joinError", handleJoinError);
-      socket.off("foretellerReveal", handleForetellerReveal);
       socket.off("countdownTick", handleCountdownTick);
       socket.off("gameUpdated");
     };
-  }, [
-    lobbyId,
-    playerId,
-    handleForetellerReveal,
-    handleJoinError,
-    handleCountdownTick,
-  ]);
+  }, [lobbyId, playerId, handleJoinError, handleCountdownTick]);
 
   const isWinner =
     (gameState?.winner === "villagers" && player?.role !== "werewolf") ||

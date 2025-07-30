@@ -1,9 +1,8 @@
 import React from "react";
 import { Role } from "@/game/types";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/sound-button";
 import RoleCard from "./RoleCard";
-import { clickSound } from "@/utils/sounds";
 
 interface BottomBarProps {
   role: Role | undefined;
@@ -18,7 +17,6 @@ const BottomBar = ({ role }: BottomBarProps) => {
             <Button
               type="button"
               className="text-2xl py-6 bg-primary hover:bg-primary/80"
-              onClick={clickSound}
             >
               {role[0].toUpperCase() + role.slice(1)}
             </Button>

@@ -29,14 +29,23 @@ const PhaseIndicator = ({
       break;
   }
 
-  const phase = gameState.phase;
+  const showTimer =
+    ((gameState.substep === "foreteller" && player.role === "foreteller") ||
+      (gameState.substep === "werewolves" && player.role === "werewolf") ||
+      (gameState.substep === "witch" && player.role === "witch") ||
+      gameState.substep === "deaths" ||
+      gameState.substep === "vote" ||
+      gameState.substep === "results" ||
+      !player.alive) &&
+    gameState.phase !== "end";
+
   const phaseNumber = gameState.dayNum;
   return (
     <Card className="bg-card/50 backdrop-blur-sm w-full mx-10 md:mx-20">
       <CardContent className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div>
-            {phase === "night" ? (
+            {gameState.phase === "night" ? (
               <Moon className="h-12 w-12 fill-amber-300 stroke-border" />
             ) : (
               <Sun className="h-12 w-12 fill-amber-300" />
@@ -44,13 +53,13 @@ const PhaseIndicator = ({
           </div>
           <div>
             <h2 className="text-2xl font-bold">
-              {heading} {phase !== "end" && phaseNumber}
+              {heading} {gameState.phase !== "end" && phaseNumber}
             </h2>
             <Narration gameState={gameState} player={player} />
           </div>
         </div>
 
-        {phase !== "end" && (
+        {showTimer && (
           <div className="text-right">
             <CountdownTimer countdown={countdown} />
           </div>

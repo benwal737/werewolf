@@ -36,7 +36,7 @@ export type GameState = {
   totalPlayers: number;
   countdown?: number;
   interval?: NodeJS.Timeout;
-  foretellerRevealed?: boolean;
+  foretellerRevealed?: Player;
   werewolfKill?: Player;
   witchSave?: Player;
   witchSaved?: boolean;

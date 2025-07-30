@@ -8,7 +8,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/sound-button";
 import { TypographyH1 } from "@/components/ui/typography";
 import {
   Form,
@@ -29,7 +29,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { clickSound } from "@/utils/sounds";
 import PageTheme from "@/components/PageTheme";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, Loader2Icon } from "lucide-react";
@@ -137,7 +136,6 @@ export default function Home() {
                   )}
                 />
                 <Button
-                  onClick={clickSound}
                   className="w-[200px]"
                   type="submit"
                   disabled={!form1.watch("name") || creating}
@@ -155,7 +153,6 @@ export default function Home() {
               <DialogTrigger asChild>
                 <Button
                   onClick={() => {
-                    clickSound();
                     setShowAlert(false);
                   }}
                   className="w-[200px]"
@@ -213,7 +210,6 @@ export default function Home() {
                     <DialogFooter className="flex justify-between">
                       <DialogClose asChild>
                         <Button
-                          onClick={clickSound}
                           className="w-[100px]"
                           variant="outline"
                           type="button"
@@ -222,7 +218,6 @@ export default function Home() {
                         </Button>
                       </DialogClose>
                       <Button
-                        onClick={clickSound}
                         className="w-[100px]"
                         type="submit"
                         disabled={joining}

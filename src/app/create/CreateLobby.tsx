@@ -14,14 +14,13 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/sound-button";
 import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { RoleCounts } from "@/game/types";
 import { usePlayer } from "@/hooks/usePlayer";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
-import { clickSound } from "@/utils/sounds";
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 15;
@@ -186,8 +185,7 @@ const CreateLobby = () => {
                   />
                 ))}
 
-                <Button
-                  onClick={clickSound}
+                <Button 
                   className="mt-5 w-32"
                   type="submit"
                   disabled={

@@ -14,18 +14,18 @@ import {
 } from "./gameManager.ts";
 import { GamePhase, Substep } from "./types/index.ts";
 
-const FORETELLER_TIME = 20;
-const WEREWOLVES_TIME = 20;
-const WITCH_TIME = 20;
+const FORETELLER_TIME = 30;
+const WEREWOLVES_TIME = 30;
+const WITCH_TIME = 30;
 const DEATHS_TIME = 10;
-const VOTE_TIME = 20;
+const VOTE_TIME = 45;
 const RESULTS_TIME = 10;
 
 export default function registerGameHandlers(io: Server, socket: Socket) {
   const resolveForetellerPhase = (lobbyId: string) => {
     const game = getGame(lobbyId);
     if (!game) return;
-    game.foretellerRevealed = false;
+    game.foretellerRevealed = undefined;
     setPhase(lobbyId, "night", "werewolves");
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
@@ -201,14 +201,12 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("foretellerSelected", (lobbyId: string, target: string) => {
-    console.log("foreteller selected");
     const game = getGame(lobbyId);
     if (!game) return;
     const player = game.players[target];
-    game.foretellerRevealed = true;
+    game.foretellerRevealed = player;
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-    io.to(lobbyId).emit("foretellerReveal", player);
   });
 
   socket.on(

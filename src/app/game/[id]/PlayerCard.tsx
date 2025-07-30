@@ -5,7 +5,7 @@ import { GiCauldron, GiVillage, GiWolfHead, GiThirdEye } from "react-icons/gi";
 import { FaQuestion, FaVoteYea } from "react-icons/fa";
 import { useState } from "react";
 import { GameState } from "@/game/types";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/sound-button";
 import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { IconType } from "react-icons";
 import { GlowEffect } from "@/components/ui/glow-effect";
@@ -15,7 +15,7 @@ interface PlayerCardProps {
   player: Player;
   gameState: GameState;
   user: Player;
-  foretellerRevealed: boolean | undefined;
+  foretellerRevealed: Player | undefined;
   witchSelected: boolean;
   playerAction?: () => void;
   showingConfirmation?: boolean;
@@ -133,7 +133,9 @@ export default function PlayerCard({
     user.alive;
 
   const selected =
-    user.vote === player.id || (witchKilling && witchKill?.id === player.id);
+    (user.vote === player.id ||
+      (witchKilling && witchKill?.id === player.id)) &&
+    !resultsStep;
 
   const shouldHighlight =
     choosing && !selected && !disable && !showingConfirmation;
@@ -148,7 +150,7 @@ export default function PlayerCard({
 
   return (
     <div className="relative w-full h-full">
-      {selected && !resultsStep && (
+      {selected && (
         <motion.div
           className="pointer-events-none absolute inset-0"
           animate={{
@@ -236,8 +238,8 @@ export default function PlayerCard({
             <div
               className={cn(
                 "text-sm mt-1",
-                player.alive && "text-green-600",
-                !player.alive && "text-red-500"
+                player.alive && "text-emerald-600",
+                !player.alive && "text-destructive"
               )}
             >
               {player.alive ? "Alive" : "Dead"}

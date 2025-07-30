@@ -1,20 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
 import { Player, GameState } from "@/game/types";
 import PlayerList from "./PlayerList";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/sound-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { usePlayer } from "@/hooks/usePlayer";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon, Users } from "lucide-react";
-import { clickSound } from "@/utils/sounds";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import dynamic from "next/dynamic";
 import GameChat from "@/app/game/[id]/GameChat";
 import { GiSandsOfTime } from "react-icons/gi";
+import { mellowAlert } from "@/utils/sounds";
 
 interface ClipboardProps {
   copied: boolean;
@@ -43,10 +43,11 @@ export default function Lobby() {
     playerId && gameState ? gameState.players[playerId] : null;
 
   const handleStartGame = () => {
-    clickSound();
     setLoading(true);
     socket.emit("startGameCountdown", lobbyId);
   };
+
+  const hasPlayedAlert = useRef(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -88,16 +89,24 @@ export default function Lobby() {
       router.push("/");
     };
 
+    const handleStartCountdown = () => {
+      if (!hasPlayedAlert.current) {
+        mellowAlert();
+        hasPlayedAlert.current = true;
+      }
+      setStarted(true);
+    };
+
+    const handleCountdownComplete = () => {
+      socket.emit("startGame", lobbyId);
+      router.push(`/game/${lobbyId}`);
+    };
+
     socket.on("joinError", handleJoinError);
     socket.on("gameUpdated", handleLobbyUpdated);
     socket.on("kicked", handleKicked);
-    socket.on("startCountdown", () => {
-      setStarted(true);
-    });
-    socket.on("countdownComplete", () => {
-      socket.emit("startGame", lobbyId);
-      router.push(`/game/${lobbyId}`);
-    });
+    socket.on("startCountdown", handleStartCountdown);
+    socket.on("countdownComplete", handleCountdownComplete);
 
     return () => {
       socket.off("gameUpdated", handleLobbyUpdated);
@@ -146,7 +155,6 @@ export default function Lobby() {
                     <Button
                       variant="destructive"
                       onClick={() => {
-                        clickSound();
                         socket.emit("leaveLobby", lobbyId, playerId);
                         localStorage.removeItem("playerName");
                         router.push("/");
