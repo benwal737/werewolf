@@ -1,5 +1,6 @@
 import React from "react";
 import { GameState, Player } from "@/game/types";
+import { isLoser, isWinner } from "@/utils/winConditions";
 
 interface NarrationProps {
   gameState: GameState;
@@ -13,14 +14,6 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   const { substep: nightStep, phase, witchSave, witchKill } = gameState;
   const gameOver = phase === "end";
 
-  const isLoser =
-    (gameState?.winner === "villagers" && player?.role === "werewolf") ||
-    (gameState?.winner === "werewolves" && player?.role !== "werewolf");
-
-  const isWinner =
-    (gameState?.winner === "villagers" && player?.role !== "werewolf") ||
-    (gameState?.winner === "werewolves" && player?.role === "werewolf");
-
   function getForetellerNarration() {
     const revealed = gameState.foretellerRevealed;
     return isForeteller ? (
@@ -29,7 +22,9 @@ const Narration = ({ gameState, player }: NarrationProps) => {
           You saw a vision of <b>{revealed.name}</b> - they are a{" "}
           <b
             className={
-              revealed.role === "werewolf" ? "text-destructive" : "text-emerald-600"
+              revealed.role === "werewolf"
+                ? "text-destructive"
+                : "text-emerald-600"
             }
           >
             {revealed.role}
@@ -62,8 +57,8 @@ const Narration = ({ gameState, player }: NarrationProps) => {
       return (
         <>
           <p>
-            <b className="text-destructive">{gameState.werewolfKill.name}</b> will
-            die tonight. Choose an available action, or do nothing.
+            <b className="text-destructive">{gameState.werewolfKill.name}</b>{" "}
+            will die tonight. Choose an available action, or do nothing.
           </p>
         </>
       );
@@ -109,8 +104,8 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   function getResultsStepNarration() {
     return gameState.villageKill ? (
       <p>
-        <b className="text-destructive">{gameState.villageKill.name}</b> was killed
-        by the village.
+        <b className="text-destructive">{gameState.villageKill.name}</b> was
+        killed by the village.
       </p>
     ) : (
       <p>The village could not agree on a player to kill.</p>
@@ -157,9 +152,9 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   return (
     <div
       className={
-        isLoser
+        isLoser(gameState, player)
           ? "text-destructive text-lg"
-          : isWinner
+          : isWinner(gameState, player)
           ? "text-emerald-600 text-lg"
           : "text-muted-foreground text-lg"
       }

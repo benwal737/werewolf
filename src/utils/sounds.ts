@@ -9,3 +9,11 @@ export const mellowAlert = () => {
 export const mystery = () => {
   new Audio("/mystery.mp3").play();
 };
+
+export const victory = () => {
+  new Audio("/victory.mp3").play();
+};
+
+export const defeat = () => {
+  new Audio("/defeat.mp3").play();
+};

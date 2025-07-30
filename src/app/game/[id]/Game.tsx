@@ -14,7 +14,8 @@ import PageTheme from "@/components/PageTheme";
 import usePhaseTheme from "@/hooks/usePhaseTheme";
 import GameChat from "./GameChat";
 import Confetti from "react-confetti";
-import { mystery } from "@/utils/sounds";
+import { mystery, victory, defeat } from "@/utils/sounds";
+import { isWinner } from "@/utils/winConditions";
 
 const Game = () => {
   const router = useRouter();
@@ -83,6 +84,17 @@ const Game = () => {
       setGameState(updated);
       if (updated.substep === "deaths") {
         mystery();
+      } else if (updated.phase === "end") {
+        const updatedPlayer = playerId ? updated.players[playerId] : null;
+        if (!updatedPlayer) return;
+
+        if (updated.winner === "draw") {
+          defeat();
+        } else if (isWinner(updated, updatedPlayer)) {
+          victory();
+        } else {
+          defeat();
+        }
       }
     });
 
@@ -93,17 +105,13 @@ const Game = () => {
     };
   }, [lobbyId, playerId, handleJoinError, handleCountdownTick]);
 
-  const isWinner =
-    (gameState?.winner === "villagers" && player?.role !== "werewolf") ||
-    (gameState?.winner === "werewolves" && player?.role === "werewolf");
-
   return (
     player &&
     playerId &&
     gameState && (
       <PageTheme forcedTheme={phaseTheme}>
         <div className="flex flex-col min-h-screen w-full bg-cover bg-center overflow-y-auto">
-          {isWinner && (
+          {isWinner(gameState, player) && (
             <Confetti
               className="w-full h-full"
               recycle={false}
