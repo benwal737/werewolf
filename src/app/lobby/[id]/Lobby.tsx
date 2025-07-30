@@ -14,7 +14,7 @@ import { TextShimmer } from "@/components/ui/text-shimmer";
 import dynamic from "next/dynamic";
 import GameChat from "@/app/game/[id]/GameChat";
 import { GiSandsOfTime } from "react-icons/gi";
-import { mellowAlert } from "@/utils/sounds";
+import { bleep, mellowAlert, ping } from "@/utils/sounds";
 
 interface ClipboardProps {
   copied: boolean;
@@ -102,6 +102,14 @@ export default function Lobby() {
       router.push(`/game/${lobbyId}`);
     };
 
+    socket.on("playerJoined", () => {
+      bleep();
+    });
+
+    socket.on("playerLeft", () => {
+      ping();
+    });
+
     socket.on("joinError", handleJoinError);
     socket.on("gameUpdated", handleLobbyUpdated);
     socket.on("kicked", handleKicked);
@@ -112,6 +120,8 @@ export default function Lobby() {
       socket.off("gameUpdated", handleLobbyUpdated);
       socket.off("joinError", handleJoinError);
       socket.off("kicked", handleKicked);
+      socket.off("playerJoined");
+      socket.off("playerLeft");
       socket.off("startCountdown");
       socket.off("countdownComplete");
     };
