@@ -14,7 +14,7 @@ import PageTheme from "@/components/PageTheme";
 import usePhaseTheme from "@/hooks/usePhaseTheme";
 import GameChat from "./GameChat";
 import Confetti from "react-confetti";
-import { mystery, victory, defeat } from "@/utils/sounds";
+import { mystery, endGame } from "@/utils/sounds";
 import { isWinner } from "@/utils/winConditions";
 
 const Game = () => {
@@ -87,14 +87,7 @@ const Game = () => {
       } else if (updated.phase === "end") {
         const updatedPlayer = playerId ? updated.players[playerId] : null;
         if (!updatedPlayer) return;
-
-        if (updated.winner === "draw") {
-          defeat();
-        } else if (isWinner(updated, updatedPlayer)) {
-          victory();
-        } else {
-          defeat();
-        }
+        endGame(updated, updatedPlayer);
       }
     });
 
