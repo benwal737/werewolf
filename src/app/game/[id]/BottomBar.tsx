@@ -26,7 +26,8 @@ const BottomBar = ({ role, phase, lobbyId, playerId }: BottomBarProps) => {
           {role && (
             <Button
               type="button"
-              className="text-2xl py-6 bg-primary hover:bg-primary/80"
+              className="text-2xl py-6 w-30"
+              variant="default"
             >
               {role[0].toUpperCase() + role.slice(1)}
             </Button>
@@ -36,7 +37,15 @@ const BottomBar = ({ role, phase, lobbyId, playerId }: BottomBarProps) => {
           <RoleCard role={role} />
         </DialogContent>
       </Dialog>
-      {phase === "end" && <Button onClick={handleLeave}>Leave</Button>}
+      {phase === "end" && (
+        <Button
+          onClick={handleLeave}
+          className="text-2xl py-6 w-30"
+          variant="destructive"
+        >
+          Leave
+        </Button>
+      )}
     </div>
   );
 };
