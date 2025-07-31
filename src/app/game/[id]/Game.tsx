@@ -162,7 +162,12 @@ const Game = () => {
         </div>
         {/* Bottom Bar */}
         <div className="w-full flex justify-center items-center fixed bottom-0">
-          <BottomBar role={player?.role as Role} />
+          <BottomBar
+            role={player?.role as Role}
+            phase={gameState.phase}
+            lobbyId={lobbyId as string}
+            playerId={playerId as string}
+          />
         </div>
       </PageTheme>
     )
