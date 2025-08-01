@@ -9,13 +9,13 @@ import PhaseIndicator from "./PhaseIndicator";
 import ActionPanel from "./ActionPanel";
 import PlayerList from "./PlayerList";
 import { usePlayer } from "@/hooks/usePlayer";
-import usePlayerAction from "@/hooks/usePlayerAction";
 import PageTheme from "@/components/PageTheme";
 import usePhaseTheme from "@/hooks/usePhaseTheme";
 import GameChat from "./GameChat";
 import Confetti from "react-confetti";
 import { mystery, endGame, turnSound } from "@/utils/sounds";
 import { isWinner } from "@/utils/winConditions";
+import GameContextProvider from "@/context/GameContext";
 
 const Game = () => {
   const router = useRouter();
@@ -29,27 +29,13 @@ const Game = () => {
   const [witchSelected, setWitchSelected] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
 
-  const { playerId } = usePlayer();
-  const player: Player | null =
-    playerId && gameState ? gameState.players[playerId] : null;
+  const { userId } = usePlayer();
+  const user: Player | null =
+    userId && gameState ? gameState.players[userId] : null;
 
   const foretellerRevealed = gameState?.foretellerRevealed;
-  const isForeteller = player?.role === "foreteller";
-  const isWitch = player?.role === "witch";
+  const isWitch = user?.role === "witch";
   const witchTurn = gameState?.substep === "witch";
-
-  const getClickAction = (target: Player) => {
-    return usePlayerAction(
-      socket,
-      lobbyId,
-      playerId,
-      target,
-      player,
-      gameState,
-      witchSelected,
-      setWitchSelected
-    );
-  };
 
   const handleJoinError = useCallback(() => {
     router.push("/not-found");
@@ -63,14 +49,14 @@ const Game = () => {
   );
 
   useEffect(() => {
-    if (!playerId) return;
+    if (!userId) return;
     if (hasJoinedRef.current) return;
     hasJoinedRef.current = true;
 
-    socket.emit("joinGame", lobbyId, playerId, (game: GameState) => {
+    socket.emit("joinGame", lobbyId, userId, (game: GameState) => {
       setGameState(game);
     });
-  }, [lobbyId, playerId]);
+  }, [lobbyId, userId]);
 
   useEffect(() => {
     socket.emit("requestCountdown", lobbyId, (timeLeft: number | null) => {
@@ -87,7 +73,7 @@ const Game = () => {
       if (updated.substep === "deaths") {
         mystery();
       } else if (updated.phase === "end") {
-        const updatedPlayer = playerId ? updated.players[playerId] : null;
+        const updatedPlayer = userId ? updated.players[userId] : null;
         if (!updatedPlayer) return;
         endGame(updated, updatedPlayer);
       } else {
@@ -102,73 +88,64 @@ const Game = () => {
       socket.off("countdownTick", handleCountdownTick);
       socket.off("gameUpdated");
     };
-  }, [lobbyId, playerId, handleJoinError, handleCountdownTick]);
+  }, [lobbyId, userId, handleJoinError, handleCountdownTick]);
 
   return (
-    player &&
-    playerId &&
+    user &&
+    userId &&
     gameState && (
       <PageTheme forcedTheme={phaseTheme}>
-        <div className="flex flex-col min-h-screen w-full bg-cover bg-center overflow-y-auto">
-          {isWinner(gameState, player) && (
-            <Confetti
-              className="w-full h-full"
-              recycle={false}
-              numberOfPieces={500}
-            />
-          )}
-          {/* Phase Indicator  */}
-          <div className="flex justify-center mt-5 w-full">
-            <PhaseIndicator
-              gameState={gameState}
-              countdown={countdown}
-              player={player}
-            />
-          </div>
-          {/* Main Content */}
-          <div className="flex flex-col lg:flex-row justify-center my-5 lg:items-start items-stretch gap-5 mx-10 md:mx-20">
-            {/* Left Container */}
-            <div className="lg:w-2/3 lg:mb-0 w-full">
-              {/* Action Panel (md and below) */}
-              {witchTurn && isWitch && (
-                <div className="block lg:hidden mb-4">
-                  <ActionPanel gameState={gameState} />
-                </div>
-              )}
-              {/* Player List */}
-              <PlayerList
-                players={Object.values(gameState.players)}
-                currentUserId={playerId}
-                gameState={gameState}
-                foretellerRevealed={foretellerRevealed}
-                witchSelected={witchSelected}
-                getClickAction={getClickAction}
-                lobbyId={lobbyId as string}
+        <GameContextProvider
+          gameState={gameState}
+          user={user}
+          witchSelected={witchSelected}
+          setWitchSelected={setWitchSelected}
+          countdown={countdown}
+        >
+          <div className="flex flex-col min-h-screen w-full bg-cover bg-center overflow-y-auto">
+            {isWinner(gameState, user) && (
+              <Confetti
+                className="w-full h-full"
+                recycle={false}
+                numberOfPieces={500}
               />
+            )}
+            {/* Phase Indicator  */}
+            <div className="flex justify-center mt-5 w-full">
+              <PhaseIndicator />
             </div>
-            {/* Right Container */}
-            <div className="w-full lg:w-1/3">
-              {/* Action Panel (lg and up) */}
-              {witchTurn && isWitch && (
-                <div className="hidden lg:block mb-4">
-                  <ActionPanel gameState={gameState} />
+            {/* Main Content */}
+            <div className="flex flex-col lg:flex-row justify-center my-5 lg:items-start items-stretch gap-5 mx-10 md:mx-20">
+              {/* Left Container */}
+              <div className="lg:w-2/3 lg:mb-0 w-full">
+                {/* Action Panel (md and below) */}
+                {witchTurn && isWitch && (
+                  <div className="block lg:hidden mb-4">
+                    <ActionPanel />
+                  </div>
+                )}
+                {/* Player List */}
+                <PlayerList />
+              </div>
+              {/* Right Container */}
+              <div className="w-full lg:w-1/3">
+                {/* Action Panel (lg and up) */}
+                {witchTurn && isWitch && (
+                  <div className="hidden lg:block mb-4">
+                    <ActionPanel />
+                  </div>
+                )}
+                <div className="h-[66vh]">
+                  <GameChat gameState={gameState} player={user} />
                 </div>
-              )}
-              <div className="h-[66vh]">
-                <GameChat gameState={gameState} player={player} />
               </div>
             </div>
           </div>
-        </div>
-        {/* Bottom Bar */}
-        <div className="w-full flex justify-center items-center fixed bottom-0">
-          <BottomBar
-            role={player?.role as Role}
-            phase={gameState.phase}
-            lobbyId={lobbyId as string}
-            playerId={playerId as string}
-          />
-        </div>
+          {/* Bottom Bar */}
+          <div className="w-full flex justify-center items-center fixed bottom-0">
+            <BottomBar />
+          </div>
+        </GameContextProvider>
       </PageTheme>
     )
   );

@@ -4,38 +4,28 @@ import { Player, Role } from "@/game/types";
 import { GiCauldron, GiVillage, GiWolfHead, GiThirdEye } from "react-icons/gi";
 import { FaQuestion, FaVoteYea } from "react-icons/fa";
 import { useState } from "react";
-import { GameState } from "@/game/types";
 import Button from "@/components/ui/sound-button";
 import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { IconType } from "react-icons";
 import { GlowEffect } from "@/components/ui/glow-effect";
 import { motion } from "motion/react";
+import { useGameContext } from "@/context/GameContext";
+import usePlayerAction from "@/hooks/usePlayerAction"
+import {socket} from "@/lib/socketClient"
+import { useParams } from "next/navigation";
 
 interface PlayerCardProps {
   player: Player;
-  gameState: GameState;
-  user: Player;
-  foretellerRevealed: Player | undefined;
-  witchSelected: boolean;
-  playerAction?: () => void;
   showingConfirmation?: boolean;
   setShowingConfirmation?: (showingConfirmation: boolean) => void;
-  lobbyId: string;
-  playerId: string;
 }
 
 export default function PlayerCard({
   player,
-  gameState,
-  user,
-  foretellerRevealed,
-  witchSelected,
-  playerAction,
   showingConfirmation,
   setShowingConfirmation,
-  lobbyId,
-  playerId,
 }: PlayerCardProps) {
+  const { gameState, user, witchSelected, setWitchSelected } = useGameContext(); 
   const foretellerTurn = gameState.substep === "foreteller";
   const werewolfTurn = gameState.substep === "werewolves";
   const witchTurn = gameState.substep === "witch";
@@ -45,6 +35,17 @@ export default function PlayerCard({
   const resultsStep = gameState.substep === "results";
   const gameOver = gameState.phase === "end";
   const voted = user.vote !== undefined;
+  const lobbyId = useParams().id;
+
+  const playerAction = usePlayerAction(
+    socket,
+    lobbyId,
+    player,
+    user,
+    gameState,
+    witchSelected,
+    setWitchSelected
+  );
 
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -107,7 +108,7 @@ export default function PlayerCard({
   };
 
   const isForetellerChoosing =
-    !foretellerRevealed && foretellerTurn && user.role === "foreteller";
+    !gameState.foretellerRevealed && foretellerTurn && user.role === "foreteller";
 
   const isWerewolfChoosing =
     werewolfTurn &&

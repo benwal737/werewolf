@@ -5,23 +5,23 @@ import { v4 as uuidv4 } from "uuid";
 
 export const usePlayer = () => {
   const [player, setPlayer] = useState<{
-    playerId: string | null;
-    playerName: string | null;
+    userId: string | null;
+    username: string | null;
   }>({
-    playerId: null,
-    playerName: null,
+    userId: null,
+    username: null,
   });
 
   useEffect(() => {
-    let playerId = localStorage.getItem("playerId");
-    const playerName = localStorage.getItem("playerName");
+    let userId = localStorage.getItem("playerId");
+    const username = localStorage.getItem("username");
 
-    if (!playerId) {
-      playerId = uuidv4();
-      localStorage.setItem("playerId", playerId);
+    if (!userId) {
+      userId = uuidv4();
+      localStorage.setItem("playerId", userId);
     }
 
-    setPlayer({ playerId, playerName });
+    setPlayer({ userId, username });
   }, []);
 
   return player;

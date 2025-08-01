@@ -7,36 +7,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users } from "lucide-react";
 import Button from "@/components/ui/sound-button";
 import { socket } from "@/lib/socketClient";
+import { useGameContext } from "@/context/GameContext";
+import { useParams } from "next/navigation";
 
-interface PlayerListProps {
-  players: Player[];
-  currentUserId: string;
-  gameState: GameState;
-  foretellerRevealed: Player | undefined;
-  witchSelected: boolean;
-  getClickAction: (player: Player) => (() => void) | undefined;
-  lobbyId: string;
-}
-
-const PlayerList = ({
-  players,
-  currentUserId,
-  gameState,
-  foretellerRevealed,
-  witchSelected,
-  getClickAction,
-  lobbyId,
-}: PlayerListProps) => {
+const PlayerList = () => {
+  const { gameState, user } = useGameContext();
+  const players = Object.values(gameState.players);
+  const lobbyId = useParams().id;
   const sortedPlayers = [...players].sort((a, b) => {
-    if (a.id === currentUserId && a.alive) return -1;
-    if (b.id === currentUserId && b.alive) return 1;
+    if (a.id === user.id && a.alive) return -1;
+    if (b.id === user.id && b.alive) return 1;
     if (a.alive && !b.alive) return -1;
     if (!a.alive && b.alive) return 1;
     return 0;
   });
 
   const [showingConfirmation, setShowingConfirmation] = useState(false);
-  const user = gameState.players[currentUserId];
   const werewolfVoting =
     gameState.substep === "werewolves" && user.role === "werewolf";
 
@@ -89,15 +75,8 @@ const PlayerList = ({
             <PlayerCard
               key={player.id}
               player={player}
-              gameState={gameState}
-              user={user}
-              foretellerRevealed={foretellerRevealed}
-              witchSelected={witchSelected}
-              playerAction={getClickAction(player)}
               showingConfirmation={showingConfirmation}
               setShowingConfirmation={setShowingConfirmation}
-              lobbyId={lobbyId}
-              playerId={player.id}
             />
           ))}
         </div>

@@ -91,7 +91,7 @@ function makeid(length: number) {
 }
 
 const CreateLobby = () => {
-  const { playerName, playerId } = usePlayer();
+  const { username, userId } = usePlayer();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof lobbySchema>>({
@@ -106,6 +106,8 @@ const CreateLobby = () => {
     },
   });
 
+  console.log("user info:", username, userId);
+
   const handleSubmit = (data: z.infer<typeof lobbySchema>) => {
     setIsLoading(true);
     const totalPlayers = calculateTotalPlayers(data.roles);
@@ -113,8 +115,8 @@ const CreateLobby = () => {
     socket.emit(
       "createLobby",
       lobbyId,
-      playerId,
-      playerName,
+      userId,
+      username,
       data.roles,
       totalPlayers,
       () => {
@@ -185,13 +187,13 @@ const CreateLobby = () => {
                   />
                 ))}
 
-                <Button 
+                <Button
                   className="mt-5 w-32"
                   type="submit"
                   disabled={
                     isLoading ||
-                    !playerId ||
-                    !playerName ||
+                    !userId ||
+                    !username ||
                     calculateTotalPlayers(form.watch("roles")) < MIN_PLAYERS ||
                     calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
                   }

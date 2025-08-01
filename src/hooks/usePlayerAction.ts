@@ -6,30 +6,29 @@ import { ParamValue } from "next/dist/server/request/params";
 const usePlayerAction = (
   socket: Socket,
   lobbyId: ParamValue,
-  playerId: string | null,
   target: Player,
-  player: Player | null,
-  gameState: GameState | null,
+  user: Player,
+  gameState: GameState,
   witchSelected: boolean,
   setWitchSelected: (value: boolean) => void
 ) => {
-  const isForeteller = player?.role === "foreteller";
-  const foretellerTurn = gameState?.substep === "foreteller";
-  const isWerewolf = player?.role === "werewolf";
-  const werewolfTurn = gameState?.substep === "werewolves";
-  const voteStep = gameState?.substep === "vote";
-  const isWitch = player?.role === "witch";
+  const isForeteller = user.role === "foreteller";
+  const foretellerTurn = gameState.substep === "foreteller";
+  const isWerewolf = user.role === "werewolf";
+  const werewolfTurn = gameState.substep === "werewolves";
+  const voteStep = gameState.substep === "vote";
+  const isWitch = user.role === "witch";
   const witchTurn = gameState?.substep === "witch";
 
   const foretellerAction = (target: Player) => {
     if (gameState?.foretellerRevealed) return;
-    if (target.id === playerId) return;
+    if (target.id === user.id) return;
     clickSound();
     socket.emit("foretellerSelected", lobbyId, target.id);
   };
 
   const voteAction = (target: Player) => {
-    socket.emit("playerVoted", lobbyId, playerId, target.id);
+    socket.emit("playerVoted", lobbyId, user.id, target.id);
   };
 
   const witchAction = (target: Player) => {
@@ -39,7 +38,7 @@ const usePlayerAction = (
     setWitchSelected(true);
   };
 
-  if (!player?.alive) return undefined;
+  if (!user?.alive) return undefined;
   if (target.id == null || !gameState?.players[target.id].alive)
     return undefined;
   if (foretellerTurn && isForeteller) {

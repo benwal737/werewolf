@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { GameState } from "@/game/types";
 import Button from "@/components/ui/sound-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { socket } from "@/lib/socketClient";
@@ -10,14 +9,12 @@ import {
   GiPotionOfMadness,
   GiNightSleep,
 } from "react-icons/gi";
+import { useGameContext } from "@/context/GameContext";
 
-interface ActionPanelProps {
-  gameState: GameState;
-}
-
-const ActionPanel = ({ gameState }: ActionPanelProps) => {
+const ActionPanel = () => {
   const { id } = useParams();
   const lobbyId = id as string;
+  const { gameState } = useGameContext();
   const willDie = gameState.werewolfKill;
   const [chosen, setChosen] = useState<boolean>(false);
   const handleSave = () => {

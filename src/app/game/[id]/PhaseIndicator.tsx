@@ -1,21 +1,12 @@
 import React from "react";
-import { GameState, Player } from "@/game/types";
 import { Card, CardContent } from "@/components/ui/card";
 import CountdownTimer from "./CountdownTimer";
 import Narration from "./Narration";
 import { Moon, Sun } from "lucide-react";
+import { useGameContext } from "@/context/GameContext";
 
-interface PhaseIndicatorProps {
-  gameState: GameState;
-  countdown: number | null;
-  player: Player;
-}
-
-const PhaseIndicator = ({
-  gameState,
-  countdown,
-  player,
-}: PhaseIndicatorProps) => {
+const PhaseIndicator = () => {
+  const { gameState, user } = useGameContext();
   let heading = "";
   switch (gameState.phase) {
     case "night":
@@ -30,13 +21,13 @@ const PhaseIndicator = ({
   }
 
   const showTimer =
-    ((gameState.substep === "foreteller" && player.role === "foreteller") ||
-      (gameState.substep === "werewolves" && player.role === "werewolf") ||
-      (gameState.substep === "witch" && player.role === "witch") ||
+    ((gameState.substep === "foreteller" && user.role === "foreteller") ||
+      (gameState.substep === "werewolves" && user.role === "werewolf") ||
+      (gameState.substep === "witch" && user.role === "witch") ||
       gameState.substep === "deaths" ||
       gameState.substep === "vote" ||
       gameState.substep === "results" ||
-      !player.alive) &&
+      !user.alive) &&
     gameState.phase !== "end";
 
   const phaseNumber = gameState.dayNum;
@@ -55,13 +46,13 @@ const PhaseIndicator = ({
             <h2 className="text-2xl font-bold">
               {heading} {gameState.phase !== "end" && phaseNumber}
             </h2>
-            <Narration gameState={gameState} player={player} />
+            <Narration />
           </div>
         </div>
 
         {showTimer && (
           <div className="text-right">
-            <CountdownTimer countdown={countdown} />
+            <CountdownTimer />
           </div>
         )}
       </CardContent>

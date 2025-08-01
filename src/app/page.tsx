@@ -72,7 +72,7 @@ export default function Home() {
 
   const handleCreateLobby = (data: z.infer<typeof createLobbySchema>) => {
     setCreating(true);
-    localStorage.setItem("playerName", data.name);
+    localStorage.setItem("username", data.name);
     router.push("/create");
     setCreating(false);
   };
@@ -86,7 +86,7 @@ export default function Home() {
         setShowAlert(true);
         return;
       }
-      localStorage.setItem("playerName", name);
+      localStorage.setItem("username", name);
       router.push(`/lobby/${data.lobbyId}`);
       setJoining(false);
     });

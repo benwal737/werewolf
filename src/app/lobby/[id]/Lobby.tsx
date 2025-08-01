@@ -32,7 +32,7 @@ const Clipboard = dynamic<ClipboardProps>(
 
 export default function Lobby() {
   const lobbyId = useParams().id as string;
-  const { playerName, playerId } = usePlayer();
+  const { username, userId } = usePlayer();
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [started, setStarted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,7 @@ export default function Lobby() {
   const [copied, setCopied] = useState(false);
   const router = useRouter();
   const player: Player | null =
-    playerId && gameState ? gameState.players[playerId] : null;
+    userId && gameState ? gameState.players[userId] : null;
 
   const handleStartGame = () => {
     setLoading(true);
@@ -62,7 +62,7 @@ export default function Lobby() {
       router.push("/lobby/not-found");
     };
 
-    if (!playerId || !playerName) return;
+    if (!userId || !username) return;
 
     socket.emit("checkLobby", lobbyId, (exists: boolean) => {
       if (!exists) {
@@ -71,8 +71,8 @@ export default function Lobby() {
       socket.emit(
         "joinLobby",
         lobbyId,
-        playerId,
-        playerName,
+        userId,
+        username,
         (gameState: GameState) => {
           setGameState(gameState);
           setValidLobby(true);
@@ -125,16 +125,16 @@ export default function Lobby() {
       socket.off("startCountdown");
       socket.off("countdownComplete");
     };
-  }, [lobbyId, playerId, playerName, router]);
+  }, [lobbyId, userId, username, router]);
 
   return (
     <PageTheme forcedTheme="dark">
       <div
         className={`transition-opacity duration-300 min-h-screen overflow-y-auto flex justify-center ${
-          validLobby && gameState && playerId ? "" : "items-center"
+          validLobby && gameState && userId ? "" : "items-center"
         }`}
       >
-        {validLobby && gameState && playerId ? (
+        {validLobby && gameState && userId ? (
           <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 my-10 mx-10">
             {/* Left: Lobby Card */}
             <div className="order-1 lg:order-1 flex flex-col">
@@ -165,7 +165,7 @@ export default function Lobby() {
                     <Button
                       variant="destructive"
                       onClick={() => {
-                        socket.emit("leaveLobby", lobbyId, playerId);
+                        socket.emit("leaveLobby", lobbyId, userId);
                         localStorage.removeItem("playerName");
                         router.push("/");
                       }}
@@ -173,7 +173,7 @@ export default function Lobby() {
                     >
                       Leave
                     </Button>
-                    {playerId === gameState.host && (
+                    {userId === gameState.host && (
                       <Button
                         onClick={handleStartGame}
                         disabled={
@@ -220,7 +220,7 @@ export default function Lobby() {
                   <PlayerList
                     players={Object.values(gameState.players)}
                     host={gameState.host}
-                    playerId={playerId}
+                    playerId={userId}
                     lobbyId={lobbyId}
                   />
                 </CardContent>

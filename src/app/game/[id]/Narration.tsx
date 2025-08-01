@@ -1,16 +1,13 @@
 import React from "react";
 import { GameState, Player } from "@/game/types";
 import { isLoser, isWinner } from "@/utils/winConditions";
+import { useGameContext } from "@/context/GameContext";
 
-interface NarrationProps {
-  gameState: GameState;
-  player: Player;
-}
-
-const Narration = ({ gameState, player }: NarrationProps) => {
-  const isForeteller = player.role === "foreteller";
-  const isWerewolf = player.role === "werewolf";
-  const isWitch = player.role === "witch";
+const Narration = () => {
+  const { gameState, user } = useGameContext();
+  const isForeteller = user.role === "foreteller";
+  const isWerewolf = user.role === "werewolf";
+  const isWitch = user.role === "witch";
   const { substep: nightStep, phase, witchSave, witchKill } = gameState;
   const gameOver = phase === "end";
 
@@ -39,7 +36,7 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   }
 
   function getWerewolfNarration() {
-    if (isWerewolf && player.alive) return <p>Choose a player to kill.</p>;
+    if (isWerewolf && user.alive) return <p>Choose a player to kill.</p>;
     return <p>Werewolves are hunting...</p>;
   }
 
@@ -94,7 +91,7 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   }
 
   function getVoteStepNarration() {
-    return player?.alive ? (
+    return user?.alive ? (
       <p>Vote on a player to kill</p>
     ) : (
       <p>The village is voting...</p>
@@ -152,9 +149,9 @@ const Narration = ({ gameState, player }: NarrationProps) => {
   return (
     <div
       className={
-        isLoser(gameState, player)
+        isLoser(gameState, user)
           ? "text-destructive text-lg"
-          : isWinner(gameState, player)
+          : isWinner(gameState, user)
           ? "text-emerald-600 text-lg"
           : "text-muted-foreground text-lg"
       }
