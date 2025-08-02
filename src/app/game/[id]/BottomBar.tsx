@@ -12,8 +12,10 @@ const BottomBar = () => {
   const { gameState, user } = useGameContext();
   const lobbyId = useParams().id;
   const handleLeave = () => {
-    socket.emit("leaveGame", lobbyId, user?.id);
+    socket.emit("leaveLobby", lobbyId, user.id);
     router.push("/");
+    localStorage.removeItem("username");
+    localStorage.removeItem("userId");
   };
   return (
     <div className="bg-card/50 backdrop-blur-sm w-full flex justify-center items-center p-3 h-18 gap-5">
