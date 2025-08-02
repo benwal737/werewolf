@@ -25,7 +25,7 @@ const BottomBar = () => {
               className="text-2xl py-6 w-30"
               variant="default"
             >
-              {user.role[0].toUpperCase() + user.role.slice(1)}
+              Your Role
             </Button>
           )}
         </DialogTrigger>
