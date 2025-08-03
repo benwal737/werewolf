@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { socket } from "@/lib/socketClient";
 import { useRouter } from "next/navigation";
 
@@ -34,8 +34,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, Loader2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { GiWolfHead } from "react-icons/gi";
-import { usePlayer } from "@/hooks/usePlayer";
-import { toast } from "sonner";
+import useOngoingGame from "@/hooks/useOngoingGame";
 
 const createLobbySchema = z.object({
   name: z.string().max(15, {
@@ -56,8 +55,6 @@ export default function Home() {
   const [showAlert, setShowAlert] = useState(false);
   const [joining, setJoining] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [ongoingGame, setOngoingGame] = useState<string | null>(null);
-  const { userId } = usePlayer();
 
   const form1 = useForm<z.infer<typeof createLobbySchema>>({
     resolver: zodResolver(createLobbySchema),
@@ -96,25 +93,7 @@ export default function Home() {
     });
   };
 
-  useEffect(() => {
-    if (!userId) return;
-    socket.emit("checkExistingGame", userId, (path: string | null) => {
-      console.log("existing game path:", path);
-      if (path) {
-        console.log("ongoing game found at this path", path);
-        toast("Existing game found", {
-          description: "Lobby ID: " + path.split("/").pop(),
-          duration: Infinity,
-          closeButton: true,
-          position: "top-right",
-          action: {
-            label: "Reconnect",
-            onClick: () => router.push(path),
-          },
-        });
-      }
-    });
-  }, [userId]);
+  useOngoingGame();
 
   return (
     <PageTheme forcedTheme="dark">
