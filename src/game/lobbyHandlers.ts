@@ -58,7 +58,8 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       if (
         !game ||
         game.phase !== "lobby" ||
-        getPlayers(lobbyId).length >= game.totalPlayers
+        (getPlayers(lobbyId).length >= game.totalPlayers &&
+          !game.players[playerId])
       ) {
         return socket.emit("joinError");
       }
@@ -104,7 +105,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       !!game &&
         game.phase === "lobby" &&
         (game.totalPlayers > getPlayers(lobbyId).length ||
-          Object.keys(game.players).includes(playerId))
+          game.players[playerId])
     );
   });
 
