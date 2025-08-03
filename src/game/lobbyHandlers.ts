@@ -6,6 +6,7 @@ import {
   getGame,
   getPlayers,
   getSafeGameState,
+  findExistingGame,
 } from "./gameManager.ts";
 import { Player, RoleCounts } from "./types";
 
@@ -123,6 +124,11 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       }
     }, 1000);
     countdowns.set(lobbyId, interval);
+  });
+
+  socket.on("checkExistingGame", (playerId, callback) => {
+    const existingGame = findExistingGame(playerId);
+    callback(existingGame);
   });
 
   socket.on("disconnect", () => {

@@ -16,6 +16,19 @@ interface EarlyProceedResult {
   newTimeLeft: number | null;
 }
 
+export const findExistingGame = (playerId: string) => {
+  for (const [lobbyId, game] of gameStates) {
+    if (game.players[playerId]) {
+      if (game.phase === "lobby") {
+        return `lobby/${lobbyId}`;
+      } else {
+        return `game/${lobbyId}`;
+      }
+    }
+  }
+  return null;
+};
+
 const earlyProceed = (io: Server, lobbyId: string): EarlyProceedResult => {
   const game = getGame(lobbyId);
   if (!game) return { proceed: false, newTimeLeft: null };

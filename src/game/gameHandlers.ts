@@ -281,8 +281,8 @@ export default function registerGameHandlers(io: Server, socket: Socket) {
     game.witchSkipped = true;
     const updated = getSafeGameState(lobbyId);
     io.to(lobbyId).emit("gameUpdated", updated);
-  }); 
-
+  });
+  
   socket.onAny((event, ...args) => {
     console.log("[Server socket event]:", event, args);
   });
