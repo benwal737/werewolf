@@ -13,7 +13,7 @@ const BottomBar = () => {
   const lobbyId = useParams().id;
   const handleLeave = () => {
     socket.emit("leaveLobby", lobbyId, user.id);
-    router.push("/");
+    router.replace("/");
     localStorage.removeItem("username");
     localStorage.removeItem("userId");
   };

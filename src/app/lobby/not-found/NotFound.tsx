@@ -7,7 +7,7 @@ import Link from "next/link";
 import useOngoingGame from "@/hooks/useOngoingGame";
 
 const NotFound = () => {
-  useOngoingGame();
+  useOngoingGame("lobby");
   return (
     <PageTheme forcedTheme="dark">
       <div className="flex flex-col items-center justify-center h-screen gap-1">

@@ -81,7 +81,7 @@ export default function Home() {
   const handleJoinLobby = (data: z.infer<typeof joinLobbySchema>) => {
     const name = form1.getValues("name");
     setJoining(true);
-    socket.emit("checkLobby", data.lobbyId, (exists: boolean) => {
+    socket.emit("checkLobby", data.lobbyId, null, (exists: boolean) => {
       if (!exists) {
         setJoining(false);
         setShowAlert(true);
@@ -93,7 +93,7 @@ export default function Home() {
     });
   };
 
-  useOngoingGame();
+  useOngoingGame("home");
 
   return (
     <PageTheme forcedTheme="dark">

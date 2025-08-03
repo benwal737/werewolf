@@ -120,7 +120,7 @@ const CreateLobby = () => {
       data.roles,
       totalPlayers,
       () => {
-        router.push(`/lobby/${lobbyId}`);
+        router.replace(`/lobby/${lobbyId}`);
       }
     );
   };

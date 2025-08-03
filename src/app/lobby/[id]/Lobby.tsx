@@ -59,12 +59,12 @@ export default function Lobby() {
 
   useEffect(() => {
     const handleJoinError = () => {
-      router.push("/lobby/not-found");
+      router.replace("/lobby/not-found");
     };
 
     if (!userId || !username) return;
 
-    socket.emit("checkLobby", lobbyId, (exists: boolean) => {
+    socket.emit("checkLobby", lobbyId, userId, (exists: boolean) => {
       if (!exists) {
         return handleJoinError();
       }
@@ -86,7 +86,7 @@ export default function Lobby() {
     };
 
     const handleKicked = () => {
-      router.push("/");
+      router.replace("/");
     };
 
     const handleStartCountdown = () => {
@@ -99,7 +99,7 @@ export default function Lobby() {
 
     const handleCountdownComplete = () => {
       socket.emit("startGame", lobbyId);
-      router.push(`/game/${lobbyId}`);
+      router.replace(`/game/${lobbyId}`);
     };
 
     socket.on("playerJoined", () => {

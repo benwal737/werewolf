@@ -98,12 +98,13 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
     io.to(lobbyId).emit("playerLeft");
   });
 
-  socket.on("checkLobby", (lobbyId, callback) => {
+  socket.on("checkLobby", (lobbyId, playerId, callback) => {
     const game = getGame(lobbyId);
     callback(
       !!game &&
         game.phase === "lobby" &&
-        game.totalPlayers > getPlayers(lobbyId).length
+        (game.totalPlayers > getPlayers(lobbyId).length ||
+          Object.keys(game.players).includes(playerId))
     );
   });
 
