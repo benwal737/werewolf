@@ -17,16 +17,17 @@ interface EarlyProceedResult {
 }
 
 export const findExistingGame = (playerId: string) => {
+  const paths = [];
   for (const [lobbyId, game] of gameStates) {
     if (game.players[playerId]) {
       if (game.phase === "lobby") {
-        return `lobby/${lobbyId}`;
+        paths.push(`lobby/${lobbyId}`);
       } else {
-        return `game/${lobbyId}`;
+        paths.push(`game/${lobbyId}`);
       }
     }
   }
-  return null;
+  return paths;
 };
 
 const earlyProceed = (io: Server, lobbyId: string): EarlyProceedResult => {

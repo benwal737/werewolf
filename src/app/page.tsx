@@ -174,7 +174,7 @@ export default function Home() {
                 <DialogHeader>
                   <DialogTitle>Lobby ID</DialogTitle>
                   <DialogDescription>
-                    Enter a valid lobby ID to join an existing game.
+                    Enter a valid lobby ID to join an existing lobby.
                   </DialogDescription>
                 </DialogHeader>
                 <Form {...form2}>

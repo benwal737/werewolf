@@ -10,11 +10,10 @@ export default function useOngoingGame() {
   const [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
     if (!userId) return;
-    socket.emit("checkExistingGame", userId, (path: string | null) => {
-      if (path) {
-        setShowAlert(true);
-        if (showAlert) return;
+    socket.emit("checkExistingGame", userId, (paths: string[]) => {
+      for (const path of paths) {
         const lobbyType = path.split("/")[0];
+        if (showAlert) return;
         toast(`Ongoing ${lobbyType} found`, {
           description: "Lobby ID: " + path.split("/").pop(),
           duration: Infinity,
@@ -25,6 +24,7 @@ export default function useOngoingGame() {
             onClick: () => router.push(path),
           },
         });
+        setShowAlert(true);
       }
     });
   });
