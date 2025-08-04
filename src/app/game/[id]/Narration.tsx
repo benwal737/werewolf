@@ -140,9 +140,9 @@ const Narration = () => {
         break;
       default:
         narration = <p>Loading...</p>;
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 1000);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
     }
   }
 
