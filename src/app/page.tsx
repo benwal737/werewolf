@@ -93,7 +93,7 @@ export default function Home() {
     });
   };
 
-  useOngoingGame("home");
+  useOngoingGame();
 
   return (
     <PageTheme forcedTheme="dark">

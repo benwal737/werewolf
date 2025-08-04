@@ -4,10 +4,8 @@ import React from "react";
 import FuzzyText from "@/blocks/TextAnimations/FuzzyText/FuzzyText";
 import PageTheme from "@/components/PageTheme";
 import Link from "next/link";
-import useOngoingGame from "@/hooks/useOngoingGame";
 
 const NotFound = () => {
-  useOngoingGame("lobby");
   return (
     <PageTheme forcedTheme="dark">
       <div className="flex flex-col items-center justify-center h-screen gap-1">
