@@ -19,26 +19,25 @@ const BottomBar = () => {
   };
   return (
     <div className="bg-card/50 backdrop-blur-sm w-full flex justify-center items-center p-3 h-18 gap-5">
-      <Dialog>
-        <DialogTrigger asChild>
-          {user && (
+      {gameState.phase !== "end" ? (
+        <Dialog>
+          <DialogTrigger asChild>
             <Button
               type="button"
-              className="text-2xl py-6 w-30"
+              className="text-2xl py-6"
               variant="default"
             >
-              Your Role
+              {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
             </Button>
-          )}
-        </DialogTrigger>
-        <DialogContent className="p-0 max-w-xs bg-transparent border-none shadow-none">
-          <RoleCard role={user.role} />
-        </DialogContent>
-      </Dialog>
-      {gameState.phase === "end" && (
+          </DialogTrigger>
+          <DialogContent className="p-0 max-w-xs bg-transparent border-none shadow-none">
+            <RoleCard role={user.role} />
+          </DialogContent>
+        </Dialog>
+      ) : (
         <Button
           onClick={handleLeave}
-          className="text-2xl py-6 w-30"
+          className="text-2xl py-6"
           variant="destructive"
         >
           Leave

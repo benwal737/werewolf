@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/lib/socketClient";
-import { GameState, Role, Player } from "@/game/types";
+import { GameState, Player } from "@/game/types";
 import BottomBar from "./BottomBar";
 import PhaseIndicator from "./PhaseIndicator";
 import ActionPanel from "./ActionPanel";
@@ -13,7 +13,7 @@ import PageTheme from "@/components/PageTheme";
 import usePhaseTheme from "@/hooks/usePhaseTheme";
 import GameChat from "./GameChat";
 import Confetti from "react-confetti";
-import { mystery, endGame, turnSound } from "@/utils/sounds";
+import { turnSound } from "@/utils/sounds";
 import { isWinner } from "@/utils/winConditions";
 import GameContextProvider from "@/context/GameContext";
 
@@ -33,7 +33,6 @@ const Game = () => {
   const user: Player | null =
     userId && gameState ? gameState.players[userId] : null;
 
-  const foretellerRevealed = gameState?.foretellerRevealed;
   const isWitch = user?.role === "witch";
   const witchTurn = gameState?.substep === "witch";
 
@@ -68,17 +67,7 @@ const Game = () => {
     socket.on("countdownTick", handleCountdownTick);
     socket.on("joinError", handleJoinError);
     socket.on("gameUpdated", (updated: GameState) => {
-      const prevSubstep = prevGameStateRef.current?.substep;
-      console.log("prevSubstep", prevSubstep);
-      if (updated.substep === "deaths") {
-        mystery();
-      } else if (updated.phase === "end") {
-        const updatedPlayer = userId ? updated.players[userId] : null;
-        if (!updatedPlayer) return;
-        endGame(updated, updatedPlayer);
-      } else {
-        turnSound(prevSubstep || "none", updated.substep);
-      }
+      turnSound(prevGameStateRef.current, updated, userId);
       setGameState(updated);
       prevGameStateRef.current = updated;
     });

@@ -43,12 +43,27 @@ export const endGame = (game: GameState, player: Player) => {
   }
 };
 
-export const turnSound = (prev: Substep, current: Substep) => {
-  if (current === "werewolves" && prev !== "werewolves") {
+export const turnSound = (
+  prev: GameState | null,
+  current: GameState,
+  userId: string | null
+) => {
+  const currentStep = current.substep;
+  const currentPhase = current.phase;
+  const prevStep = prev?.substep;
+  const prevPhase = prev?.phase;
+  if (currentStep === "deaths" && prevStep !== "deaths") {
+    mystery();
+  }
+  if (currentPhase === "end" && prevPhase !== "end") {
+    const updatedPlayer = userId ? current.players[userId] : null;
+    if (!updatedPlayer) return;
+    endGame(current, updatedPlayer);
+  } else if (currentStep === "werewolves" && prevStep !== "werewolves") {
     new Audio("/werewolf.mp3").play();
-  } else if (current === "foreteller" && prev !== "foreteller") {
+  } else if (currentStep === "foreteller" && prevStep !== "foreteller") {
     new Audio("/foreteller.mp3").play();
-  } else if (current === "witch" && prev !== "witch") {
+  } else if (currentStep === "witch" && prevStep !== "witch") {
     new Audio("/witch.wav").play();
   }
 };
