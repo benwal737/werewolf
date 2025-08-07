@@ -1,4 +1,4 @@
-import { GameState, Player, Substep } from "../game/types";
+import { GameState, Player } from "../game/types";
 import { isWinner } from "./winConditions";
 
 export const clickSound = () => {

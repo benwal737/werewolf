@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Player, GameState } from "@/game/types";
 import PlayerCard from "./PlayerCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users } from "lucide-react";

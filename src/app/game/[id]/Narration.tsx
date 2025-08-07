@@ -1,5 +1,4 @@
 import React from "react";
-import { GameState, Player } from "@/game/types";
 import { isLoser, isWinner } from "@/utils/winConditions";
 import { useGameContext } from "@/context/GameContext";
 

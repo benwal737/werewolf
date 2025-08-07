@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Message } from "@/game/types";
 import { Input } from "@/components/ui/input";
 import { MessageCircle, Send } from "lucide-react";
 import { useState } from "react";
