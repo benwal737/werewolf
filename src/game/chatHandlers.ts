@@ -1,5 +1,5 @@
 import { Socket, Server } from "socket.io";
-import { getGame, getSafeGameState } from "./gameManager.ts";
+import { getGame, getSafeGameState } from "./gameManager";
 import { Message, Player } from "./types";
 import { v4 as uuidv4 } from "uuid";
 

@@ -1,9 +1,9 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
 import next from "next";
-import registerLobbyHandlers from "./src/game/lobbyHandlers.ts";
-import registerGameHandlers from "./src/game/gameHandlers.ts";
-import registerChatHandlers from "./src/game/chatHandlers.ts";
+import registerLobbyHandlers from "./src/game/lobbyHandlers";
+import registerGameHandlers from "./src/game/gameHandlers";
+import registerChatHandlers from "./src/game/chatHandlers";
 
 console.log("> Server starting");
 

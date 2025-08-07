@@ -11,8 +11,8 @@ import {
   countVotes,
   setDayDeaths,
   resetNightDeaths,
-} from "./gameManager.ts";
-import { GamePhase, Substep } from "./types/index.ts";
+} from "./gameManager";
+import { GamePhase, Substep } from "./types/index";
 
 const FORETELLER_TIME = 30;
 const WEREWOLVES_TIME = 30;

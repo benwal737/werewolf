@@ -7,7 +7,7 @@ import {
   getPlayers,
   getSafeGameState,
   findExistingGame,
-} from "./gameManager.ts";
+} from "./gameManager";
 import { Player, RoleCounts } from "./types";
 
 export default function registerLobbyHandlers(io: Server, socket: Socket) {

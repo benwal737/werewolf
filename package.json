@@ -2,13 +2,13 @@
   "name": "werewolf",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "TS_NODE_PROJECT=tsconfig.server.json node --loader ts-node/esm server.ts",
+    "dev": "ts-node --project tsconfig.server.json server.ts",
     "dev::socket": "NODE_OPTIONS='--loader ts-node/esm --trace-warnings --no-warnings' ts-node server.ts",
-    "build": "tsc -p tsconfig.server.json && next build",
-    "start": "NODE_ENV=production node dist/server.js",
-    "lint": "next lint"
+    "build": "next build && tsc --project tsconfig.server.json",
+    "start": "node dist/server.js",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
