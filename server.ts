@@ -15,7 +15,13 @@ try {
   app.prepare().then(() => {
     console.log("> Server prepared");
     const server = createServer(handler);
-    const io = new Server(server);
+    const io = new Server(server, {
+      cors: {
+        origin: process.env.CLIENT_ORIGIN || "http://localhost:3000",
+        methods: ["GET", "POST"],
+        credentials: true,
+      },
+    });
 
     io.on("connection", (socket) => {
       console.log("User connected:", socket.id);
