@@ -1,13 +1,28 @@
+// {
+//   "extends": "./tsconfig.json",
+//   "compilerOptions": {
+//     "target": "ES2020",
+//     "module": "ESNext",
+//     "moduleResolution": "node",
+//     "esModuleInterop": true,
+//     "allowImportingTsExtensions": true,
+//     "isolatedModules": false,
+//     "noEmit": true
+//   },
+//   "include": ["server.ts", "src/game/**/*"]
+// }
+
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowImportingTsExtensions": true,
     "isolatedModules": false,
-    "noEmit": true
+    "noEmit": false,
+    "outDir": "dist"
   },
   "include": ["server.ts", "src/game/**/*"]
 }
