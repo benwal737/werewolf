@@ -35,6 +35,7 @@ import { AlertCircleIcon, Loader2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { GiWolfHead } from "react-icons/gi";
 import useOngoingGame from "@/hooks/useOngoingGame";
+import HowToPlay from "./HowToPlay";
 
 const createLobbySchema = z.object({
   name: z.string().max(15, {
@@ -97,12 +98,12 @@ export default function Home() {
 
   return (
     <PageTheme forcedTheme="dark">
-      <div className="flex flex-col min-h-screen w-full bg-cover bg-center">
-        <div className="flex items-center justify-center mt-20 gap-5">
+      <div className="flex flex-col w-full min-h-screen bg-cover bg-center justify-between items-center py-20">
+        <div className="flex items-center justify-center gap-5">
           <TypographyH1 className="text-7xl font-sans">Werewolf</TypographyH1>
           <GiWolfHead className="text-7xl" />
         </div>
-        <Card className="size-fit p-10 mx-auto my-30 flex flex-col items-center justify-center bg-card/50 backdrop-blur-sm">
+        <Card className="size-fit p-10 flex flex-col items-center justify-center bg-card/50 backdrop-blur-sm">
           <CardTitle className="text-xl">Enter a name to play!</CardTitle>
           <CardContent className="flex flex-col items-center justify-center gap-4 bg-0">
             <Form {...form1}>
@@ -226,6 +227,7 @@ export default function Home() {
             </Dialog>
           </CardContent>
         </Card>
+        <HowToPlay />
       </div>
     </PageTheme>
   );
