@@ -35,7 +35,7 @@ import { AlertCircleIcon, Loader2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { GiWolfHead } from "react-icons/gi";
 import useOngoingGame from "@/hooks/useOngoingGame";
-import HowToPlay from "./HowToPlay";
+import HowToPlay from "../components/HowToPlay";
 
 const createLobbySchema = z.object({
   name: z.string().max(15, {
