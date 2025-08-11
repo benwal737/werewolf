@@ -123,6 +123,11 @@ export default function Home() {
                           className="w-[200px]"
                           placeholder="Your name here..."
                           {...field}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
