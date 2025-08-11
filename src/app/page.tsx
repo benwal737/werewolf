@@ -98,10 +98,12 @@ export default function Home() {
 
   return (
     <PageTheme forcedTheme="dark">
-      <div className="flex flex-col w-full min-h-screen bg-cover bg-center justify-between items-center py-20">
+      <div className="flex flex-col w-full min-h-screen bg-cover bg-center justify-between items-center py-10 md:py-20 px-10 gap-10">
         <div className="flex items-center justify-center gap-5">
-          <TypographyH1 className="text-7xl font-sans">Werewolf</TypographyH1>
-          <GiWolfHead className="text-7xl" />
+          <TypographyH1 className="hidden md:block text-7xl">
+            Werewolf
+          </TypographyH1>
+          <GiWolfHead className="text-9xl md:text-7xl" />
         </div>
         <Card className="size-fit p-10 flex flex-col items-center justify-center bg-card/50 backdrop-blur-sm">
           <CardTitle className="text-xl">Enter a name to play!</CardTitle>
