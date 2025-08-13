@@ -34,7 +34,7 @@ const PlayerList = () => {
     .map((p) => p.color);
 
   return (
-    <Card className="bg-card/30 backdrop-blur-sm">
+    <Card className="bg-card/30 backdrop-blur-sm mb-0 lg:mb-5">
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
           <Users className="h-5 w-5" />

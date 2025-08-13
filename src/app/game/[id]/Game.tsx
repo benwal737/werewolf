@@ -91,7 +91,7 @@ const Game = () => {
           setWitchSelected={setWitchSelected}
           countdown={countdown}
         >
-          <div className="flex flex-col min-h-screen w-full bg-cover bg-center overflow-y-auto">
+          <div className="flex flex-col min-h-screen h-dvh w-full bg-cover bg-center">
             {isWinner(gameState, user) && (
               <Confetti
                 className="w-full h-full"
@@ -99,33 +99,35 @@ const Game = () => {
                 numberOfPieces={500}
               />
             )}
-            {/* Phase Indicator  */}
-            <div className="flex justify-center mt-5 w-full">
-              <PhaseIndicator />
-            </div>
-            {/* Main Content */}
-            <div className="flex flex-col lg:flex-row justify-center my-5 lg:items-start items-stretch gap-5 mx-10 md:mx-20">
-              {/* Left Container */}
-              <div className="lg:w-2/3 lg:mb-0 w-full">
-                {/* Action Panel (md and below) */}
-                {witchTurn && isWitch && (
-                  <div className="block lg:hidden mb-4">
-                    <ActionPanel />
-                  </div>
-                )}
-                {/* Player List */}
-                <PlayerList />
+            <div className="flex-1 flex flex-col gap-4 md:gap-5">
+              {/* Phase Indicator  */}
+              <div className="flex justify-center mt-5 w-full">
+                <PhaseIndicator />
               </div>
-              {/* Right Container */}
-              <div className="w-full lg:w-1/3">
-                {/* Action Panel (lg and up) */}
-                {witchTurn && isWitch && (
-                  <div className="hidden lg:block mb-4">
-                    <ActionPanel />
+              {/* Main Content */}
+              <div className="flex-1 flex flex-col lg:flex-row justify-center lg:items-start items-stretch gap-5 mx-10 md:mx-20 pb-20 h-full">
+                {/* Left Container */}
+                <div className="lg:w-2/3 lg:mb-0 w-full">
+                  {/* Action Panel (md and below) */}
+                  {witchTurn && isWitch && (
+                    <div className="block lg:hidden mb-4">
+                      <ActionPanel />
+                    </div>
+                  )}
+                  {/* Player List */}
+                  <PlayerList />
+                </div>
+                {/* Right Container */}
+                <div className="w-full lg:w-1/3 h-full flex flex-col">
+                  {/* Action Panel (lg and up) */}
+                  {witchTurn && isWitch && (
+                    <div className="hidden lg:block">
+                      <ActionPanel />
+                    </div>
+                  )}
+                  <div className="flex-1 min-h-[50vh] max-h-[60vh] lg:max-h-[72vh]">
+                    <GameChat gameState={gameState} player={user} />
                   </div>
-                )}
-                <div className="h-[66vh]">
-                  <GameChat gameState={gameState} player={user} />
                 </div>
               </div>
             </div>

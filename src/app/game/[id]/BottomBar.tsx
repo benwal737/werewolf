@@ -18,13 +18,13 @@ const BottomBar = () => {
     localStorage.removeItem("userId");
   };
   return (
-    <div className="bg-card/50 backdrop-blur-sm w-full flex justify-center items-center p-3 h-18 gap-5">
+    <div className="bg-card/50 backdrop-blur-sm w-full flex justify-center items-center p-3 h-15 gap-5">
       {gameState.phase !== "end" ? (
         <Dialog>
           <DialogTrigger asChild>
             <Button
               type="button"
-              className="text-2xl py-6"
+              className="text-xl py-5"
               variant="default"
             >
               {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
