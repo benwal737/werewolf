@@ -37,14 +37,14 @@ import useOngoingGame from "@/hooks/useOngoingGame";
 import HowToPlay from "../components/HowToPlay";
 
 const createLobbySchema = z.object({
-  name: z.string().max(15, {
-    message: "character limit exceeded 15",
+  name: z.string().max(10, {
+    message: "character limit exceeded 10",
   }),
 });
 
 const joinLobbySchema = z.object({
-  name: z.string().max(15, {
-    message: "character limit exceeded 15",
+  name: z.string().max(10, {
+    message: "character limit exceeded 10",
   }),
   lobbyId: z.string().min(1, "Lobby ID is required"),
 });
