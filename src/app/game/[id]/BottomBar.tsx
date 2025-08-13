@@ -37,7 +37,7 @@ const BottomBar = () => {
       ) : (
         <Button
           onClick={handleLeave}
-          className="text-2xl py-6"
+          className="text-xl py-5"
           variant="destructive"
         >
           Leave
