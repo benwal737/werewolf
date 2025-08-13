@@ -51,6 +51,7 @@ const joinLobbySchema = z.object({
 });
 
 export default function Home() {
+  const [joinDialogOpen, setJoinDialogOpen] = useState(false);
   const router = useRouter();
 
   const [showAlert, setShowAlert] = useState(false);
@@ -148,19 +149,27 @@ export default function Home() {
               </form>
             </Form>
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  onClick={() => {
-                    setShowAlert(false);
-                  }}
-                  className="w-[200px]"
-                  type="button"
-                  disabled={!form1.watch("name")}
-                >
-                  Join Lobby
-                </Button>
-              </DialogTrigger>
+            <Dialog open={joinDialogOpen} onOpenChange={setJoinDialogOpen}>
+              <Button
+                className="w-[200px]"
+                type="button"
+                disabled={!form1.watch("name")}
+                onClick={() => {
+                  setShowAlert(false);
+                  const name = form1.getValues("name");
+                  if (name.length > 15) {
+                    form1.setError("name", {
+                      type: "manual",
+                      message: "character limit exceeded 15",
+                    });
+                    setJoinDialogOpen(false);
+                  } else {
+                    setJoinDialogOpen(true);
+                  }
+                }}
+              >
+                Join Lobby
+              </Button>
               <DialogContent className="sm:max-w-[425px]">
                 {showAlert && (
                   <>
