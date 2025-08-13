@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MessageCircle, Send } from "lucide-react";
@@ -17,6 +17,7 @@ interface GameChatProps {
 const GameChat = ({ gameState, player }: GameChatProps) => {
   const lobbyId = useParams().id as string;
   const [newMessage, setNewMessage] = useState("");
+  const bottomOfChat = useRef<HTMLDivElement>(null);
 
   const { chat, messages, canChat } = useMemo(() => {
     if (gameState.phase === "end")
@@ -48,6 +49,12 @@ const GameChat = ({ gameState, player }: GameChatProps) => {
     setNewMessage("");
   };
 
+  useEffect(() => {
+    if (bottomOfChat.current) {
+      bottomOfChat.current.scrollIntoView();
+    }
+  }, [messages]);
+
   return (
     <Card className="flex flex-col h-full bg-card/50 backdrop-blur-sm">
       <CardHeader className="border-b border-border flex items-center gap-2">
@@ -75,6 +82,7 @@ const GameChat = ({ gameState, player }: GameChatProps) => {
               </div>
             </div>
           ))}
+          <div ref={bottomOfChat} />
         </div>
       </div>
 

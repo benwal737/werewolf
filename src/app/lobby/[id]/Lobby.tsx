@@ -227,7 +227,7 @@ export default function Lobby() {
               </Card>
             </div>
             {/* Right: Game Chat */}
-            <div className="order-3 lg:order-3 w-full flex flex-col">
+            <div className="order-3 w-full flex flex-col max-h-[calc(100vh-5rem)]">
               {player && <GameChat gameState={gameState} player={player} />}
             </div>
           </div>
