@@ -18,7 +18,7 @@ const FORETELLER_TIME = 30;
 const WEREWOLVES_TIME = 30;
 const WITCH_TIME = 30;
 const DEATHS_TIME = 10;
-const VOTE_TIME = 45;
+const VOTE_TIME = 90;
 const RESULTS_TIME = 10;
 
 export default function registerGameHandlers(io: Server, socket: Socket) {
