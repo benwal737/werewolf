@@ -21,6 +21,7 @@ import { RoleCounts } from "@/game/types";
 import { usePlayer } from "@/hooks/usePlayer";
 import PageTheme from "@/components/PageTheme";
 import { Loader2Icon } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 15;
@@ -137,56 +138,106 @@ const CreateLobby = () => {
               >
                 <PlayerCountDisplay form={form} />
 
-                {roleKeys.map((role) => (
-                  <FormField
-                    key={role}
-                    control={form.control}
-                    name={`roles.${role}`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {role === "werewolf"
-                            ? "Werewolves:"
-                            : role === "foreteller"
-                            ? "Foretellers:"
-                            : role === "villager"
-                            ? "Villagers:"
-                            : role === "witch"
-                            ? "Witches:"
-                            : role}{" "}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={isLoading}
-                            type="number"
-                            min={
-                              role === "werewolf" || role === "villager" ? 1 : 0
+                <FormField
+                  control={form.control}
+                  name={`roles.werewolf`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Werewolves:</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          type="number"
+                          min={1}
+                          max={undefined}
+                          className="w-32 min-h-[30px] h-[50px]"
+                          value={Number.isNaN(field.value) ? "" : field.value}
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber;
+                            field.onChange(value);
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.valueAsNumber;
+                            if (Number.isNaN(value)) {
+                              field.onChange(0);
                             }
-                            max={
-                              role === "witch" || role === "foreteller"
-                                ? 1
-                                : undefined
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`roles.villager`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Villagers:</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          type="number"
+                          min={1}
+                          max={undefined}
+                          className="w-32 min-h-[30px] h-[50px]"
+                          value={Number.isNaN(field.value) ? "" : field.value}
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber;
+                            field.onChange(value);
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.valueAsNumber;
+                            if (Number.isNaN(value)) {
+                              field.onChange(0);
                             }
-                            className="w-32 min-h-[30px] h-[50px]"
-                            value={Number.isNaN(field.value) ? "" : field.value}
-                            onChange={(e) => {
-                              const value = e.target.valueAsNumber;
-                              field.onChange(value);
-                            }}
-                            onBlur={(e) => {
-                              const value = e.target.valueAsNumber;
-                              if (Number.isNaN(value)) {
-                                field.onChange(0);
-                              }
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`roles.witch`}
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-2">
+                      <FormLabel>Witch:</FormLabel>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value.toString() === "1"}
+                          onCheckedChange={(checked) => {
+                            return checked
+                              ? field.onChange(1)
+                              : field.onChange(0);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`roles.foreteller`}
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-2">
+                      <FormLabel>Foreteller:</FormLabel>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value.toString() === "1"}
+                          onCheckedChange={(checked) => {
+                            return checked
+                              ? field.onChange(1)
+                              : field.onChange(0);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <Button
                   className="mt-5 w-32"
                   type="submit"
