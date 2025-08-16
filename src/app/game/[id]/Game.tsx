@@ -117,7 +117,7 @@ const Game = () => {
                 <PhaseIndicator />
               </div>
               {/* Main Content */}
-              <div className="flex-1 flex flex-col lg:flex-row justify-center lg:items-start items-stretch gap-5 mx-10 md:mx-20 pb-20 h-full">
+              <div className="flex-1 flex flex-col lg:flex-row justify-center lg:items-start items-stretch gap-5 mx-5 md:mx-20 pb-20 h-full">
                 {/* Left Container */}
                 <div className="lg:w-2/3 lg:mb-0 w-full">
                   {/* Action Panel (md and below) */}

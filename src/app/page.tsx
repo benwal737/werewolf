@@ -155,10 +155,10 @@ export default function Home() {
                 onClick={() => {
                   setShowAlert(false);
                   const name = form1.getValues("name");
-                  if (name.length > 15) {
+                  if (name.length > 10) {
                     form1.setError("name", {
                       type: "manual",
-                      message: "character limit exceeded 15",
+                      message: "character limit exceeded 10",
                     });
                     setJoinDialogOpen(false);
                   } else {
@@ -216,15 +216,15 @@ export default function Home() {
                     <DialogFooter className="flex justify-between">
                       <DialogClose asChild>
                         <Button
-                          className="w-[100px]"
-                          variant="outline"
+                          className="w-full md:w-[100px]"
+                          variant="destructive"
                           type="button"
                         >
                           Cancel
                         </Button>
                       </DialogClose>
                       <Button
-                        className="w-[100px]"
+                        className="w-full md:w-[100px]"
                         type="submit"
                         disabled={joining}
                       >
