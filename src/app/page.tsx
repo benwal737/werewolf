@@ -37,14 +37,14 @@ import useOngoingGame from "@/hooks/useOngoingGame";
 import HowToPlay from "../components/HowToPlay";
 
 const createLobbySchema = z.object({
-  name: z.string().max(10, {
-    message: "character limit exceeded 10",
+  name: z.string().max(8, {
+    message: "character limit exceeded 8",
   }),
 });
 
 const joinLobbySchema = z.object({
-  name: z.string().max(10, {
-    message: "character limit exceeded 10",
+  name: z.string().max(8, {
+    message: "character limit exceeded 8",
   }),
   lobbyId: z.string().min(1, "Lobby ID is required"),
 });
@@ -155,10 +155,10 @@ export default function Home() {
                 onClick={() => {
                   setShowAlert(false);
                   const name = form1.getValues("name");
-                  if (name.length > 10) {
+                  if (name.length > 8) {
                     form1.setError("name", {
                       type: "manual",
-                      message: "character limit exceeded 10",
+                      message: "character limit exceeded 8",
                     });
                     setJoinDialogOpen(false);
                   } else {
