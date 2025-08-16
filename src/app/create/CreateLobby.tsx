@@ -260,10 +260,7 @@ const CreateLobby = () => {
                     }
                   >
                     {isLoading ? (
-                      <>
-                        <Loader2Icon className="animate-spin" />
-                        Creating
-                      </>
+                      <Loader2Icon className="animate-spin" />
                     ) : (
                       "Create"
                     )}

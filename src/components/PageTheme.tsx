@@ -63,7 +63,7 @@ export default function PageTheme({
 
   return (
     <div
-      className="min-h-screen w-full bg-cover bg-center"
+      className="relative min-h-screen w-full bg-cover bg-center overflow-x-hidden"
       style={{ backgroundImage: background }}
     >
       {children}

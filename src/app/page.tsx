@@ -76,7 +76,6 @@ export default function Home() {
     setCreating(true);
     localStorage.setItem("username", data.name);
     router.push("/create");
-    setCreating(false);
   };
 
   const handleJoinLobby = (data: z.infer<typeof joinLobbySchema>) => {
