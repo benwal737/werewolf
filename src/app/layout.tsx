@@ -6,7 +6,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Werewolf Game",
+  title: "Werewolf",
   description: "A multiplayer Werewolf game",
 };
 

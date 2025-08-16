@@ -129,11 +129,11 @@ const CreateLobby = () => {
   return (
     <PageTheme forcedTheme="dark">
       <div className="flex flex-col min-h-screen w-full bg-cover bg-center items-center justify-center">
-        <Card className="size-fit min-w-[25vw] p-10 bg-card/50 backdrop-blur-sm">
+        <Card className="size-fit min-w-[20vw] p-10 bg-card/50 backdrop-blur-sm">
           <CardContent>
             <Form {...form}>
               <form
-                className="flex flex-col items-center justify-center gap-4 w-full h-full"
+                className="flex flex-col items-start justify-center gap-5 w-full h-full"
                 onSubmit={form.handleSubmit(handleSubmit)}
               >
                 <PlayerCountDisplay form={form} />
@@ -198,66 +198,77 @@ const CreateLobby = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name={`roles.witch`}
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-2">
-                      <FormLabel>Witch:</FormLabel>
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value.toString() === "1"}
-                          onCheckedChange={(checked) => {
-                            return checked
-                              ? field.onChange(1)
-                              : field.onChange(0);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`roles.foreteller`}
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-2">
-                      <FormLabel>Foreteller:</FormLabel>
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value.toString() === "1"}
-                          onCheckedChange={(checked) => {
-                            return checked
-                              ? field.onChange(1)
-                              : field.onChange(0);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  className="mt-5 w-32"
-                  type="submit"
-                  disabled={
-                    isLoading ||
-                    !userId ||
-                    !username ||
-                    calculateTotalPlayers(form.watch("roles")) < MIN_PLAYERS ||
-                    calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
-                  }
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2Icon className="animate-spin" />
-                      Creating
-                    </>
-                  ) : (
-                    "Create Lobby"
-                  )}
-                </Button>
+                <div className="flex flex-col gap-3 justify-start w-1/2">
+                  <FormField
+                    control={form.control}
+                    name={`roles.witch`}
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-2">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value.toString() === "1"}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange(1)
+                                : field.onChange(0);
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel>Witch</FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`roles.foreteller`}
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-2">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value.toString() === "1"}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange(1)
+                                : field.onChange(0);
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel>Foreteller</FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="flex justify-end w-full gap-2 mt-4">
+                  <Button
+                    type="button"
+                    className="w-24"
+                    onClick={() => router.push("/")}
+                    variant="destructive"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="w-24"
+                    type="submit"
+                    disabled={
+                      isLoading ||
+                      !userId ||
+                      !username ||
+                      calculateTotalPlayers(form.watch("roles")) <
+                        MIN_PLAYERS ||
+                      calculateTotalPlayers(form.watch("roles")) > MAX_PLAYERS
+                    }
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2Icon className="animate-spin" />
+                        Creating
+                      </>
+                    ) : (
+                      "Create"
+                    )}
+                  </Button>
+                </div>
               </form>
             </Form>
           </CardContent>
