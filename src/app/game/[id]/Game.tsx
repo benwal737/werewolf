@@ -89,7 +89,7 @@ const Game = () => {
       socket.off("gameUpdated");
       socket.off("gameDeleted");
     };
-  }, [lobbyId, userId, handleJoinError, handleCountdownTick]);
+  }, [lobbyId, userId, handleJoinError, handleCountdownTick, router]);
 
   return (
     user &&
