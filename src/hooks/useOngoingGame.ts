@@ -11,21 +11,21 @@ export default function useOngoingGame() {
   useEffect(() => {
     if (!userId) return;
     socket.emit("checkExistingGame", userId, (paths: string[]) => {
-      for (const path of paths) {
-        const lobbyType = path.split("/")[0];
-        if (showAlert) return;
-        toast(`Ongoing ${lobbyType} found`, {
-          description: "Lobby ID: " + path.split("/").pop(),
-          duration: Infinity,
-          closeButton: true,
-          position: "top-right",
-          action: {
-            label: "Reconnect",
-            onClick: () => router.push(path),
-          },
-        });
-        setShowAlert(true);
-      }
+      if (paths.length === 0) return;
+      const path = paths[paths.length - 1];
+      const lobbyType = path.split("/")[0];
+      if (showAlert) return;
+      toast(`Ongoing ${lobbyType} found`, {
+        description: "Lobby ID: " + path.split("/").pop(),
+        duration: Infinity,
+        closeButton: true,
+        position: "top-right",
+        action: {
+          label: "Reconnect",
+          onClick: () => router.push(path),
+        },
+      });
+      setShowAlert(true);
     });
   });
 }

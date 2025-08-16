@@ -16,6 +16,7 @@ import Confetti from "react-confetti";
 import { turnSound } from "@/utils/sounds";
 import { isWinner } from "@/utils/winConditions";
 import GameContextProvider from "@/context/GameContext";
+import { toast } from "sonner";
 
 const Game = () => {
   const router = useRouter();
@@ -71,11 +72,22 @@ const Game = () => {
       setGameState(updated);
       prevGameStateRef.current = updated;
     });
+    socket.on("gameDeleted", () => {
+      toast("Lobby Timed Out", {
+        description: "You will be redirected to the home page.",
+        duration: 5000,
+        position: "top-right",
+      });
+      setTimeout(() => {
+        router.replace("/");
+      }, 5000);
+    });
 
     return () => {
       socket.off("joinError", handleJoinError);
       socket.off("countdownTick", handleCountdownTick);
       socket.off("gameUpdated");
+      socket.off("gameDeleted");
     };
   }, [lobbyId, userId, handleJoinError, handleCountdownTick]);
 

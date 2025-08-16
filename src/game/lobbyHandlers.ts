@@ -29,7 +29,7 @@ export default function registerLobbyHandlers(io: Server, socket: Socket) {
       ) {
         return;
       }
-      createGame(lobbyId, playerId, roleCounts, totalPlayers);
+      createGame(io, lobbyId, playerId, roleCounts, totalPlayers);
       const player: Player = {
         id: playerId,
         name: playerName,

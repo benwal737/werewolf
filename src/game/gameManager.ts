@@ -22,7 +22,7 @@ export const findExistingGame = (playerId: string) => {
     if (game.players[playerId]) {
       if (game.phase === "lobby") {
         paths.push(`lobby/${lobbyId}`);
-      } else {
+      } else if (game.phase !== "end") {
         paths.push(`game/${lobbyId}`);
       }
     }
@@ -109,6 +109,7 @@ export const startCountdown = (
 };
 
 export const createGame = (
+  io: Server,
   lobbyId: string,
   hostId: string,
   roleCounts: RoleCounts,
@@ -127,6 +128,10 @@ export const createGame = (
     deadChat: [],
   };
   gameStates.set(lobbyId, newGame);
+  setInterval(() => {
+    io.to(lobbyId).emit("gameDeleted");
+    deleteGame(lobbyId);
+  }, 1000 * 60 * 60 * 8); // lobby wipes after 8 hours
   return newGame;
 };
 
@@ -171,6 +176,7 @@ export const getPlayers = (lobbyId: string) => {
 };
 
 export const deleteGame = (lobbyId: string) => {
+  if (!gameStates.has(lobbyId)) return;
   gameStates.delete(lobbyId);
 };
 

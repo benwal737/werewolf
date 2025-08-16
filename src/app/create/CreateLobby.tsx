@@ -142,7 +142,7 @@ const CreateLobby = () => {
                   control={form.control}
                   name={`roles.werewolf`}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="w-full">
                       <FormLabel>Werewolves:</FormLabel>
                       <FormControl>
                         <Input
@@ -150,7 +150,7 @@ const CreateLobby = () => {
                           type="number"
                           min={1}
                           max={undefined}
-                          className="w-32 min-h-[30px] h-[50px]"
+                          className="w-full h-10"
                           value={Number.isNaN(field.value) ? "" : field.value}
                           onChange={(e) => {
                             const value = e.target.valueAsNumber;
@@ -172,7 +172,7 @@ const CreateLobby = () => {
                   control={form.control}
                   name={`roles.villager`}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="w-full">
                       <FormLabel>Villagers:</FormLabel>
                       <FormControl>
                         <Input
@@ -180,7 +180,7 @@ const CreateLobby = () => {
                           type="number"
                           min={1}
                           max={undefined}
-                          className="w-32 min-h-[30px] h-[50px]"
+                          className="w-full h-10"
                           value={Number.isNaN(field.value) ? "" : field.value}
                           onChange={(e) => {
                             const value = e.target.valueAsNumber;
@@ -238,7 +238,7 @@ const CreateLobby = () => {
                     )}
                   />
                 </div>
-                <div className="flex justify-end w-full gap-2 mt-4">
+                <div className="flex justify-start w-full gap-2 mt-4">
                   <Button
                     type="button"
                     className="w-24"

@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 import GameChat from "@/app/game/[id]/GameChat";
 import { GiSandsOfTime } from "react-icons/gi";
 import { bleep, mellowAlert, ping } from "@/utils/sounds";
+import { toast } from "sonner";
 
 interface ClipboardProps {
   copied: boolean;
@@ -110,6 +111,17 @@ export default function Lobby() {
       ping();
     });
 
+    socket.on("gameDeleted", () => {
+      toast("Lobby Timed Out", {
+        description: "You will be redirected to the home page.",
+        duration: 5000,
+        position: "top-right",
+      });
+      setTimeout(() => {
+        router.replace("/");
+      }, 5000);
+    });
+
     socket.on("joinError", handleJoinError);
     socket.on("gameUpdated", handleLobbyUpdated);
     socket.on("kicked", handleKicked);
@@ -124,6 +136,7 @@ export default function Lobby() {
       socket.off("playerLeft");
       socket.off("startCountdown");
       socket.off("countdownComplete");
+      socket.off("gameDeleted");
     };
   }, [lobbyId, userId, username, router]);
 
